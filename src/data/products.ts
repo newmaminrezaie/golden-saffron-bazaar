@@ -1,0 +1,140 @@
+export type Product = {
+  id: string;
+  name: string;
+  category: string;
+  weight: string;
+  price: number; // تومان
+  oldPrice?: number;
+  image: string;
+  badge?: string;
+};
+
+export const CATEGORIES = [
+  "همه",
+  "زعفران سرگل",
+  "زعفران نگین",
+  "زعفران پوشال",
+  "پودر زعفران",
+  "بسته‌های هدیه",
+  "عمده‌فروشی",
+] as const;
+
+export const PRODUCTS: Product[] = [
+  {
+    id: "p1",
+    name: "زعفران سرگل ممتاز",
+    category: "زعفران سرگل",
+    weight: "۱ مثقال (۴.۶ گرم)",
+    price: 1280000,
+    oldPrice: 1450000,
+    image:
+      "https://images.unsplash.com/photo-1599909533731-3d2a4f4c6d9b?auto=format&fit=crop&w=800&q=80",
+    badge: "پرفروش",
+  },
+  {
+    id: "p2",
+    name: "زعفران نگین درجه یک",
+    category: "زعفران نگین",
+    weight: "۲ گرم",
+    price: 720000,
+    image:
+      "https://images.unsplash.com/photo-1605478371310-9b78ee5fdcce?auto=format&fit=crop&w=800&q=80",
+  },
+  {
+    id: "p3",
+    name: "زعفران پوشال ممتاز",
+    category: "زعفران پوشال",
+    weight: "۴.۶ گرم",
+    price: 980000,
+    image:
+      "https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=800&q=80",
+  },
+  {
+    id: "p4",
+    name: "پودر زعفران خالص",
+    category: "پودر زعفران",
+    weight: "۱ گرم",
+    price: 320000,
+    image:
+      "https://images.unsplash.com/photo-1607344645866-009c320b63e0?auto=format&fit=crop&w=800&q=80",
+    badge: "جدید",
+  },
+  {
+    id: "p5",
+    name: "جعبه هدیه چوبی زعفران",
+    category: "بسته‌های هدیه",
+    weight: "۴.۶ گرم",
+    price: 1850000,
+    image:
+      "https://images.unsplash.com/photo-1608797178974-15b35a64ede9?auto=format&fit=crop&w=800&q=80",
+    badge: "پیشنهاد ویژه",
+  },
+  {
+    id: "p6",
+    name: "زعفران سرگل ۱ گرمی",
+    category: "زعفران سرگل",
+    weight: "۱ گرم",
+    price: 290000,
+    image:
+      "https://images.unsplash.com/photo-1615485290382-441e4d049cb5?auto=format&fit=crop&w=800&q=80",
+  },
+  {
+    id: "p7",
+    name: "زعفران نگین ۴.۶ گرمی",
+    category: "زعفران نگین",
+    weight: "۱ مثقال",
+    price: 1380000,
+    oldPrice: 1500000,
+    image:
+      "https://images.unsplash.com/photo-1600326145552-327c4df2c246?auto=format&fit=crop&w=800&q=80",
+  },
+  {
+    id: "p8",
+    name: "بسته خانوار زعفران",
+    category: "بسته‌های هدیه",
+    weight: "۹.۲ گرم",
+    price: 2680000,
+    image:
+      "https://images.unsplash.com/photo-1593411739928-b71fea83f7ef?auto=format&fit=crop&w=800&q=80",
+  },
+  {
+    id: "p9",
+    name: "پودر زعفران ۲ گرمی",
+    category: "پودر زعفران",
+    weight: "۲ گرم",
+    price: 610000,
+    image:
+      "https://images.unsplash.com/photo-1606756790138-261d2b21cd75?auto=format&fit=crop&w=800&q=80",
+  },
+  {
+    id: "p10",
+    name: "زعفران پوشال ۲ گرمی",
+    category: "زعفران پوشال",
+    weight: "۲ گرم",
+    price: 480000,
+    image:
+      "https://images.unsplash.com/photo-1542990253-0b8be07d56c3?auto=format&fit=crop&w=800&q=80",
+  },
+  {
+    id: "p11",
+    name: "زعفران فله عمده",
+    category: "عمده‌فروشی",
+    weight: "۱۰۰ گرم",
+    price: 28500000,
+    image:
+      "https://images.unsplash.com/photo-1615485925600-97237c4fc1ec?auto=format&fit=crop&w=800&q=80",
+    badge: "عمده",
+  },
+  {
+    id: "p12",
+    name: "جعبه نفیس زعفران",
+    category: "بسته‌های هدیه",
+    weight: "۲ مثقال",
+    price: 3200000,
+    image:
+      "https://images.unsplash.com/photo-1571197119282-7c4b1a44b3a3?auto=format&fit=crop&w=800&q=80",
+  },
+];
+
+export const formatToman = (n: number) =>
+  new Intl.NumberFormat("fa-IR").format(n) + " تومان";
