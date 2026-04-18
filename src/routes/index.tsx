@@ -1,26 +1,37 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { Hero } from "@/components/home/hero";
+import { CategoryGrid } from "@/components/home/category-grid";
+import { FeaturedProducts } from "@/components/home/featured-products";
+import { PromiseStrip } from "@/components/home/promise-strip";
+import { AboutTeaser } from "@/components/home/about-teaser";
 
 export const Route = createFileRoute("/")({
-  component: Index,
+  head: () => ({
+    meta: [
+      { title: "زعفران خواجوی | زعفران اصل قائنات با ضمانت کیفیت" },
+      {
+        name: "description",
+        content:
+          "خرید آنلاین زعفران اصل قائنات از زعفران خواجوی؛ سرگل، نگین، پوشال، پودر زعفران و بسته‌های هدیه با عطر و رنگ بی‌نظیر.",
+      },
+      { property: "og:title", content: "زعفران خواجوی | زعفران اصل قائنات" },
+      {
+        property: "og:description",
+        content: "زعفران ممتاز ایرانی با ضمانت اصالت و ارسال سریع به سراسر کشور.",
+      },
+    ],
+  }),
+  component: Home,
 });
 
-// IMPORTANT: Replace this placeholder. For sites with multiple pages (About, Services, Contact, etc.),
-// create separate route files (about.tsx, services.tsx, contact.tsx) — don't put all pages in this file.
-function PlaceholderIndex() {
+function Home() {
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
-    </div>
+    <>
+      <Hero />
+      <CategoryGrid />
+      <FeaturedProducts />
+      <PromiseStrip />
+      <AboutTeaser />
+    </>
   );
-}
-
-function Index() {
-  return <PlaceholderIndex />;
 }
