@@ -1,4 +1,5 @@
 import { Link } from "@tanstack/react-router";
+import saffronFarm from "@/assets/saffron-farm.jpg";
 
 export function AboutTeaser() {
   return (
@@ -6,7 +7,7 @@ export function AboutTeaser() {
       <div className="mx-auto grid max-w-6xl gap-10 md:grid-cols-2 md:items-center">
         <div className="relative overflow-hidden rounded-3xl shadow-xl aspect-[4/5] md:aspect-[5/6]">
           <img
-            src="https://images.unsplash.com/photo-1605478371310-9b78ee5fdcce?auto=format&fit=crop&w=1200&q=80"
+            src={saffronFarm}
             alt="مزرعه زعفران قائنات"
             className="h-full w-full object-cover"
             style={{ objectPosition: "center 35%" }}
