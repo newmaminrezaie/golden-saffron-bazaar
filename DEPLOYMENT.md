@@ -1,4 +1,4 @@
-# Deployment — Self-hosted Linux VPS + Nginx
+# Deployment — Arvancloud VPS + Nginx
 
 This frontend is built as a **fully static site** (HTML + CSS + JS). There is
 no Node process to run on the VPS — Nginx serves files directly.
@@ -11,9 +11,9 @@ part of this build. The frontend talks to it via `VITE_PAYMENT_API_URL`.
 ## 1. Build locally (or in CI)
 
 ```bash
-bun install            # or: npm install
+npm install            # install dependencies
 cp .env.example .env   # edit VITE_PAYMENT_API_URL to your real backend URL
-bun run build          # static site -> ./dist/client
+npm run build          # static site -> ./dist/client
 ```
 
 After the build, **`dist/client/`** contains the site. Each route is emitted

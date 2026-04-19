@@ -6,16 +6,16 @@ prerender mode), Tailwind CSS v4, and shadcn/ui.
 ## Quick start
 
 ```bash
-bun install
+npm install
 cp .env.example .env   # set VITE_PAYMENT_API_URL
-bun run dev            # http://localhost:5173
-bun run build          # static site -> ./dist
+npm run dev            # http://localhost:5173
+npm run build          # static site -> ./dist/client
 ```
 
 ## Deployment
 
-This site builds to a fully static `dist/` folder served by Nginx on a
-Linux VPS. See **[DEPLOYMENT.md](./DEPLOYMENT.md)** for the Nginx server
+This site builds to a fully static `dist/client/` folder served by Nginx on an
+**Arvancloud VPS**. See **[DEPLOYMENT.md](./DEPLOYMENT.md)** for the Nginx server
 block and rsync deploy steps.
 
 The payment backend (Zarinpal / Express) is a **separate service** — this
