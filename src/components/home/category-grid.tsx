@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 import type { CSSProperties } from "react";
 import saffronNegin from "@/assets/saffron-negin.jpg";
 import saffronPushal from "@/assets/saffron-pushal.jpg";
+import saffronPowder from "@/assets/saffron-powder.jpeg";
 import giftBoxes from "@/assets/gift-boxes.jpg";
 import wholesale from "@/assets/wholesale.png";
 
@@ -38,7 +39,7 @@ const CATS: Cat[] = [
     name: "پودر زعفران",
     count: "۵ محصول",
     area: "d",
-    img: "https://images.unsplash.com/photo-1607344645866-009c320b63e0?auto=format&fit=crop&w=1000&q=80",
+    img: saffronPowder,
     pos: "center 50%",
     scrim: "linear-gradient(180deg, rgba(0,0,0,0) 50%, rgba(42,26,10,0.75) 100%)",
     labelStyle: { bottom: "1rem", left: "50%", transform: "translateX(50%)", textAlign: "center" },
