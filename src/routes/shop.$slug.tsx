@@ -109,7 +109,7 @@ function ProductPage() {
             </div>
             {product.images.length > 1 && (
               <div className="mt-3 flex gap-2 overflow-x-auto">
-                {product.images.map((src, i) => (
+                {product.images.map((src: string, i: number) => (
                   <button
                     key={i}
                     onClick={() => setActiveImg(i)}
@@ -170,7 +170,7 @@ function ProductPage() {
                   درباره این محصول
                 </h2>
                 <div className="space-y-3 text-sm leading-7 text-foreground/80">
-                  {product.description.split("\n\n").map((para, i) => (
+                  {product.description.split("\n\n").map((para: string, i: number) => (
                     <p key={i}>{para}</p>
                   ))}
                 </div>
@@ -181,7 +181,7 @@ function ProductPage() {
               <div className="mt-6 border-t border-border/60 pt-6">
                 <h2 className="mb-3 text-lg font-extrabold text-foreground">ویژگی‌ها</h2>
                 <ul className="space-y-2 text-sm text-foreground/80">
-                  {product.highlights.map((h, i) => (
+                  {product.highlights.map((h: string, i: number) => (
                     <li key={i} className="flex items-start gap-2">
                       <span className="mt-2 size-1.5 shrink-0 rounded-full bg-[color:var(--brown-medium)]" />
                       <span>{h}</span>
