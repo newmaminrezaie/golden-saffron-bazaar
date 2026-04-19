@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 import type { CSSProperties } from "react";
 import saffronNegin from "@/assets/saffron-negin.jpg";
 import giftBoxes from "@/assets/gift-boxes.jpg";
+import wholesale from "@/assets/wholesale.png";
 
 type Cat = {
   name: string;
@@ -54,7 +55,7 @@ const CATS: Cat[] = [
     name: "عمده‌فروشی",
     count: "تماس بگیرید",
     area: "f",
-    img: "https://images.unsplash.com/photo-1615485290382-441e4d049cb5?auto=format&fit=crop&w=1200&q=80",
+    img: wholesale,
     pos: "center 50%",
     scrim: "linear-gradient(180deg, rgba(0,0,0,0) 35%, rgba(42,26,10,0.78) 100%)",
     labelStyle: { bottom: "1.25rem", right: "1.25rem", textAlign: "right" },
