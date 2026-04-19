@@ -1,39 +1,73 @@
 
-Remove the "زعفران سرگل" category (the large hero "a" tile) from the category grid while restructuring the layout so the remaining 5 categories form a balanced, polished arrangement.
+The user wants to keep products static in `products.ts` but enhance the data shape so it's easy to extend and supports two new UX features later:
 
-### Current layout
-- 6 cards with grid areas a-f
-- Mobile: a (full-width hero) → b/c → d/e → f (full-width)
-- Desktop: a-a-b-b / c-d-e-f
+1. Multiple images per product (cycled on hover/touch on cards).
+2. A single-product detail page with descriptions.
 
-### New layout (5 cards)
-Promote "بسته‌های هدیه" (gift boxes) to the new visual hero since it's the most premium-feeling category, and rebalance:
+I'll only restructure the data + types now, plus scaffold a single-product route and update the card to handle multiple images. No CMS, no DB.
 
-- **Mobile** (2 cols):
-  ```
-  e e      (gift boxes — hero, full width)
-  b c      (نگین | پوشال)
-  d f      (پودر | عمده‌فروشی)
-  ```
-- **Desktop** (4 cols):
-  ```
-  e e b b   (gift boxes hero left, نگین right)
-  c c d d f f  → actually: c d f spanning evenly
-  ```
-  Cleaner: `e e e b b / c c d d f f` using 6-col desktop grid, OR keep 4-col with `e e b b / c d f f`.
+## Proposed `Product` shape
 
-I'll use a **4-col desktop grid**:
+```ts
+export type Product = {
+  id: string;          // stable slug, used in URL: /shop/p1
+  slug: string;        // URL-friendly (defaults to id, can be Persian-friendly later)
+  name: string;
+  category: string;
+  weight: string;
+  price: number;
+  oldPrice?: number;
+  images: string[];    // [primary, ...alts] — was `image: string`
+  badge?: string;
+  shortDescription?: string;  // 1-line, shown on card / meta
+  description?: string;       // long-form, single-product page (supports \n paragraphs)
+  highlights?: string[];      // bullet points (origin, harvest, certifications…)
+  inStock?: boolean;          // defaults true
+};
 ```
-"e e b b"
-"c d f f"
+
+Backwards-friendly: existing single images become `images: [productP1]`. Optional fields stay optional so adding a new product is still a small object literal.
+
+## Changes
+
+1. **`src/data/products.ts`**
+   - Update `Product` type as above.
+   - Convert all 12 existing products: `image: X` → `images: [X]`.
+   - Add `slug` (= id for now).
+   - Add empty/optional `shortDescription`, `description`, `highlights` placeholders on 2-3 products as examples so future edits are obvious.
+   - Keep `formatToman` and `CATEGORIES` unchanged.
+   - Add a top-of-file comment block: "How to add a product" with a copy-paste template.
+
+2. **`src/components/product-card.tsx`**
+   - Read `p.images[0]` as the primary image.
+   - If `images.length > 1`: on hover (desktop) and on touch (mobile), cycle through images with a small fade. Show dot indicators at the bottom of the image.
+   - Wrap the card in a `<Link to="/shop/$slug" params={{ slug: p.slug }}>` so clicking opens the detail page (the "افزودن" button stays a button with `stopPropagation`).
+
+3. **New route `src/routes/shop.$slug.tsx`** (single product page)
+   - Looks up product by slug from `PRODUCTS`; if not found → `notFoundComponent`.
+   - Layout: image gallery (thumbnails + main image) on one side, info on the other (name, category, weight, price/oldPrice, badge, shortDescription, description paragraphs, highlights bullet list, "افزودن به سبد" button).
+   - Per-route `head()` with title / description / og:image (uses primary product image) per the routing rules.
+   - `errorComponent` and `notFoundComponent` defined.
+
+4. **Optional small touch in `src/routes/shop.tsx`**: no logic change, just ensures cards still work after the type change.
+
+## File diagram
+
+```text
+src/
+  data/products.ts            (type updated, images[] everywhere, doc comment)
+  components/
+    product-card.tsx          (image cycling + link to detail)
+  routes/
+    shop.tsx                  (unchanged behavior)
+    shop.$slug.tsx            (NEW — single product page)
 ```
-This gives gift boxes a 2-col hero, نگین a 2-col feature, then پوشال + پودر as squares and عمده‌فروشی as a 2-col wide closer — visually balanced (2+2 / 1+1+2).
 
-### Changes to `src/components/home/category-grid.tsx`
-1. Delete the first entry (`زعفران سرگل`, area "a") from the `CATS` array.
-2. Update mobile `gridTemplateAreas` to `"e e" / "b c" / "d f"`.
-3. Update desktop media query areas to `"e e b b" / "c d f f"`.
-4. Adjust `minHeight` rule so the hero tiles (now `e` and `f`) get the taller 240px and others stay 200px.
-5. Tweak the `labelStyle` for `e` if needed so its text sits well as the new hero (already bottom-right friendly via existing top-right; switch to bottom-right for hero prominence).
+## How you'll edit products afterwards (the goal)
 
-No other files touched. No new assets needed.
+Open `src/data/products.ts` and either:
+- **Change price/title/image**: edit the field on the product object.
+- **Add images**: append to the `images: [...]` array — first one is the cover.
+- **Add a product**: copy the template comment at the top, paste into the `PRODUCTS` array, give it a unique `id`/`slug`, fill fields. It auto-appears in the shop, in the right category filter, and gets its own `/shop/<slug>` page.
+
+No other files need touching for routine product updates.
