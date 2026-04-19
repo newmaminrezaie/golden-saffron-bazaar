@@ -37,7 +37,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: "p2",
-    name: "زعفران نگین درجه یک",
+    name: "زرشک پفکی قائنات",
     category: "زعفران نگین",
     weight: "۲ گرم",
     price: 720000,
