@@ -1,23 +1,17 @@
 import { useEffect, useState } from "react";
 import heroSaffron1 from "@/assets/hero-saffron-1.jpg";
 import heroSaffron2 from "@/assets/hero-saffron-2.jpg";
-import heroSaffron3 from "@/assets/hero-saffron-3.jpg";
 
 const SLIDES = [
   {
     src: heroSaffron1,
-    pos: "center 45%",
-    alt: "رشته‌های زعفران اصیل",
+    pos: "center 50%",
+    alt: "گل زعفران بنفش در مزرعه",
   },
   {
     src: heroSaffron2,
-    pos: "center 50%",
-    alt: "زعفران در قاشق چوبی",
-  },
-  {
-    src: heroSaffron3,
-    pos: "center 50%",
-    alt: "چیدمان سنتی زعفران و ادویه",
+    pos: "center 55%",
+    alt: "غروب آفتاب بر مزرعه گل‌های بنفش",
   },
 ];
 
