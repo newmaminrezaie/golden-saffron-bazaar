@@ -1,20 +1,23 @@
 import { useEffect, useState } from "react";
+import heroSaffron1 from "@/assets/hero-saffron-1.jpg";
+import heroSaffron2 from "@/assets/hero-saffron-2.jpg";
+import heroSaffron3 from "@/assets/hero-saffron-3.jpg";
 
 const SLIDES = [
   {
-    src: "https://images.unsplash.com/photo-1599909533731-3d2a4f4c6d9b?auto=format&fit=crop&w=1920&q=80",
-    pos: "center 40%",
-    alt: "رشته‌های زعفران",
+    src: heroSaffron1,
+    pos: "center 45%",
+    alt: "رشته‌های زعفران اصیل",
   },
   {
-    src: "https://images.unsplash.com/photo-1605478371310-9b78ee5fdcce?auto=format&fit=crop&w=1920&q=80",
-    pos: "center 55%",
-    alt: "گل زعفران در مزرعه",
-  },
-  {
-    src: "https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=1920&q=80",
+    src: heroSaffron2,
     pos: "center 50%",
-    alt: "زعفران در ظرف سنتی",
+    alt: "زعفران در قاشق چوبی",
+  },
+  {
+    src: heroSaffron3,
+    pos: "center 50%",
+    alt: "چیدمان سنتی زعفران و ادویه",
   },
 ];
 
