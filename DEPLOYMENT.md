@@ -1,7 +1,7 @@
 # Deployment — Self-hosted Linux VPS + Nginx
 
 This frontend is built as a **fully static site** (HTML + CSS + JS). There is
-no Node process to run on the VPS — Nginx serves files directly from `dist/`.
+no Node process to run on the VPS — Nginx serves files directly.
 
 The payment backend (Zarinpal / Express) is a **separate service** and is not
 part of this build. The frontend talks to it via `VITE_PAYMENT_API_URL`.
@@ -13,34 +13,37 @@ part of this build. The frontend talks to it via `VITE_PAYMENT_API_URL`.
 ```bash
 bun install            # or: npm install
 cp .env.example .env   # edit VITE_PAYMENT_API_URL to your real backend URL
-bun run build          # outputs static site to ./dist
+bun run build          # static site -> ./dist/client
 ```
 
-After the build, `dist/` contains an HTML file for every route:
+After the build, **`dist/client/`** contains the site. Each route is emitted
+as `<route>/index.html`:
 
 ```
-dist/
+dist/client/
 ├── index.html              # /
-├── about.html              # /about
-├── contact.html            # /contact
-├── shop.html               # /shop
+├── about/index.html        # /about
+├── contact/index.html      # /contact
+├── shop/index.html         # /shop
 ├── shop/
-│   ├── p1.html             # /shop/p1
-│   ├── p2.html
-│   └── ...                 # one per product slug
-├── 404.html                # fallback for unknown URLs
-└── assets/                 # hashed JS/CSS/images
+│   ├── p1/index.html       # /shop/p1
+│   ├── p2/index.html
+│   └── …                   # one per product slug
+└── assets/                 # hashed JS / CSS / images
 ```
 
-> If a product slug is missing, add it to `src/data/products.ts` and rebuild —
-> the prerender list in `vite.config.ts` is generated from that file.
+> `dist/server/` is also produced during the build but is **not needed at
+> runtime** — it's only used by the prerender step. Do not upload it.
+
+If a product slug is missing, add it to `src/data/products.ts` and rebuild —
+the prerender list in `vite.config.ts` is generated from that file.
 
 ---
 
 ## 2. Upload to the VPS
 
 ```bash
-rsync -avz --delete dist/ user@your-vps:/var/www/khajavi-saffron/dist/
+rsync -avz --delete dist/client/ user@your-vps:/var/www/khajavi-saffron/
 ```
 
 ---
@@ -56,7 +59,7 @@ server {
     listen [::]:80;
     server_name yourdomain.com www.yourdomain.com;
 
-    root /var/www/khajavi-saffron/dist;
+    root /var/www/khajavi-saffron;
     index index.html;
 
     # Long-cache hashed build assets
@@ -67,14 +70,12 @@ server {
     }
 
     # Pretty URLs:
-    #   /about        -> /about.html
-    #   /shop/p1      -> /shop/p1.html
-    #   anything else -> 404.html (real 404, NOT a SPA fallback)
+    #   /about        -> /about/index.html
+    #   /shop/p1      -> /shop/p1/index.html
+    #   anything else -> serves /index.html, which renders the in-app 404
     location / {
-        try_files $uri $uri.html $uri/index.html /404.html;
+        try_files $uri $uri/ $uri.html /index.html;
     }
-
-    error_page 404 /404.html;
 
     # gzip
     gzip on;
@@ -91,18 +92,17 @@ sudo nginx -t && sudo systemctl reload nginx
 
 For HTTPS, run `sudo certbot --nginx -d yourdomain.com -d www.yourdomain.com`.
 
+### Why the `/index.html` fallback?
+
+The prerender step does not emit a standalone `404.html`. Falling back to
+`/index.html` lets the TanStack Router root route handle the unknown URL
+client-side and show the existing "صفحه پیدا نشد" page. If you want Nginx
+to return an HTTP 404 status for unknown URLs, replace the last `try_files`
+target with `=404` instead.
+
 ---
 
-## 4. Why no SPA fallback?
-
-Every route is prerendered to its own `.html` file, so there is no need for
-`try_files $uri /index.html`. We deliberately avoid that pattern: it would
-mask real 404s by serving the home page for every unknown URL. Unknown URLs
-should return the real `404.html`.
-
----
-
-## 5. Environment variables
+## 4. Environment variables
 
 Only `VITE_*` variables are read at build time and inlined into the client
 bundle. To change `VITE_PAYMENT_API_URL`, edit `.env` and **rebuild**.
