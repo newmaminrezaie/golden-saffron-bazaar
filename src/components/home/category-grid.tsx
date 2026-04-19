@@ -75,7 +75,7 @@ export function CategoryGrid() {
         <div style={{ textAlign: "center", marginBottom: "2.5rem" }}>
           <p
             className="font-display"
-            style={{ color: "#5a3e2e", fontSize: "clamp(1.5rem, 3vw, 2rem)" }}
+            style={{ color: "#5a3e2e", fontSize: "clamp(1.5rem, 3vw, 2rem)", marginBottom: "0" }}
           >
             our collections
           </p>
