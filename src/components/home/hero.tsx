@@ -86,7 +86,7 @@ export function Hero() {
           className="hero-rise font-display text-base"
           style={{
             color: "#5a3e2e",
-            fontSize: "clamp(1.75rem, 5vw, 3.5rem)",
+            fontSize: "clamp(0.875rem, 2.5vw, 1.75rem)",
             lineHeight: 1,
             marginBottom: "0.5rem",
             textShadow: "0 1px 2px rgba(255,255,255,0.4)",
