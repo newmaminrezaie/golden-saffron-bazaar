@@ -83,7 +83,7 @@ export function Hero() {
         }}
       >
         <p
-          className="hero-rise font-display"
+          className="hero-rise font-display text-lg"
           style={{
             color: "#5a3e2e",
             fontSize: "clamp(1.75rem, 5vw, 3.5rem)",
