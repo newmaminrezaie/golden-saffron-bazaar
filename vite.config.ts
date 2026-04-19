@@ -3,7 +3,20 @@
 // but we disable the Cloudflare Worker preset and ask TanStack Start to
 // prerender every route to plain HTML in `dist/`.
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
-import { PRODUCTS } from "./src/data/products";
+import { readFileSync } from "node:fs";
+import { fileURLToPath } from "node:url";
+
+// Read product slugs straight from the source file with a regex so this
+// config doesn't depend on the `@/` alias or on the file being importable
+// in the Vite config's Node context (it imports image assets).
+const productsSrc = readFileSync(
+  fileURLToPath(new URL("./src/data/products.ts", import.meta.url)),
+  "utf-8",
+);
+const PRODUCT_SLUGS = Array.from(
+  productsSrc.matchAll(/^\s{4}slug:\s*"([^"]+)"/gm),
+  (m) => m[1],
+);
 
 export default defineConfig({
   // Turn off Cloudflare Workers build target — output is plain static files.
@@ -24,7 +37,7 @@ export default defineConfig({
         "/about",
         "/contact",
         "/shop",
-        ...PRODUCTS.map((p) => `/shop/${p.slug}`),
+        ...PRODUCT_SLUGS.map((slug) => `/shop/${slug}`),
       ],
     },
   },
