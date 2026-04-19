@@ -53,7 +53,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: "p4",
-    name: "پودر زعفران خالص",
+    name: "زعفران کادویی ظرف چوبی",
     category: "پودر زعفران",
     weight: "۱ گرم",
     price: 320000,
