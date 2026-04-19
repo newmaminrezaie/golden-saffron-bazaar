@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import type { CSSProperties } from "react";
 import saffronNegin from "@/assets/saffron-negin.jpg";
+import saffronPushal from "@/assets/saffron-pushal.jpg";
 import giftBoxes from "@/assets/gift-boxes.jpg";
 import wholesale from "@/assets/wholesale.png";
 
@@ -28,7 +29,7 @@ const CATS: Cat[] = [
     name: "زعفران پوشال",
     count: "۶ محصول",
     area: "c",
-    img: "https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=1000&q=80",
+    img: saffronPushal,
     pos: "center 45%",
     scrim: "linear-gradient(270deg, rgba(0,0,0,0) 40%, rgba(42,26,10,0.7) 100%)",
     labelStyle: { bottom: "1rem", left: "1.25rem", textAlign: "left" },
