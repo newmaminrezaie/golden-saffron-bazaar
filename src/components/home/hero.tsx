@@ -100,19 +100,6 @@ export function Hero() {
         >
           a delightful journey
         </p>
-        <h1
-          className="hero-rise-delay"
-          style={{
-            color: "#2a1a0a",
-            fontSize: "clamp(2.25rem, 7vw, 5rem)",
-            fontWeight: 800,
-            lineHeight: 1.15,
-            margin: 0,
-            letterSpacing: "-0.01em",
-          }}
-        >
-          زعفران خواجوی
-        </h1>
         <p
           className="hero-rise-delay"
           style={{
