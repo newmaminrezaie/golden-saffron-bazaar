@@ -83,9 +83,9 @@ export function Hero() {
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          justifyContent: "center",
+          justifyContent: "flex-end",
           textAlign: "center",
-          padding: "0 1.25rem",
+          padding: "0 1.25rem calc(env(safe-area-inset-bottom, 0px) + 3rem)",
         }}
       >
         <p
@@ -113,33 +113,6 @@ export function Hero() {
         >
           سفری به دل مزارع قائنات؛ زعفران اصیل ایرانی با عطر، رنگ و طعمی بی‌مانند.
         </p>
-
-        {/* Slide dots */}
-        <div
-          style={{
-            position: "absolute",
-            bottom: "calc(env(safe-area-inset-bottom, 0px) + 2.5rem)",
-            display: "flex",
-            gap: "0.5rem",
-          }}
-        >
-          {SLIDES.map((_, i) => (
-            <button
-              key={i}
-              aria-label={`اسلاید ${i + 1}`}
-              onClick={() => setActive(i)}
-              style={{
-                width: i === active ? "24px" : "8px",
-                height: "8px",
-                borderRadius: "999px",
-                background: i === active ? "#2a1a0a" : "rgba(42,26,10,0.35)",
-                border: "none",
-                cursor: "pointer",
-                transition: "all 0.4s ease",
-              }}
-            />
-          ))}
-        </div>
       </div>
     </section>
   );
