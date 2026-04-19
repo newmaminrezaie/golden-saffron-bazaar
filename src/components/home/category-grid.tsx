@@ -13,15 +13,6 @@ type Cat = {
 
 const CATS: Cat[] = [
   {
-    name: "زعفران سرگل",
-    count: "۱۲ محصول",
-    area: "a",
-    img: "https://images.unsplash.com/photo-1599909533731-3d2a4f4c6d9b?auto=format&fit=crop&w=1200&q=80",
-    pos: "center 40%",
-    scrim: "linear-gradient(180deg, rgba(0,0,0,0) 40%, rgba(42,26,10,0.75) 100%)",
-    labelStyle: { bottom: "1.25rem", right: "1.25rem", textAlign: "right" },
-  },
-  {
     name: "زعفران نگین",
     count: "۸ محصول",
     area: "b",
@@ -54,8 +45,8 @@ const CATS: Cat[] = [
     area: "e",
     img: "https://images.unsplash.com/photo-1608797178974-15b35a64ede9?auto=format&fit=crop&w=1200&q=80",
     pos: "center 50%",
-    scrim: "linear-gradient(0deg, rgba(0,0,0,0) 35%, rgba(42,26,10,0.75) 100%)",
-    labelStyle: { top: "1.25rem", right: "1.25rem", textAlign: "right" },
+    scrim: "linear-gradient(180deg, rgba(0,0,0,0) 40%, rgba(42,26,10,0.78) 100%)",
+    labelStyle: { bottom: "1.25rem", right: "1.25rem", textAlign: "right" },
   },
   {
     name: "عمده‌فروشی",
@@ -97,10 +88,9 @@ export function CategoryGrid() {
             gap: "0.85rem",
             gridTemplateColumns: "repeat(2, 1fr)",
             gridTemplateAreas: `
-              "a a"
+              "e e"
               "b c"
-              "d e"
-              "f f"
+              "d f"
             `,
           }}
           className="cat-grid"
@@ -115,7 +105,7 @@ export function CategoryGrid() {
                 display: "block",
                 borderRadius: "1rem",
                 overflow: "hidden",
-                minHeight: c.area === "a" || c.area === "f" ? "240px" : "200px",
+                minHeight: c.area === "e" || c.area === "f" ? "240px" : "200px",
                 boxShadow: "0 6px 20px -10px rgba(42,26,10,0.35)",
               }}
               className="group cat-card"
@@ -166,8 +156,8 @@ export function CategoryGrid() {
           .cat-grid {
             grid-template-columns: repeat(4, 1fr) !important;
             grid-template-areas:
-              "a a b b"
-              "c d e f" !important;
+              "e e b b"
+              "c d f f" !important;
           }
         }
       `}</style>
