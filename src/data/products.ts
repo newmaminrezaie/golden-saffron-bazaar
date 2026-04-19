@@ -1,3 +1,8 @@
+import productP1 from "@/assets/product-p1.jpg";
+import productP2 from "@/assets/product-p2.png";
+import productP3 from "@/assets/product-p3.jpg";
+import productP4 from "@/assets/product-p4.jpeg";
+
 export type Product = {
   id: string;
   name: string;
@@ -27,8 +32,7 @@ export const PRODUCTS: Product[] = [
     weight: "۱ مثقال (۴.۶ گرم)",
     price: 1280000,
     oldPrice: 1450000,
-    image:
-      "https://images.unsplash.com/photo-1599909533731-3d2a4f4c6d9b?auto=format&fit=crop&w=800&q=80",
+    image: productP1,
     badge: "پرفروش",
   },
   {
@@ -37,8 +41,7 @@ export const PRODUCTS: Product[] = [
     category: "زعفران نگین",
     weight: "۲ گرم",
     price: 720000,
-    image:
-      "https://images.unsplash.com/photo-1605478371310-9b78ee5fdcce?auto=format&fit=crop&w=800&q=80",
+    image: productP2,
   },
   {
     id: "p3",
@@ -46,8 +49,7 @@ export const PRODUCTS: Product[] = [
     category: "زعفران پوشال",
     weight: "۴.۶ گرم",
     price: 980000,
-    image:
-      "https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=800&q=80",
+    image: productP3,
   },
   {
     id: "p4",
@@ -55,8 +57,7 @@ export const PRODUCTS: Product[] = [
     category: "پودر زعفران",
     weight: "۱ گرم",
     price: 320000,
-    image:
-      "https://images.unsplash.com/photo-1607344645866-009c320b63e0?auto=format&fit=crop&w=800&q=80",
+    image: productP4,
     badge: "جدید",
   },
   {
