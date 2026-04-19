@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import type { CSSProperties } from "react";
+import saffronNegin from "@/assets/saffron-negin.jpg";
 
 type Cat = {
   name: string;
@@ -16,7 +17,7 @@ const CATS: Cat[] = [
     name: "زعفران نگین",
     count: "۸ محصول",
     area: "b",
-    img: "https://images.unsplash.com/photo-1605478371310-9b78ee5fdcce?auto=format&fit=crop&w=1000&q=80",
+    img: saffronNegin,
     pos: "center 55%",
     scrim: "linear-gradient(0deg, rgba(0,0,0,0) 35%, rgba(42,26,10,0.7) 100%)",
     labelStyle: { top: "1rem", right: "1.25rem", textAlign: "right" },
