@@ -1,22 +1,26 @@
 
 
-## Enlarge floating button & flip popover to right edge
+## Replace footer center emblem with new Khajavi logo
 
-### Changes to `src/components/floating-contact.tsx`
+Swap the current `BrandLockup` cut-out at the top of the footer for the uploaded Khajavi Saffron emblem, positioned so only a short tip of the artwork peeks above the divider line — the rest sits inside the brown footer area, elegantly bridging the page and the footer.
 
-**Bigger trigger button**
-- Closed pill: `h-12 px-4` → `h-14 px-5`, label `text-sm` → `text-base`, icon `h-5 w-5` → `h-6 w-6`.
-- Open close-button: `h-11 w-11` → `h-12 w-12`, X icon `h-5 w-5` → `h-6 w-6`.
-- Popover card width: `w-64` → `w-72` to stay visually balanced with the larger trigger.
+### Changes
 
-**Flip popover to open from the right**
-Currently the container uses `items-end` which anchors the popover to the right edge in the normal flow, but inside the popover the rows use `flex items-center gap-3` in an RTL container — meaning the colored icon circle sits on the **right** and text on the left. The user wants the panel to visually "open from the right," i.e. icon on the **left**, text on the right (mirrored layout).
+**1. Add the new asset**
+- Copy `user-uploads://khajavi-logo.png` → `src/assets/khajavi-emblem.png`.
 
-- Change each row's inner layout from default RTL flex to `flex-row-reverse` so the icon circle appears on the left side of the row and the Persian text aligns to the right edge of the card.
-- Update the text column from `text-right` → `text-left` (so the label and number sit flush against the icon, with the card's right edge free) — OR keep `text-right` and rely on `flex-row-reverse` + `ml-auto` on the text block. Will use the cleaner `flex-row-reverse` + text alignment approach.
-- Keep `dir="rtl"` on the container so Persian text shaping stays correct.
+**2. Update `src/components/site-footer.tsx`**
+- Replace the existing `<BrandLockup variant="footer" />` block at the top of the footer with a direct `<img>` of the new emblem (no parchment card background — the artwork already has its own cream backdrop).
+- Sizing: `h-28 md:h-32 w-auto` so it reads clearly at the divider.
+- Positioning: keep `absolute left-1/2 top-0 -translate-x-1/2` but change the vertical translate from `-translate-y-1/2` (centered on the line) to roughly `-translate-y-[18%]` so only a short tip (~18% of the emblem's height) rises above the divider line and the bulk sits inside the brown footer.
+- Remove the brown background pill (`bg-[color:var(--brown-deep)] px-4`) — the emblem's own cream background gives it a natural framed-medallion look against the brown footer, which is the desired "dividing" effect.
+- Keep `z-10` so it sits above the border line.
+- Increase footer top padding slightly (`pt-20`) to give the now-larger emblem visual breathing room above the three columns.
+
+**3. Drop the unused import**
+- Remove `import { BrandLockup } from "./brand/brand-lockup";` from `site-footer.tsx` (the component itself stays in the codebase, still used in the header).
 
 ### Out of scope
-- No changes to colors, animation, position (still bottom-right), 3-second reveal, or phone numbers.
-- No CSS file changes.
+- No changes to header, colors, columns, or copyright row.
+- No edits to `brand-lockup.tsx`.
 
