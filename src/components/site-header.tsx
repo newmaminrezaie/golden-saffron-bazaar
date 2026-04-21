@@ -17,10 +17,7 @@ export function SiteHeader() {
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 md:px-8">
         {/* Right (start in RTL): logo */}
         <Link to="/" className="flex items-center gap-2 group">
-          <span className="font-display text-3xl text-[color:var(--brown-medium)] leading-none">
-            Khajavi
-          </span>
-          <span className="text-lg font-bold text-foreground border-r border-border/60 pr-2">
+          <span className="text-lg font-bold text-foreground">
             زعفران خواجوی
           </span>
         </Link>
