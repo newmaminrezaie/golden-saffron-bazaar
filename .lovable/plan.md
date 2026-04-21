@@ -1,43 +1,35 @@
 
 
-## Floating contact widget (call + WhatsApp)
+## Add خشکبار category with three products
 
-### What you'll see
-A circular saffron-colored button fixed to the bottom-left corner of every page (bottom-right would conflict with RTL layout's natural reading flow — bottom-left feels less intrusive in RTL). After **3 seconds** of the user being on the site, it gently fades + scales in with a subtle pulse ring to draw attention without being aggressive.
+### Catalog changes (`src/data/products.ts`)
 
-Tapping it expands a small elegant card upward with two options:
-1. **تماس تلفنی** — opens phone dialer (`tel:+989150494939`)
-2. **واتساپ** — opens WhatsApp chat (`https://wa.me/989150494939` — the cleanest WhatsApp deep link, works on mobile app and web)
+**1. Add new category** to the `CATEGORIES` tuple:
+- `"خشکبار"` — appended after `"عمده‌فروشی"` so it shows as the last filter chip in the shop.
 
-Tapping the FAB again (now showing an X icon) collapses the card. Tapping outside also closes it.
+**2. Add three new products** to the `PRODUCTS` array:
 
-### Visual design
-- **FAB**: 56px circle, saffron background (`bg-accent`), deep brown phone icon, soft shadow (`shadow-lg`), gentle pulse ring using a `::before` pseudo-element with `animate-ping` at low opacity (stops pulsing once user has opened it once — no nagging).
-- **Expanded card**: rounded parchment card (`bg-card`, `rounded-2xl`, `shadow-xl`, `border border-border/60`), ~240px wide, anchored above the FAB with 12px gap. Two stacked rows:
-  - Call row: `Phone` icon in a brown circle + "تماس تلفنی" label + faded phone number underneath
-  - WhatsApp row: brand-green circle (`bg-[#25D366]`) with `MessageCircle` icon + "واتساپ" label + same number underneath
-- Both rows are full-width buttons with hover bg shift (`hover:bg-secondary`) and `transition-colors`.
-- Entrance animation: `animate-in fade-in slide-in-from-bottom-2` (already available via `tw-animate-css`).
-- Number displayed in Persian digits (۰۹۱۵۰۴۹۴۹۳۹) for visual consistency, but `tel:` and `wa.me` URLs use Latin digits.
+| id  | name           | weight  | price (تومان) | notes |
+|-----|----------------|---------|---------------|-------|
+| p13 | زرشک پفکی     | ۲۵۰ گرم | 320,000       | reuse existing `productP2` (already a barberry image) as cover |
+| p14 | توت خشک       | ۲۵۰ گرم | 280,000       | Unsplash dried mulberry image |
+| p15 | برگه زردآلو   | ۲۵۰ گرم | 350,000       | Unsplash dried apricot image |
 
-### Behavior
-- Hidden for first 3 seconds after mount (uses `setTimeout` in a `useEffect`).
-- Once visible, stays visible for the rest of the session.
-- Click-outside detection via a `ref` + `mousedown` listener closes the expanded card.
-- `Escape` key also closes it.
-- `aria-label` on the FAB ("راه‌های ارتباطی"); expanded card uses `role="dialog"` semantics with `aria-expanded` on the trigger.
-- `z-50` so it sits above page content but below toasts (`Toaster` is also `z-[100]`-ish from sonner defaults — fine).
+Each product gets:
+- `category: "خشکبار"`
+- A short Persian `shortDescription` (one line)
+- A longer `description` (origin + usage, 2 short paragraphs)
+- 2–3 `highlights` bullets (origin, packaging, no additives)
+- Sensible defaults: `inStock: true`, no badge
 
-### Files
+Note: existing `p2` ("زرشک پفکی قائنات") is currently mis-categorized as "زعفران نگین". It will be **re-categorized to "خشکبار"** so the catalog stays consistent (zereshk is dried fruit, not saffron). Its other fields stay untouched.
 
-**New: `src/components/floating-contact.tsx`**
-Self-contained client component. No props. Uses `useState` for open/visible state, `useEffect` for the 3s reveal timer + click-outside listener, lucide icons (`Phone`, `MessageCircle`, `X`), and the existing color tokens.
-
-**Edit: `src/routes/__root.tsx`**
-Import and render `<FloatingContact />` once inside `RootComponent`, after `<Toaster />` so it lives at every route automatically.
+### Why no other files change
+- The shop page (`src/routes/shop.tsx`) reads `CATEGORIES` and `PRODUCTS` directly, so the new chip and product cards appear automatically.
+- Single-product routes (`src/routes/shop.$slug.tsx`) are generated from product slugs, so `/shop/p13`, `/shop/p14`, `/shop/p15` will work with no extra wiring.
+- Category grid on the homepage (`src/components/home/category-grid.tsx`) — will check during implementation; if it has a hardcoded list, I'll add خشکبار there too. If it derives from `CATEGORIES`, no change needed.
 
 ### Out of scope
-- No analytics tracking on click (can be added later if you want to measure engagement).
-- No "missed call" badge / scheduling-aware hiding.
-- No additional channels (Telegram, Rubika, etc.) in the floating widget — keeping it to the two highest-intent actions. Footer/contact page already lists the full set.
+- No real product photography — using one existing asset + two stock images. Swap later by editing the `images: [...]` arrays.
+- Prices are reasonable placeholders for Iranian dried-fruit market; adjust as needed.
 
