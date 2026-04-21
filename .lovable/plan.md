@@ -1,34 +1,22 @@
 
 
-## Option B — Slim announcement bar above the header
+## Use uploaded nuts image for the "خشکبار" category
 
-Add a thin, site-wide announcement strip above `SiteHeader` that reads:
-"🚚 ارسال رایگان برای سفارش‌های بالای ۱,۰۰۰,۰۰۰ تومان"
+Replace the Unsplash URL currently used for the "خشکبار" (dried fruits) tile in the homepage category grid with the uploaded nuts photo, imported as a local asset.
 
-Visible on every page, ~36px tall, saffron/brown themed, single line.
+### Steps
 
-### New file: `src/components/announcement-bar.tsx`
+1. **Add the image to the project**
+   - Copy `user-uploads://nuts-2.png` → `src/assets/dried-fruits.png`.
 
-- Full-width `<div>` with saffron/brown gradient background (uses existing `--saffron` / `--brown-deep` tokens) and parchment-colored text.
-- Centered content, RTL, small font (`text-xs md:text-sm`), height ~36px (`h-9`).
-- `Truck` icon from `lucide-react` on the right (RTL start) followed by the Persian message.
-- Uses Persian digits (۱,۰۰۰,۰۰۰) to match the rest of the site.
-- No dismiss button (keeps it always visible and simple). Can be added later if desired.
+2. **Update `src/components/home/category-grid.tsx`**
+   - Add import at the top with the other asset imports:
+     ```ts
+     import driedFruits from "@/assets/dried-fruits.png";
+     ```
+   - In the `CATS` array, change the `g` (خشکبار) entry's `img` from the Unsplash URL to `driedFruits`.
+   - Keep `pos: "center 50%"`, scrim, label position, and count unchanged.
 
-### Edit: `src/routes/__root.tsx`
-
-In `RootComponent`, render `<AnnouncementBar />` immediately before `<SiteHeader />` so it sits at the very top of every page and the sticky header sits just below it.
-
-```tsx
-<AnnouncementBar />
-<SiteHeader />
-```
-
-Add the import at the top of the file.
-
-### Notes
-
-- `SiteHeader` keeps `sticky top-0` — the announcement bar scrolls away naturally and the header then sticks to the viewport top. This matches the common pattern (Nutella, most e-commerce sites).
-- No changes to images, products, hero, or any other section.
-- Works on mobile (single line, smaller text) and desktop.
+### Out of scope
+- No changes to other category tiles, layout, or any other section.
 
