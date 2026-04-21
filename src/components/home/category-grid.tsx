@@ -5,6 +5,7 @@ import saffronPushal from "@/assets/saffron-pushal.jpg";
 import saffronPowder from "@/assets/saffron-powder.jpeg";
 import giftBoxes from "@/assets/gift-boxes.jpg";
 import wholesale from "@/assets/wholesale.png";
+import driedFruits from "@/assets/dried-fruits.png";
 
 type Cat = {
   name: string;
@@ -66,7 +67,7 @@ const CATS: Cat[] = [
     name: "خشکبار",
     count: "۳ محصول",
     area: "g",
-    img: "https://images.unsplash.com/photo-1596591606975-97ee5cef3a1e?auto=format&fit=crop&w=800&q=80",
+    img: driedFruits,
     pos: "center 50%",
     scrim: "linear-gradient(180deg, rgba(0,0,0,0) 35%, rgba(42,26,10,0.78) 100%)",
     labelStyle: { bottom: "1.25rem", left: "1.25rem", textAlign: "left" },
