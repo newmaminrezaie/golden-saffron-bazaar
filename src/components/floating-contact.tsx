@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Phone, MessageCircle, X } from "lucide-react";
+
 import { cn } from "@/lib/utils";
 
 const PHONE_LATIN = "+989150494939";
@@ -93,15 +94,15 @@ export function FloatingContact() {
         aria-label="راه‌های ارتباطی"
         aria-expanded={open}
         className={cn(
-          "relative flex h-14 w-14 items-center justify-center rounded-full bg-accent text-primary shadow-lg transition-transform duration-200 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-background animate-in fade-in zoom-in-95",
+          "relative flex h-16 w-16 items-center justify-center rounded-2xl border border-primary/10 bg-accent text-primary shadow-lg transition-transform duration-200 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-background animate-in fade-in zoom-in-95",
+          !open && "animate-gentle-bounce",
         )}
       >
-        {!open && !hasOpened && (
-          <span className="absolute inset-0 rounded-full bg-accent/60 animate-ping" />
+        {open ? (
+          <X className="h-6 w-6" />
+        ) : (
+          <span className="font-brand text-lg font-bold leading-none">بپرس</span>
         )}
-        <span className="relative">
-          {open ? <X className="h-6 w-6" /> : <Phone className="h-6 w-6" />}
-        </span>
       </button>
     </div>
   );
