@@ -57,7 +57,7 @@ export function SiteFooter() {
           <h4 className="text-base font-bold tracking-tight mb-4 text-white">تماس با ما</h4>
           <ul className="list-none p-0 m-0 space-y-2.5 text-sm leading-7 text-white/80">
             <li className="flex items-start gap-2"><MapPin className="size-4 mt-1 shrink-0" /><span>خراسان جنوبی، قائنات، بیهود</span></li>
-            <li className="flex items-center gap-2"><Phone className="size-4 shrink-0" /><span dir="ltr">+۹۸ ۹۳۸ ۰۴۳ ۴۹۳۹</span></li>
+            <li className="flex items-center gap-2"><Phone className="size-4 shrink-0" /><span>۰۹۳۸ ۰۴۳ ۴۹۳۹</span></li>
             <li className="flex items-start gap-2"><MessageCircle className="size-4 mt-1 shrink-0" /><span>واتساپ / تلگرام / روبیکا / ایتا<br /> / بله: <span dir="ltr">+۹۸ ۹۱۵ ۰۴۹ ۴۹۳۹</span></span></li>
             <li className="flex items-center gap-2"><Mail className="size-4 shrink-0" /><span dir="ltr">info@khajavisaffron.ir</span></li>
             <li>
