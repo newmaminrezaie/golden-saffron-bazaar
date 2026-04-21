@@ -43,7 +43,7 @@ const CATS: Cat[] = [
     img: saffronPowder,
     pos: "center 50%",
     scrim: "linear-gradient(180deg, rgba(0,0,0,0) 50%, rgba(42,26,10,0.75) 100%)",
-    labelStyle: { bottom: "1rem", left: "50%", transform: "translateX(50%)", textAlign: "center" },
+    labelStyle: { bottom: "1rem", left: "50%", transform: "translateX(-50%)", textAlign: "center" },
   },
   {
     name: "بسته‌های هدیه",
