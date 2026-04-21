@@ -25,7 +25,7 @@ export function SiteFooter() {
             "radial-gradient(ellipse at center, black 55%, transparent 85%)",
         }}
       />
-      <div className="mx-auto max-w-7xl px-4 md:px-8 pt-40 md:pt-48 pb-12 grid gap-10 md:gap-12 md:grid-cols-4">
+      <div className="w-full px-6 md:px-12 pt-40 md:pt-48 pb-12 grid gap-10 md:gap-12 md:grid-cols-4">
         <div>
           <p className="text-sm leading-7 text-white/75 mb-6">
             زعفران ممتاز و اصل قائنات، با ضمانت کیفیت و عطر بی‌نظیر؛ از مزرعه تا سفره شما.
@@ -105,7 +105,7 @@ export function SiteFooter() {
       </div>
 
       <div className="border-t border-white/10">
-        <div className="mx-auto max-w-7xl px-4 md:px-8 py-5 text-center text-xs text-white/60">
+        <div className="w-full px-6 md:px-12 py-5 text-center text-xs text-white/60">
           © {new Date().getFullYear()} زعفران خواجوی — تمامی حقوق محفوظ است.
         </div>
       </div>
