@@ -30,9 +30,9 @@ export function Hero() {
       style={{
         position: "relative",
         width: "100%",
-        height: "72vh",
-        maxHeight: "780px",
-        minHeight: "520px",
+        height: "56vh",
+        maxHeight: "600px",
+        minHeight: "380px",
         overflow: "hidden",
         backgroundColor: "hsl(37, 54%, 95%)",
       }}
