@@ -1,12 +1,13 @@
 import { Link } from "@tanstack/react-router";
 import { Instagram, Phone, Mail, MapPin } from "lucide-react";
+import { BrandLockup } from "./brand/brand-lockup";
 
 export function SiteFooter() {
   return (
     <footer className="mt-16 border-t border-border/60 bg-[color:var(--brown-deep)] text-[color:var(--parchment)]">
       <div className="mx-auto max-w-7xl px-4 md:px-8 py-12 grid gap-10 md:grid-cols-4">
         <div>
-          <div className="font-display text-3xl text-[color:var(--saffron)]">Khajavi Saffron</div>
+          <BrandLockup variant="footer" />
           <p className="mt-3 text-sm leading-7 text-white/75">
             زعفران ممتاز و اصل قائنات، با ضمانت کیفیت و عطر بی‌نظیر؛ از مزرعه تا سفره شما.
           </p>
