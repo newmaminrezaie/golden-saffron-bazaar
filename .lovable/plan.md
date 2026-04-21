@@ -1,20 +1,34 @@
 
 
-## Reduce hero banner height
+## Option B — Slim announcement bar above the header
 
-Make the homepage hero section shorter so more of the page below shows on first load, without changing its content, images, or text styling.
+Add a thin, site-wide announcement strip above `SiteHeader` that reads:
+"🚚 ارسال رایگان برای سفارش‌های بالای ۱,۰۰۰,۰۰۰ تومان"
 
-### Change in `src/components/home/hero.tsx`
+Visible on every page, ~36px tall, saffron/brown themed, single line.
 
-Update the `<section>` inline style heights:
+### New file: `src/components/announcement-bar.tsx`
 
-- `height`: `72vh` → `56vh`
-- `maxHeight`: `780px` → `600px`
-- `minHeight`: `520px` → `380px`
+- Full-width `<div>` with saffron/brown gradient background (uses existing `--saffron` / `--brown-deep` tokens) and parchment-colored text.
+- Centered content, RTL, small font (`text-xs md:text-sm`), height ~36px (`h-9`).
+- `Truck` icon from `lucide-react` on the right (RTL start) followed by the Persian message.
+- Uses Persian digits (۱,۰۰۰,۰۰۰) to match the rest of the site.
+- No dismiss button (keeps it always visible and simple). Can be added later if desired.
 
-Everything else (slideshow, tint overlay, text content, animations, padding) stays exactly as-is.
+### Edit: `src/routes/__root.tsx`
 
-### Out of scope
-- No changes to images, text, fonts, or colors.
-- No changes to other sections or components.
+In `RootComponent`, render `<AnnouncementBar />` immediately before `<SiteHeader />` so it sits at the very top of every page and the sticky header sits just below it.
+
+```tsx
+<AnnouncementBar />
+<SiteHeader />
+```
+
+Add the import at the top of the file.
+
+### Notes
+
+- `SiteHeader` keeps `sticky top-0` — the announcement bar scrolls away naturally and the header then sticks to the viewport top. This matches the common pattern (Nutella, most e-commerce sites).
+- No changes to images, products, hero, or any other section.
+- Works on mobile (single line, smaller text) and desktop.
 
