@@ -64,8 +64,11 @@ export function SiteFooter() {
         </div>
       </div>
 
-      <div className="border-t border-white/10">
-        <div className="mx-auto max-w-7xl px-4 md:px-8 py-5 text-center text-xs text-white/60">
+      <div className="relative border-t border-white/10">
+        <div className="absolute left-1/2 top-0 -translate-x-1/2 -translate-y-1/2 bg-[color:var(--brown-deep)] px-4">
+          <BrandLockup variant="footer" />
+        </div>
+        <div className="mx-auto max-w-7xl px-4 md:px-8 pt-12 pb-5 text-center text-xs text-white/60">
           © {new Date().getFullYear()} زعفران خواجوی — تمامی حقوق محفوظ است.
         </div>
       </div>
