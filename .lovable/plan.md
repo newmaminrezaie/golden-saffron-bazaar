@@ -1,45 +1,43 @@
-## Update contact information across the site
 
-### New contact details
 
-- **Phone (call)**: +98 938 043 4939
-- **Phone (WhatsApp / Telegram / Rubika / Eitaa / Bale)**: +98 915 049 4939
-- **Instagram**: Khajavi.saffron111
-- **Email**: [info@khajavisaffron.ir](mailto:info@khajavisaffron.ir) (kept — not in the new list, but retained unless you say otherwise)
-- **Rubika channel**: [https://rubika.ir/saffron_khajavi](https://rubika.ir/saffron_khajavi)
+## Floating contact widget (call + WhatsApp)
 
-### Files to update
+### What you'll see
+A circular saffron-colored button fixed to the bottom-left corner of every page (bottom-right would conflict with RTL layout's natural reading flow — bottom-left feels less intrusive in RTL). After **3 seconds** of the user being on the site, it gently fades + scales in with a subtle pulse ring to draw attention without being aggressive.
 
-**1. `src/components/site-footer.tsx**`
-Replace the "تماس با ما" block with:
+Tapping it expands a small elegant card upward with two options:
+1. **تماس تلفنی** — opens phone dialer (`tel:+989150494939`)
+2. **واتساپ** — opens WhatsApp chat (`https://wa.me/989150494939` — the cleanest WhatsApp deep link, works on mobile app and web)
 
-- 📍  خراسان جنوبی، قائنات، بیهود
-- 📞 تماس: +۹۸ ۹۳۸ ۰۴۳ ۴۹۳۹
-- 💬 واتساپ / تلگرام / روبیکا / ایتا / بله: +۹۸ ۹۱۵ ۰۴۹ ۴۹۳۹
-- ✉ [info@khajavisaffron.ir](mailto:info@khajavisaffron.ir)
-- 📷 اینستاگرام: Khajavi.saffron111
-- Add a Rubika channel link row (using `MessageCircle` icon from lucide) → [https://rubika.ir/saffron_khajavi](https://rubika.ir/saffron_khajavi)
+Tapping the FAB again (now showing an X icon) collapses the card. Tapping outside also closes it.
 
-Make Instagram and Rubika rows actual `<a>` links (instagram.com/khajavi.saffron111 and the rubika URL), opening in a new tab.
+### Visual design
+- **FAB**: 56px circle, saffron background (`bg-accent`), deep brown phone icon, soft shadow (`shadow-lg`), gentle pulse ring using a `::before` pseudo-element with `animate-ping` at low opacity (stops pulsing once user has opened it once — no nagging).
+- **Expanded card**: rounded parchment card (`bg-card`, `rounded-2xl`, `shadow-xl`, `border border-border/60`), ~240px wide, anchored above the FAB with 12px gap. Two stacked rows:
+  - Call row: `Phone` icon in a brown circle + "تماس تلفنی" label + faded phone number underneath
+  - WhatsApp row: brand-green circle (`bg-[#25D366]`) with `MessageCircle` icon + "واتساپ" label + same number underneath
+- Both rows are full-width buttons with hover bg shift (`hover:bg-secondary`) and `transition-colors`.
+- Entrance animation: `animate-in fade-in slide-in-from-bottom-2` (already available via `tw-animate-css`).
+- Number displayed in Persian digits (۰۹۱۵۰۴۹۴۹۳۹) for visual consistency, but `tel:` and `wa.me` URLs use Latin digits.
 
-**2. `src/routes/contact.tsx**`
-Replace the info cards array with:
+### Behavior
+- Hidden for first 3 seconds after mount (uses `setTimeout` in a `useEffect`).
+- Once visible, stays visible for the rest of the session.
+- Click-outside detection via a `ref` + `mousedown` listener closes the expanded card.
+- `Escape` key also closes it.
+- `aria-label` on the FAB ("راه‌های ارتباطی"); expanded card uses `role="dialog"` semantics with `aria-expanded` on the trigger.
+- `z-50` so it sits above page content but below toasts (`Toaster` is also `z-[100]`-ish from sonner defaults — fine).
 
-- آدرس: خراسان جنوبی، قائنات، بیهود، پلاک ۱۲ (kept)
-- تماس مستقیم: +۹۸ ۹۳۸ ۰۴۳ ۴۹۳۹
-- پیام‌رسان‌ها (واتساپ، تلگرام، روبیکا، ایتا، بله): +۹۸ ۹۱۵ ۰۴۹ ۴۹۳۹
-- ایمیل: [info@khajavisaffron.ir](mailto:info@khajavisaffron.ir)
-- اینستاگرام: Khajavi.saffron111 (clickable link)
-- کانال روبیکا: [https://rubika.ir/saffron_khajavi](https://rubika.ir/saffron_khajavi) (clickable link)
-- ساعات کاری: شنبه تا پنج‌شنبه، ۹ تا 20 (kept)
+### Files
 
-Use appropriate lucide icons (`Phone`, `MessageCircle`, `Send`, `Instagram`, `Mail`, `MapPin`, `Clock`).
+**New: `src/components/floating-contact.tsx`**
+Self-contained client component. No props. Uses `useState` for open/visible state, `useEffect` for the 3s reveal timer + click-outside listener, lucide icons (`Phone`, `MessageCircle`, `X`), and the existing color tokens.
 
-**3. Quick search for stray references**
-Grep for the old placeholder `۹۱۵ ۰۰۰ ۰۰۰۰` and `khajavi.saffron@` across the codebase and replace any remaining occurrences (likely none beyond the two files above, but will verify during implementation).
+**Edit: `src/routes/__root.tsx`**
+Import and render `<FloatingContact />` once inside `RootComponent`, after `<Toaster />` so it lives at every route automatically.
 
 ### Out of scope
+- No analytics tracking on click (can be added later if you want to measure engagement).
+- No "missed call" badge / scheduling-aware hiding.
+- No additional channels (Telegram, Rubika, etc.) in the floating widget — keeping it to the two highest-intent actions. Footer/contact page already lists the full set.
 
-- No new routes or components.
-- Email kept as-is (not listed in new info but currently present); will remove if you confirm it should go.
-- Address detail ("خیابان زعفران، پلاک ۱۲") kept as-is since not contradicted by the new info.
