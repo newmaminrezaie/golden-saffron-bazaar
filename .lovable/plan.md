@@ -1,22 +1,20 @@
 
 
-## Footer tweaks: trust seals stack + column reorder
+## Footer: full-width, no horizontal margin
 
-### Changes to `src/components/site-footer.tsx`
+### Change in `src/components/site-footer.tsx`
 
-**1. Trust seals — vertical stack, flush to the left edge**
-- Change the seals container from `flex flex-row flex-wrap gap-3 justify-start` to `flex flex-col gap-3 items-start`.
-- Result: the three placeholder cards stack vertically, one per row, aligned to the start of the column (which is the left edge in RTL since this column is the last/leftmost).
+The `<footer>` itself already spans full width — the constraint comes from the inner wrappers using `max-w-7xl mx-auto`. Remove those caps so content stretches edge-to-edge.
 
-**2. Reorder columns**
-New JSX order (RTL visual order, right → left):
-1. Quick links + intro (دسترسی سریع) — first → appears on the right
-2. Categories (دسته‌بندی‌ها)
-3. Contact (تماس با ما)
-4. Trust seals (نمادهای اعتماد) — last → stays on the left
+**1. Columns grid wrapper**
+- Replace `mx-auto max-w-7xl px-4 md:px-8 pt-40 md:pt-48 pb-12 grid …` with `w-full px-4 md:px-8 pt-40 md:pt-48 pb-12 grid …`.
+- Drop `mx-auto` and `max-w-7xl`; keep horizontal padding so text doesn't touch the screen edge (set `px-6 md:px-12` for a bit more breathing room on very wide screens).
 
-This swaps the Contact column with the Quick links + intro column.
+**2. Copyright row wrapper**
+- Replace `mx-auto max-w-7xl px-4 md:px-8 py-5 …` with `w-full px-6 md:px-12 py-5 …`.
+- Keep the surrounding `border-t border-white/10` band unchanged.
 
 **3. No other changes**
-- Emblem, top padding (`pt-40 md:pt-48`), grid (`md:grid-cols-4`), gaps, copyright row, colors, card sizes, icon sizes — all unchanged.
+- Emblem positioning, column order, trust seals stack, RTL alignment, colors, typography — all unchanged.
+- If you'd prefer zero horizontal padding (content literally flush to viewport edges), say so and I'll drop `px-*` entirely; default keeps small padding so text isn't clipped.
 
