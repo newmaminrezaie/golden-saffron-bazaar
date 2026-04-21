@@ -8,7 +8,13 @@ export function SiteFooter() {
       <img
         src={khajaviEmblem}
         alt="زعفران خواجوی"
-        className="absolute left-1/2 top-0 -translate-x-1/2 -translate-y-[18%] h-28 md:h-32 w-auto z-10"
+        className="absolute left-1/2 top-0 -translate-x-1/2 -translate-y-[18%] h-28 md:h-32 w-auto z-10 drop-shadow-[0_8px_24px_rgba(0,0,0,0.45)]"
+        style={{
+          WebkitMaskImage:
+            "radial-gradient(ellipse at center, black 55%, transparent 85%)",
+          maskImage:
+            "radial-gradient(ellipse at center, black 55%, transparent 85%)",
+        }}
       />
       <div className="mx-auto max-w-7xl px-4 md:px-8 pt-20 pb-12 grid gap-10 md:grid-cols-3">
         <div>
