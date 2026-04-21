@@ -45,7 +45,9 @@ export const Route = createRootRoute({
         content: "زعفران ممتاز و اصل قائنات با ضمانت کیفیت.",
       },
       { property: "og:type", content: "website" },
+      { property: "og:image", content: "/og-image.png" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:image", content: "/og-image.png" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },

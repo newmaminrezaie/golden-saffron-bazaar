@@ -1,3 +1,5 @@
+import brandLogo from "@/assets/brand-logo.png";
+
 type BrandLockupProps = {
   variant?: "header" | "footer";
   className?: string;
@@ -5,25 +7,27 @@ type BrandLockupProps = {
 
 export function BrandLockup({ variant = "header", className }: BrandLockupProps) {
   const isFooter = variant === "footer";
-  const textSize = isFooter ? "text-2xl md:text-3xl" : "text-lg";
-  const colorClass = isFooter
-    ? "text-[color:var(--parchment)]"
-    : "text-[color:var(--brown-deep)]";
+
+  if (isFooter) {
+    return (
+      <div
+        className={`inline-flex bg-[color:var(--parchment)]/95 rounded-md px-4 py-3 ${className ?? ""}`}
+      >
+        <img
+          src={brandLogo}
+          alt="زعفران خواجوی"
+          className="h-20 w-auto"
+          loading="lazy"
+        />
+      </div>
+    );
+  }
 
   return (
-    <div className={`flex items-center ${colorClass} ${className ?? ""}`}>
-      <span className={`font-brand ${textSize} leading-none flex items-baseline gap-1.5`}>
-        <span className="font-medium">زعفران</span>
-        <span
-          className={
-            isFooter
-              ? "font-bold border-b-2 border-[color:var(--saffron)] pb-0.5"
-              : "font-bold"
-          }
-        >
-          خواجوی
-        </span>
-      </span>
-    </div>
+    <img
+      src={brandLogo}
+      alt="زعفران خواجوی"
+      className={`h-10 md:h-12 w-auto ${className ?? ""}`}
+    />
   );
 }
