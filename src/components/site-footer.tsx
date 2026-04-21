@@ -28,7 +28,9 @@ export function SiteFooter() {
       <div className="mx-auto max-w-7xl px-6 md:px-10 pt-32 md:pt-36 pb-10 grid gap-10 md:gap-8 md:grid-cols-12">
         <div className="md:col-span-4">
           <p className="text-sm leading-7 text-white/75 mb-6">
-            زعفران ممتاز و اصل قائنات، با ضمانت کیفیت و عطر بی‌نظیر؛ از مزرعه تا سفره شما.
+            زعفران ممتاز و اصل قائنات،<br />
+            با ضمانت کیفیت و عطر بی‌نظیر؛<br />
+            از مزرعه تا سفره شما.
           </p>
           <h4 className="text-base font-bold tracking-tight mb-4 mt-2 text-white">دسترسی سریع</h4>
           <ul className="list-none p-0 m-0 space-y-2.5 text-sm leading-7 text-white/80">
