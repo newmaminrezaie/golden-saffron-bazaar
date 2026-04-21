@@ -1,49 +1,23 @@
 
 
-## Polish footer: spacing, layout, categories, trust seals
-
-Reorganize the footer columns so content breathes under the emblem, add the missing product category, and reserve clean placeholder slots for trust badges (Enamad, Emalls, Samandehi) styled like the Mostafavi reference.
+## Refine footer: trust seals size/position + Contact RTL alignment
 
 ### Changes to `src/components/site-footer.tsx`
 
-**1. Breathing room under the emblem**
-- Increase top padding of the columns grid from `pt-20` → `pt-28 md:pt-32` so the three columns start well below the medallion's lower edge.
-- Increase column gap from `gap-10` → `gap-10 md:gap-12`.
+**1. Trust seals — smaller + flipped to the other column**
+- Reduce card size: `w-32 h-32` → `w-24 h-24`, padding `p-3` → `p-2`, icon `size-8` → `size-6`, label `text-xs` → `text-[11px]`, sub-label `text-[10px]` unchanged but tightened.
+- Move the trust-seals column from the **first** position (right edge in RTL) to the **last** position (left edge in RTL). New column order in JSX:
+  1. Contact (تماس با ما) — first → appears on the right
+  2. Categories (دسته‌بندی‌ها)
+  3. Quick links + intro (دسترسی سریع)
+  4. Trust seals (نمادهای اعتماد) — last → appears on the left
 
-**2. Restructure into a 4-column layout**
-Switch grid from `md:grid-cols-3` → `md:grid-cols-4` so the layout becomes (RTL reading order):
+**2. Contact column — fix RTL alignment**
+- Remove any default list indent: add `list-none p-0 m-0` (or rely on `ps-0`) on the `<ul>` so items sit flush against the right edge.
+- Ensure each `<li>` uses `flex items-center gap-2` with **icons on the right** in RTL. Since the column container is RTL, a normal `flex` row already places the first child on the right — so icon must be the FIRST child of each `<li>` (it already is). Remove the `dir="ltr"` overrides on the phone/email lines that currently flip them to LTR (which puts icons on the left); keep numbers/emails readable by wrapping just the number/email span in `dir="ltr"` instead of the whole `<li>`.
+- Drop `mt-1` vertical offsets on icons; use `items-center` for clean baseline alignment. For multi-line items (address, messenger list) keep `items-start` only on those.
+- Normalize icon size to `size-4 shrink-0` across all rows.
 
-```text
-[ Trust seals ] [ Contact ] [ Categories ] [ Quick links + intro ]
-```
-
-- **Quick links column**: keep current "دسترسی سریع" links; add the short intro paragraph (currently floating alone) above the heading so the column has a natural top.
-- **Categories column**: keep existing list and **add `خشکبار`** as a new `<li>` after "بسته‌های هدیه".
-- **Contact column**: unchanged content, just normalized spacing (`space-y-3`, consistent icon sizing).
-- **Trust seals column** (new): heading "نمادهای اعتماد" + a vertical stack of three placeholder cards.
-
-**3. Trust seal placeholder cards (matches Mostafavi reference)**
-Each placeholder is a white rounded card with subtle border, fixed aspect, centered icon + label, ready to be swapped for real badges later:
-
-- Card style: `bg-white/95 rounded-xl border border-white/10 p-3 w-32 h-32 flex flex-col items-center justify-center text-center shadow-sm`
-- Three cards stacked with `space-y-3`:
-  1. **Enamad** — `ShieldCheck` icon + small text "eNAMAD.ir" + "جهت اطمینان کلیک نمایید"
-  2. **Emalls** — `Award` icon + small text "Emalls"
-  3. **Samandehi** — `BadgeCheck` icon + small text "samandehi.ir"
-- Wrap each card in a placeholder `<a href="#" aria-label="...">` so they're click-ready when real URLs arrive.
-- Icons imported from `lucide-react` (already used in this file) — add `ShieldCheck, Award, BadgeCheck` to the existing import.
-
-**4. Typography & spacing normalization**
-- All column headings: unify to `text-base font-bold mb-4 text-white`.
-- All list text: `text-sm leading-7 text-white/80`, lists use `space-y-2`.
-- Remove the orphan intro `<div>` (its paragraph moves into the Quick links column).
-
-**5. Bottom copyright row**
-- Unchanged content; ensure top border still reads cleanly with the new column heights (no structural change needed).
-
-### Out of scope
-- No real Enamad/Emalls/Samandehi assets wired up (placeholders only — user can drop real images later).
-- No header, hero, or other page changes.
-- No emblem repositioning or sizing changes.
-- No CSS/token changes.
+**3. No other changes**
+- Emblem, grid gaps, top padding, categories list, quick links, copyright row, colors — all unchanged.
 
