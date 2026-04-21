@@ -81,8 +81,8 @@ export function SiteFooter() {
           </ul>
         </div>
 
-        <div>
-          <h4 className="text-base font-bold mb-4 text-white">نمادهای اعتماد</h4>
+        <div className="-ml-6 md:-ml-12">
+          <h4 className="text-base font-bold mb-4 text-white px-6 md:px-12">نمادهای اعتماد</h4>
           <div className="flex flex-col gap-3 items-start">
             {[
               { Icon: ShieldCheck, label: "eNAMAD.ir", sub: "جهت اطمینان کلیک نمایید", aria: "نماد اعتماد الکترونیکی" },
