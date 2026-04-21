@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Phone, MessageCircle, X } from "lucide-react";
+import { Phone, MessageCircle, MessageCircleMore, X } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
@@ -46,7 +46,7 @@ export function FloatingContact() {
     <div
       ref={containerRef}
       dir="rtl"
-      className="fixed bottom-6 left-6 z-50 flex flex-col items-start gap-3"
+      className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-3"
     >
       {open && (
         <div
@@ -94,14 +94,18 @@ export function FloatingContact() {
         aria-label="راه‌های ارتباطی"
         aria-expanded={open}
         className={cn(
-          "relative flex h-16 w-16 items-center justify-center rounded-2xl border border-primary/10 bg-accent text-primary shadow-lg transition-transform duration-200 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-background animate-in fade-in zoom-in-95",
+          "relative flex items-center justify-center border border-border/60 bg-white text-foreground shadow-lg transition-all duration-200 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-background animate-in fade-in zoom-in-95",
+          open ? "h-11 w-11 rounded-full p-0" : "h-12 gap-2 rounded-full px-4",
           !open && "animate-gentle-bounce",
         )}
       >
         {open ? (
-          <X className="h-6 w-6" />
+          <X className="h-5 w-5" />
         ) : (
-          <span className="font-brand text-lg font-bold leading-none">بپرس</span>
+          <>
+            <MessageCircleMore className="h-5 w-5 text-accent" />
+            <span className="font-brand text-sm font-semibold leading-none">بپرس</span>
+          </>
         )}
       </button>
     </div>
