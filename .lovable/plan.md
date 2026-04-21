@@ -1,30 +1,20 @@
 
 
-## Move "نگین" and "پوشال" to top on mobile
+## Reduce hero banner height
 
-Reorder the category grid on mobile so زعفران نگین (b) and زعفران پوشال (c) appear first, before the gift boxes (e), wholesale (f), powder (d), and dried fruits (g) tiles. Desktop layout stays unchanged.
+Make the homepage hero section shorter so more of the page below shows on first load, without changing its content, images, or text styling.
 
-### Change in `src/components/home/category-grid.tsx`
+### Change in `src/components/home/hero.tsx`
 
-Update the mobile `gridTemplateAreas` on the `.cat-grid` inline style from:
+Update the `<section>` inline style heights:
 
-```text
-"e e"
-"b c"
-"d f"
-"g g"
-```
+- `height`: `72vh` → `56vh`
+- `maxHeight`: `780px` → `600px`
+- `minHeight`: `520px` → `380px`
 
-to:
+Everything else (slideshow, tint overlay, text content, animations, padding) stays exactly as-is.
 
-```text
-"b c"
-"e e"
-"d f"
-"g g"
-```
-
-This puts نگین (b) and پوشال (c) side-by-side at the very top on mobile. The desktop override inside the `<style>` block (`@media (min-width: 768px)`) already defines its own `grid-template-areas` with `!important`, so desktop ordering (`e e b b` / `c d f f` / `g g g g`) is unaffected.
-
-No other changes — same images, same labels, same scrims, same min-heights.
+### Out of scope
+- No changes to images, text, fonts, or colors.
+- No changes to other sections or components.
 
