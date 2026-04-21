@@ -1,14 +1,16 @@
 import { Link } from "@tanstack/react-router";
 import { Instagram, Phone, Mail, MapPin, MessageCircle } from "lucide-react";
-import { BrandLockup } from "./brand/brand-lockup";
+import khajaviEmblem from "@/assets/khajavi-emblem.png";
 
 export function SiteFooter() {
   return (
     <footer className="relative mt-16 border-t border-border/60 bg-[color:var(--brown-deep)] text-[color:var(--parchment)]">
-      <div className="absolute left-1/2 top-0 -translate-x-1/2 -translate-y-1/2 bg-[color:var(--brown-deep)] px-4 z-10">
-        <BrandLockup variant="footer" />
-      </div>
-      <div className="mx-auto max-w-7xl px-4 md:px-8 pt-16 pb-12 grid gap-10 md:grid-cols-3">
+      <img
+        src={khajaviEmblem}
+        alt="زعفران خواجوی"
+        className="absolute left-1/2 top-0 -translate-x-1/2 -translate-y-[18%] h-28 md:h-32 w-auto z-10"
+      />
+      <div className="mx-auto max-w-7xl px-4 md:px-8 pt-20 pb-12 grid gap-10 md:grid-cols-3">
         <div>
           <p className="text-sm leading-7 text-white/75">
             زعفران ممتاز و اصل قائنات، با ضمانت کیفیت و عطر بی‌نظیر؛ از مزرعه تا سفره شما.
