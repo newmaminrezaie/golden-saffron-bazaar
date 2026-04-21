@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { Phone, Mail, MapPin, Clock, Send } from "lucide-react";
+import { Phone, Mail, MapPin, Clock, Send, MessageCircle, Instagram } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
@@ -53,11 +53,14 @@ function ContactPage() {
           {/* Info */}
           <div className="space-y-4">
             {[
-              { icon: MapPin, title: "آدرس", value: "خراسان جنوبی، قائنات، خیابان زعفران، پلاک ۱۲" },
-              { icon: Phone, title: "تلفن", value: "+۹۸ ۹۱۵ ۰۰۰ ۰۰۰۰", ltr: true },
+              { icon: MapPin, title: "آدرس", value: "خراسان جنوبی، قائنات، بیهود، پلاک ۱۲" },
+              { icon: Phone, title: "تماس مستقیم", value: "+۹۸ ۹۳۸ ۰۴۳ ۴۹۳۹", ltr: true },
+              { icon: MessageCircle, title: "پیام‌رسان‌ها (واتساپ، تلگرام، روبیکا، ایتا، بله)", value: "+۹۸ ۹۱۵ ۰۴۹ ۴۹۳۹", ltr: true },
               { icon: Mail, title: "ایمیل", value: "info@khajavisaffron.ir", ltr: true },
-              { icon: Clock, title: "ساعات کاری", value: "شنبه تا پنج‌شنبه، ۹ تا ۱۸" },
-            ].map(({ icon: Icon, title, value, ltr }) => (
+              { icon: Instagram, title: "اینستاگرام", value: "Khajavi.saffron111", ltr: true, href: "https://instagram.com/khajavi.saffron111" },
+              { icon: Send, title: "کانال روبیکا", value: "rubika.ir/saffron_khajavi", ltr: true, href: "https://rubika.ir/saffron_khajavi" },
+              { icon: Clock, title: "ساعات کاری", value: "شنبه تا پنج‌شنبه، ۹ تا ۲۰" },
+            ].map(({ icon: Icon, title, value, ltr, href }) => (
               <div
                 key={title}
                 className="flex items-start gap-4 rounded-2xl border border-border/60 bg-card p-5 shadow-sm"
@@ -67,13 +70,26 @@ function ContactPage() {
                 </div>
                 <div>
                   <h3 className="text-sm font-bold text-foreground">{title}</h3>
-                  <p
-                    className="mt-1 text-sm text-foreground/75"
-                    dir={ltr ? "ltr" : undefined}
-                    style={ltr ? { textAlign: "right" } : undefined}
-                  >
-                    {value}
-                  </p>
+                  {href ? (
+                    <a
+                      href={href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="mt-1 block text-sm text-foreground/75 hover:text-[color:var(--saffron)]"
+                      dir={ltr ? "ltr" : undefined}
+                      style={ltr ? { textAlign: "right" } : undefined}
+                    >
+                      {value}
+                    </a>
+                  ) : (
+                    <p
+                      className="mt-1 text-sm text-foreground/75"
+                      dir={ltr ? "ltr" : undefined}
+                      style={ltr ? { textAlign: "right" } : undefined}
+                    >
+                      {value}
+                    </p>
+                  )}
                 </div>
               </div>
             ))}

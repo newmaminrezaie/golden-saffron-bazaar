@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Instagram, Phone, Mail, MapPin } from "lucide-react";
+import { Instagram, Phone, Mail, MapPin, MessageCircle } from "lucide-react";
 import { BrandLockup } from "./brand/brand-lockup";
 
 export function SiteFooter() {
@@ -37,10 +37,30 @@ export function SiteFooter() {
         <div>
           <h4 className="text-base font-bold mb-4">تماس با ما</h4>
           <ul className="space-y-3 text-sm text-white/80">
-            <li className="flex items-start gap-2"><MapPin className="size-4 mt-0.5 shrink-0" /> خراسان جنوبی، قائنات</li>
-            <li className="flex items-center gap-2" dir="ltr"><Phone className="size-4" /> +۹۸ ۹۱۵ ۰۰۰ ۰۰۰۰</li>
+            <li className="flex items-start gap-2"><MapPin className="size-4 mt-0.5 shrink-0" /> خراسان جنوبی، قائنات، بیهود</li>
+            <li className="flex items-center gap-2" dir="ltr"><Phone className="size-4" /> +۹۸ ۹۳۸ ۰۴۳ ۴۹۳۹</li>
+            <li className="flex items-start gap-2"><MessageCircle className="size-4 mt-0.5 shrink-0" /><span>واتساپ / تلگرام / روبیکا / ایتا / بله: <span dir="ltr">+۹۸ ۹۱۵ ۰۴۹ ۴۹۳۹</span></span></li>
             <li className="flex items-center gap-2" dir="ltr"><Mail className="size-4" /> info@khajavisaffron.ir</li>
-            <li className="flex items-center gap-2"><Instagram className="size-4" /> khajavi.saffron@</li>
+            <li>
+              <a
+                href="https://instagram.com/khajavi.saffron111"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 hover:text-[color:var(--saffron)]"
+              >
+                <Instagram className="size-4" /> Khajavi.saffron111
+              </a>
+            </li>
+            <li>
+              <a
+                href="https://rubika.ir/saffron_khajavi"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 hover:text-[color:var(--saffron)]"
+              >
+                <MessageCircle className="size-4" /> کانال روبیکا
+              </a>
+            </li>
           </ul>
         </div>
       </div>
