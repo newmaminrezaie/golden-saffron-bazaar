@@ -84,8 +84,8 @@ export function CategoryGrid() {
             gap: "0.85rem",
             gridTemplateColumns: "repeat(2, 1fr)",
             gridTemplateAreas: `
-              "e e"
               "b c"
+              "e e"
               "d f"
               "g g"
             `,
