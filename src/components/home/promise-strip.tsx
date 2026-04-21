@@ -2,7 +2,7 @@ import { ShieldCheck, Truck, Award } from "lucide-react";
 
 const ITEMS = [
   { icon: Award, title: "کیفیت ممتاز", text: "زعفران درجه یک قائنات با تست آزمایشگاهی" },
-  { icon: Truck, title: "ارسال سریع", text: "ارسال به سراسر ایران در کمتر از ۴۸ ساعت" },
+  { icon: Truck, title: "ارسال سریع", text: "ارسال به سراسر ایران در کمتر از 24 ساعت" },
   { icon: ShieldCheck, title: "ضمانت اصالت", text: "تضمین بازگشت وجه در صورت عدم اصالت کالا" },
 ];
 
