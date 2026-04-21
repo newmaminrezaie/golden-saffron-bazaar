@@ -62,6 +62,15 @@ const CATS: Cat[] = [
     scrim: "linear-gradient(180deg, rgba(0,0,0,0) 35%, rgba(42,26,10,0.78) 100%)",
     labelStyle: { bottom: "1.25rem", right: "1.25rem", textAlign: "right" },
   },
+  {
+    name: "خشکبار",
+    count: "۳ محصول",
+    area: "g",
+    img: "https://images.unsplash.com/photo-1596591606975-97ee5cef3a1e?auto=format&fit=crop&w=800&q=80",
+    pos: "center 50%",
+    scrim: "linear-gradient(180deg, rgba(0,0,0,0) 35%, rgba(42,26,10,0.78) 100%)",
+    labelStyle: { bottom: "1.25rem", left: "1.25rem", textAlign: "left" },
+  },
 ];
 
 export function CategoryGrid() {
@@ -96,6 +105,7 @@ export function CategoryGrid() {
               "e e"
               "b c"
               "d f"
+              "g g"
             `,
           }}
           className="cat-grid"
@@ -162,7 +172,8 @@ export function CategoryGrid() {
             grid-template-columns: repeat(4, 1fr) !important;
             grid-template-areas:
               "e e b b"
-              "c d f f" !important;
+              "c d f f"
+              "g g g g" !important;
           }
         }
       `}</style>

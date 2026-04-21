@@ -79,6 +79,7 @@ export const CATEGORIES = [
   "پودر زعفران",
   "بسته‌های هدیه",
   "عمده‌فروشی",
+  "خشکبار",
 ] as const;
 
 export const PRODUCTS: Product[] = [
@@ -101,7 +102,7 @@ export const PRODUCTS: Product[] = [
     id: "p2",
     slug: "p2",
     name: "زرشک پفکی قائنات",
-    category: "زعفران نگین",
+    category: "خشکبار",
     weight: "۲ گرم",
     price: 720000,
     images: [productP2],
@@ -220,6 +221,49 @@ export const PRODUCTS: Product[] = [
     images: [
       "https://images.unsplash.com/photo-1571197119282-7c4b1a44b3a3?auto=format&fit=crop&w=800&q=80",
     ],
+  },
+  {
+    id: "p13",
+    slug: "p13",
+    name: "زرشک پفکی",
+    category: "خشکبار",
+    weight: "۲۵۰ گرم",
+    price: 320000,
+    images: [productP2],
+    shortDescription: "زرشک پفکی درشت و خوش‌رنگ قائنات، بدون افزودنی.",
+    description:
+      "زرشک پفکی ما از باغ‌های منتخب قائنات برداشت و با دقت پاک‌سازی شده است.\n\nمناسب برای زرشک‌پلو، خورش‌ها و تزئین غذا؛ رنگ سرخ طبیعی و طعم ترش دلپذیر.",
+    highlights: ["محصول قائنات", "بدون شن و افزودنی", "بسته‌بندی بهداشتی"],
+  },
+  {
+    id: "p14",
+    slug: "p14",
+    name: "توت خشک",
+    category: "خشکبار",
+    weight: "۲۵۰ گرم",
+    price: 280000,
+    images: [
+      "https://images.unsplash.com/photo-1591287083773-9a5c8b2bb6f3?auto=format&fit=crop&w=800&q=80",
+    ],
+    shortDescription: "توت خشک شیرین و طبیعی، جایگزین سالم قند.",
+    description:
+      "توت خشک مرغوب با شیرینی طبیعی، خشک‌شده در سایه برای حفظ طعم و ارزش غذایی.\n\nمناسب برای میان‌وعده، چای و دسرهای سنتی.",
+    highlights: ["شیرینی طبیعی", "بدون شکر افزوده", "خشک‌شده در سایه"],
+  },
+  {
+    id: "p15",
+    slug: "p15",
+    name: "برگه زردآلو",
+    category: "خشکبار",
+    weight: "۲۵۰ گرم",
+    price: 350000,
+    images: [
+      "https://images.unsplash.com/photo-1596591606975-97ee5cef3a1e?auto=format&fit=crop&w=800&q=80",
+    ],
+    shortDescription: "برگه زردآلوی نرم و خوش‌طعم از باغات آذربایجان.",
+    description:
+      "برگه زردآلو از میوه‌های رسیده و آفتاب‌خشک تهیه شده و طعم و عطر طبیعی خود را حفظ کرده است.\n\nمنبع غنی فیبر و پتاسیم؛ مناسب برای کمپوت، خورش و میان‌وعده.",
+    highlights: ["آفتاب‌خشک طبیعی", "بدون گوگرد افزوده", "بسته‌بندی بهداشتی"],
   },
 ];
 
