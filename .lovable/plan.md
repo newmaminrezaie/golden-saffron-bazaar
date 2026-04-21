@@ -1,33 +1,22 @@
 
 
-## Restyle floating contact to a pill chat bubble (bottom-right)
-
-Match the reference: a soft white rounded pill with a small chat icon + "بپرس" text, anchored to the bottom-right corner.
+## Enlarge floating button & flip popover to right edge
 
 ### Changes to `src/components/floating-contact.tsx`
 
-**Position**
-- Move container from `bottom-6 left-6` → `bottom-6 right-6`.
-- Change popover anchor alignment so it opens above and aligns to the right edge (`items-end` on the container).
+**Bigger trigger button**
+- Closed pill: `h-12 px-4` → `h-14 px-5`, label `text-sm` → `text-base`, icon `h-5 w-5` → `h-6 w-6`.
+- Open close-button: `h-11 w-11` → `h-12 w-12`, X icon `h-5 w-5` → `h-6 w-6`.
+- Popover card width: `w-64` → `w-72` to stay visually balanced with the larger trigger.
 
-**Trigger button (closed state)**
-- Shape: horizontal pill (`h-12 rounded-full px-4`), auto width.
-- Background: white (`bg-white`), subtle border (`border border-border/60`), soft shadow (`shadow-lg`).
-- Content (in order, RTL): small chat bubble icon (`MessageCircleMore` from lucide, `h-5 w-5`, saffron `text-accent`) + "بپرس" label (`text-sm font-semibold text-foreground`), gap-2.
-- Keep gentle bounce animation, hover scale, focus ring.
+**Flip popover to open from the right**
+Currently the container uses `items-end` which anchors the popover to the right edge in the normal flow, but inside the popover the rows use `flex items-center gap-3` in an RTL container — meaning the colored icon circle sits on the **right** and text on the left. The user wants the panel to visually "open from the right," i.e. icon on the **left**, text on the right (mirrored layout).
 
-**Trigger button (open state)**
-- Collapse to a compact circle (`h-11 w-11 rounded-full p-0`) showing just the `X` icon, same white background — feels like a clean close affordance.
-- Bounce paused while open (already handled).
-
-**Popover**
-- Same content (تماس تلفنی + واتساپ rows), unchanged.
-- Container alignment switches to `items-end` so the popover hugs the right edge under/above the pill in RTL layout.
-
-### Files
-- `src/components/floating-contact.tsx` — position, trigger shape, icon swap, alignment.
+- Change each row's inner layout from default RTL flex to `flex-row-reverse` so the icon circle appears on the left side of the row and the Persian text aligns to the right edge of the card.
+- Update the text column from `text-right` → `text-left` (so the label and number sit flush against the icon, with the card's right edge free) — OR keep `text-right` and rely on `flex-row-reverse` + `ml-auto` on the text block. Will use the cleaner `flex-row-reverse` + text alignment approach.
+- Keep `dir="rtl"` on the container so Persian text shaping stays correct.
 
 ### Out of scope
-- No CSS changes (`animate-gentle-bounce` stays).
-- No change to popover content, phone numbers, or 3-second reveal delay.
+- No changes to colors, animation, position (still bottom-right), 3-second reveal, or phone numbers.
+- No CSS file changes.
 
