@@ -1,22 +1,15 @@
 
 
-## Use uploaded nuts image for the "خشکبار" category
+## Fix "پودر زعفران" label centering on mobile
 
-Replace the Unsplash URL currently used for the "خشکبار" (dried fruits) tile in the homepage category grid with the uploaded nuts photo, imported as a local asset.
+The label for the saffron powder tile (`d`) is positioned with `left: 50%` but uses `transform: translateX(50%)`, which shifts it further right by half its width instead of pulling it back to center. That's why it appears off to the side.
 
-### Steps
+### Change in `src/components/home/category-grid.tsx` (line 46)
 
-1. **Add the image to the project**
-   - Copy `user-uploads://nuts-2.png` → `src/assets/dried-fruits.png`.
+Update the `labelStyle` for the "پودر زعفران" entry:
 
-2. **Update `src/components/home/category-grid.tsx`**
-   - Add import at the top with the other asset imports:
-     ```ts
-     import driedFruits from "@/assets/dried-fruits.png";
-     ```
-   - In the `CATS` array, change the `g` (خشکبار) entry's `img` from the Unsplash URL to `driedFruits`.
-   - Keep `pos: "center 50%"`, scrim, label position, and count unchanged.
+- From: `{ bottom: "1rem", left: "50%", transform: "translateX(50%)", textAlign: "center" }`
+- To:   `{ bottom: "1rem", left: "50%", transform: "translateX(-50%)", textAlign: "center" }`
 
-### Out of scope
-- No changes to other category tiles, layout, or any other section.
+This properly horizontally centers the label over the tile on both mobile and desktop. No other tiles, images, or styles change.
 
