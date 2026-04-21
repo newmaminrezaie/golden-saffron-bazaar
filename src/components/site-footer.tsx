@@ -1,5 +1,14 @@
 import { Link } from "@tanstack/react-router";
-import { Instagram, Phone, Mail, MapPin, MessageCircle } from "lucide-react";
+import {
+  Instagram,
+  Phone,
+  Mail,
+  MapPin,
+  MessageCircle,
+  ShieldCheck,
+  Award,
+  BadgeCheck,
+} from "lucide-react";
 import khajaviEmblem from "@/assets/khajavi-emblem.png";
 
 export function SiteFooter() {
@@ -16,41 +25,36 @@ export function SiteFooter() {
             "radial-gradient(ellipse at center, black 55%, transparent 85%)",
         }}
       />
-      <div className="mx-auto max-w-7xl px-4 md:px-8 pt-20 pb-12 grid gap-10 md:grid-cols-3">
+      <div className="mx-auto max-w-7xl px-4 md:px-8 pt-28 md:pt-32 pb-12 grid gap-10 md:gap-12 md:grid-cols-4">
         <div>
-          <p className="text-sm leading-7 text-white/75">
-            زعفران ممتاز و اصل قائنات، با ضمانت کیفیت و عطر بی‌نظیر؛ از مزرعه تا سفره شما.
-          </p>
+          <h4 className="text-base font-bold mb-4 text-white">نمادهای اعتماد</h4>
+          <div className="space-y-3">
+            {[
+              { Icon: ShieldCheck, label: "eNAMAD.ir", sub: "جهت اطمینان کلیک نمایید", aria: "نماد اعتماد الکترونیکی" },
+              { Icon: Award, label: "Emalls", sub: "مرجع خرید آنلاین", aria: "ایمالز" },
+              { Icon: BadgeCheck, label: "samandehi.ir", sub: "ساماندهی", aria: "ساماندهی" },
+            ].map(({ Icon, label, sub, aria }) => (
+              <a
+                key={label}
+                href="#"
+                aria-label={aria}
+                className="bg-white/95 rounded-xl border border-white/10 p-3 w-32 h-32 flex flex-col items-center justify-center text-center shadow-sm text-[color:var(--brown-deep)] hover:bg-white transition"
+              >
+                <Icon className="size-8 mb-1.5" />
+                <span className="text-xs font-bold leading-tight" dir="ltr">{label}</span>
+                <span className="text-[10px] leading-tight mt-1 text-[color:var(--brown-deep)]/70">{sub}</span>
+              </a>
+            ))}
+          </div>
         </div>
 
         <div>
-          <h4 className="text-base font-bold mb-4">دسترسی سریع</h4>
-          <ul className="space-y-2 text-sm text-white/80">
-            <li><Link to="/" className="hover:text-[color:var(--saffron)]">خانه</Link></li>
-            <li><Link to="/shop" className="hover:text-[color:var(--saffron)]">فروشگاه</Link></li>
-            <li><Link to="/about" className="hover:text-[color:var(--saffron)]">درباره ما</Link></li>
-            <li><Link to="/contact" className="hover:text-[color:var(--saffron)]">تماس با ما</Link></li>
-          </ul>
-        </div>
-
-        <div>
-          <h4 className="text-base font-bold mb-4">دسته‌بندی‌ها</h4>
-          <ul className="space-y-2 text-sm text-white/80">
-            <li>زعفران سرگل</li>
-            <li>زعفران نگین</li>
-            <li>زعفران پوشال</li>
-            <li>پودر زعفران</li>
-            <li>بسته‌های هدیه</li>
-          </ul>
-        </div>
-
-        <div>
-          <h4 className="text-base font-bold mb-4">تماس با ما</h4>
-          <ul className="space-y-3 text-sm text-white/80">
-            <li className="flex items-start gap-2"><MapPin className="size-4 mt-0.5 shrink-0" /> خراسان جنوبی، قائنات، بیهود</li>
-            <li className="flex items-center gap-2" dir="ltr"><Phone className="size-4" /> +۹۸ ۹۳۸ ۰۴۳ ۴۹۳۹</li>
-            <li className="flex items-start gap-2"><MessageCircle className="size-4 mt-0.5 shrink-0" /><span>واتساپ / تلگرام / روبیکا / ایتا / بله: <span dir="ltr">+۹۸ ۹۱۵ ۰۴۹ ۴۹۳۹</span></span></li>
-            <li className="flex items-center gap-2" dir="ltr"><Mail className="size-4" /> info@khajavisaffron.ir</li>
+          <h4 className="text-base font-bold mb-4 text-white">تماس با ما</h4>
+          <ul className="space-y-3 text-sm leading-7 text-white/80">
+            <li className="flex items-start gap-2"><MapPin className="size-4 mt-1 shrink-0" /> خراسان جنوبی، قائنات، بیهود</li>
+            <li className="flex items-center gap-2" dir="ltr"><Phone className="size-4 shrink-0" /> +۹۸ ۹۳۸ ۰۴۳ ۴۹۳۹</li>
+            <li className="flex items-start gap-2"><MessageCircle className="size-4 mt-1 shrink-0" /><span>واتساپ / تلگرام / روبیکا / ایتا / بله: <span dir="ltr">+۹۸ ۹۱۵ ۰۴۹ ۴۹۳۹</span></span></li>
+            <li className="flex items-center gap-2" dir="ltr"><Mail className="size-4 shrink-0" /> info@khajavisaffron.ir</li>
             <li>
               <a
                 href="https://instagram.com/khajavi.saffron111"
@@ -58,7 +62,7 @@ export function SiteFooter() {
                 rel="noopener noreferrer"
                 className="flex items-center gap-2 hover:text-[color:var(--saffron)]"
               >
-                <Instagram className="size-4" /> Khajavi.saffron111
+                <Instagram className="size-4 shrink-0" /> Khajavi.saffron111
               </a>
             </li>
             <li>
@@ -68,9 +72,34 @@ export function SiteFooter() {
                 rel="noopener noreferrer"
                 className="flex items-center gap-2 hover:text-[color:var(--saffron)]"
               >
-                <MessageCircle className="size-4" /> کانال روبیکا
+                <MessageCircle className="size-4 shrink-0" /> کانال روبیکا
               </a>
             </li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 className="text-base font-bold mb-4 text-white">دسته‌بندی‌ها</h4>
+          <ul className="space-y-2 text-sm leading-7 text-white/80">
+            <li>زعفران سرگل</li>
+            <li>زعفران نگین</li>
+            <li>زعفران پوشال</li>
+            <li>پودر زعفران</li>
+            <li>بسته‌های هدیه</li>
+            <li>خشکبار</li>
+          </ul>
+        </div>
+
+        <div>
+          <p className="text-sm leading-7 text-white/75 mb-6">
+            زعفران ممتاز و اصل قائنات، با ضمانت کیفیت و عطر بی‌نظیر؛ از مزرعه تا سفره شما.
+          </p>
+          <h4 className="text-base font-bold mb-4 text-white">دسترسی سریع</h4>
+          <ul className="space-y-2 text-sm leading-7 text-white/80">
+            <li><Link to="/" className="hover:text-[color:var(--saffron)]">خانه</Link></li>
+            <li><Link to="/shop" className="hover:text-[color:var(--saffron)]">فروشگاه</Link></li>
+            <li><Link to="/about" className="hover:text-[color:var(--saffron)]">درباره ما</Link></li>
+            <li><Link to="/contact" className="hover:text-[color:var(--saffron)]">تماس با ما</Link></li>
           </ul>
         </div>
       </div>
