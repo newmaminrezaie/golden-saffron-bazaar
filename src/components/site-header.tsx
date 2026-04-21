@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { Search, ShoppingBag, User, Menu, X } from "lucide-react";
 import { useState } from "react";
+import { BrandLockup } from "./brand/brand-lockup";
 
 const navItems = [
   { to: "/", label: "خانه" },
@@ -16,10 +17,8 @@ export function SiteHeader() {
     <header className="sticky top-0 z-50 border-b border-border/60 bg-background/85 backdrop-blur">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 md:px-8">
         {/* Right (start in RTL): logo */}
-        <Link to="/" className="flex items-center gap-2 group">
-          <span className="text-lg font-bold text-foreground">
-            زعفران خواجوی
-          </span>
+        <Link to="/" className="group" aria-label="زعفران خواجوی — خانه">
+          <BrandLockup variant="header" />
         </Link>
 
         {/* Center nav (desktop) */}

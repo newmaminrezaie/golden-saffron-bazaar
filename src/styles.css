@@ -1,6 +1,8 @@
 @import "tailwindcss" source(none);
 @source "../src";
 @import "tw-animate-css";
+@import "@fontsource/vazirmatn/500.css";
+@import "@fontsource/vazirmatn/700.css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -43,6 +45,7 @@
   --color-brown-medium: var(--brown-medium);
   --font-display: "Great Vibes", cursive;
   --font-fa: "Estedad", "Vazirmatn", system-ui, sans-serif;
+  --font-brand: "Vazirmatn", "Estedad", system-ui, sans-serif;
 }
 
 :root {
@@ -112,6 +115,11 @@
 
   .font-display {
     font-family: var(--font-display);
+  }
+
+  .font-brand {
+    font-family: var(--font-brand);
+    font-feature-settings: "ss01", "ss02";
   }
 }
 
