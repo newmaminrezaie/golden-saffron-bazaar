@@ -4,6 +4,7 @@ import appCss from "../styles.css?url";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { Toaster } from "@/components/ui/sonner";
+import { FloatingContact } from "@/components/floating-contact";
 
 function NotFoundComponent() {
   return (
@@ -96,6 +97,7 @@ function RootComponent() {
       </main>
       <SiteFooter />
       <Toaster richColors position="top-center" />
+      <FloatingContact />
     </div>
   );
 }
