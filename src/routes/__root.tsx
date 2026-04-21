@@ -5,6 +5,7 @@ import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { Toaster } from "@/components/ui/sonner";
 import { FloatingContact } from "@/components/floating-contact";
+import { AnnouncementBar } from "@/components/announcement-bar";
 
 function NotFoundComponent() {
   return (
@@ -91,6 +92,7 @@ function RootShell({ children }: { children: React.ReactNode }) {
 function RootComponent() {
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground">
+      <AnnouncementBar />
       <SiteHeader />
       <main className="flex-1">
         <Outlet />
