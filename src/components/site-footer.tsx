@@ -27,6 +27,31 @@ export function SiteFooter() {
       />
       <div className="mx-auto max-w-7xl px-4 md:px-8 pt-40 md:pt-48 pb-12 grid gap-10 md:gap-12 md:grid-cols-4">
         <div>
+          <p className="text-sm leading-7 text-white/75 mb-6">
+            زعفران ممتاز و اصل قائنات، با ضمانت کیفیت و عطر بی‌نظیر؛ از مزرعه تا سفره شما.
+          </p>
+          <h4 className="text-base font-bold mb-4 text-white">دسترسی سریع</h4>
+          <ul className="list-none p-0 m-0 space-y-2 text-sm leading-7 text-white/80">
+            <li><Link to="/" className="hover:text-[color:var(--saffron)]">خانه</Link></li>
+            <li><Link to="/shop" className="hover:text-[color:var(--saffron)]">فروشگاه</Link></li>
+            <li><Link to="/about" className="hover:text-[color:var(--saffron)]">درباره ما</Link></li>
+            <li><Link to="/contact" className="hover:text-[color:var(--saffron)]">تماس با ما</Link></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 className="text-base font-bold mb-4 text-white">دسته‌بندی‌ها</h4>
+          <ul className="list-none p-0 m-0 space-y-2 text-sm leading-7 text-white/80">
+            <li>زعفران سرگل</li>
+            <li>زعفران نگین</li>
+            <li>زعفران پوشال</li>
+            <li>پودر زعفران</li>
+            <li>بسته‌های هدیه</li>
+            <li>خشکبار</li>
+          </ul>
+        </div>
+
+        <div>
           <h4 className="text-base font-bold mb-4 text-white">تماس با ما</h4>
           <ul className="list-none p-0 m-0 space-y-3 text-sm leading-7 text-white/80">
             <li className="flex items-start gap-2"><MapPin className="size-4 mt-1 shrink-0" /><span>خراسان جنوبی، قائنات، بیهود</span></li>
@@ -57,33 +82,8 @@ export function SiteFooter() {
         </div>
 
         <div>
-          <h4 className="text-base font-bold mb-4 text-white">دسته‌بندی‌ها</h4>
-          <ul className="list-none p-0 m-0 space-y-2 text-sm leading-7 text-white/80">
-            <li>زعفران سرگل</li>
-            <li>زعفران نگین</li>
-            <li>زعفران پوشال</li>
-            <li>پودر زعفران</li>
-            <li>بسته‌های هدیه</li>
-            <li>خشکبار</li>
-          </ul>
-        </div>
-
-        <div>
-          <p className="text-sm leading-7 text-white/75 mb-6">
-            زعفران ممتاز و اصل قائنات، با ضمانت کیفیت و عطر بی‌نظیر؛ از مزرعه تا سفره شما.
-          </p>
-          <h4 className="text-base font-bold mb-4 text-white">دسترسی سریع</h4>
-          <ul className="list-none p-0 m-0 space-y-2 text-sm leading-7 text-white/80">
-            <li><Link to="/" className="hover:text-[color:var(--saffron)]">خانه</Link></li>
-            <li><Link to="/shop" className="hover:text-[color:var(--saffron)]">فروشگاه</Link></li>
-            <li><Link to="/about" className="hover:text-[color:var(--saffron)]">درباره ما</Link></li>
-            <li><Link to="/contact" className="hover:text-[color:var(--saffron)]">تماس با ما</Link></li>
-          </ul>
-        </div>
-
-        <div>
           <h4 className="text-base font-bold mb-4 text-white">نمادهای اعتماد</h4>
-          <div className="flex flex-row flex-wrap gap-3 justify-start">
+          <div className="flex flex-col gap-3 items-start">
             {[
               { Icon: ShieldCheck, label: "eNAMAD.ir", sub: "جهت اطمینان کلیک نمایید", aria: "نماد اعتماد الکترونیکی" },
               { Icon: Award, label: "Emalls", sub: "مرجع خرید آنلاین", aria: "ایمالز" },
