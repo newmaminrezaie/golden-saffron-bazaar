@@ -26,7 +26,7 @@ export function SiteFooter() {
         }}
       />
       <div className="w-full px-6 md:px-12 pt-40 md:pt-48 pb-12 grid gap-10 md:gap-12 md:grid-cols-4">
-        <div className="-mr-6 md:-mr-12">
+        <div>
           <p className="text-sm leading-7 text-white/75 mb-6">
             زعفران ممتاز و اصل قائنات، با ضمانت کیفیت و عطر بی‌نظیر؛ از مزرعه تا سفره شما.
           </p>
