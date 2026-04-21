@@ -78,12 +78,6 @@ export function CategoryGrid() {
     <section style={{ padding: "3.5rem 1rem", background: "#f5ede0" }}>
       <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
         <div style={{ textAlign: "center", marginBottom: "2.5rem" }}>
-          <p
-            className="font-display"
-            style={{ color: "#5a3e2e", fontSize: "clamp(1.5rem, 3vw, 2rem)", marginBottom: "0" }}
-          >
-            our collections
-          </p>
           <h2
             style={{
               color: "#2a1a0a",
