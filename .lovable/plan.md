@@ -1,23 +1,22 @@
 
 
-## Refine footer: trust seals size/position + Contact RTL alignment
+## Footer tweaks: trust seals stack + column reorder
 
 ### Changes to `src/components/site-footer.tsx`
 
-**1. Trust seals — smaller + flipped to the other column**
-- Reduce card size: `w-32 h-32` → `w-24 h-24`, padding `p-3` → `p-2`, icon `size-8` → `size-6`, label `text-xs` → `text-[11px]`, sub-label `text-[10px]` unchanged but tightened.
-- Move the trust-seals column from the **first** position (right edge in RTL) to the **last** position (left edge in RTL). New column order in JSX:
-  1. Contact (تماس با ما) — first → appears on the right
-  2. Categories (دسته‌بندی‌ها)
-  3. Quick links + intro (دسترسی سریع)
-  4. Trust seals (نمادهای اعتماد) — last → appears on the left
+**1. Trust seals — vertical stack, flush to the left edge**
+- Change the seals container from `flex flex-row flex-wrap gap-3 justify-start` to `flex flex-col gap-3 items-start`.
+- Result: the three placeholder cards stack vertically, one per row, aligned to the start of the column (which is the left edge in RTL since this column is the last/leftmost).
 
-**2. Contact column — fix RTL alignment**
-- Remove any default list indent: add `list-none p-0 m-0` (or rely on `ps-0`) on the `<ul>` so items sit flush against the right edge.
-- Ensure each `<li>` uses `flex items-center gap-2` with **icons on the right** in RTL. Since the column container is RTL, a normal `flex` row already places the first child on the right — so icon must be the FIRST child of each `<li>` (it already is). Remove the `dir="ltr"` overrides on the phone/email lines that currently flip them to LTR (which puts icons on the left); keep numbers/emails readable by wrapping just the number/email span in `dir="ltr"` instead of the whole `<li>`.
-- Drop `mt-1` vertical offsets on icons; use `items-center` for clean baseline alignment. For multi-line items (address, messenger list) keep `items-start` only on those.
-- Normalize icon size to `size-4 shrink-0` across all rows.
+**2. Reorder columns**
+New JSX order (RTL visual order, right → left):
+1. Quick links + intro (دسترسی سریع) — first → appears on the right
+2. Categories (دسته‌بندی‌ها)
+3. Contact (تماس با ما)
+4. Trust seals (نمادهای اعتماد) — last → stays on the left
+
+This swaps the Contact column with the Quick links + intro column.
 
 **3. No other changes**
-- Emblem, grid gaps, top padding, categories list, quick links, copyright row, colors — all unchanged.
+- Emblem, top padding (`pt-40 md:pt-48`), grid (`md:grid-cols-4`), gaps, copyright row, colors, card sizes, icon sizes — all unchanged.
 
