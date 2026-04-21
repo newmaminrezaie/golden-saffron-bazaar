@@ -77,18 +77,6 @@ export function CategoryGrid() {
   return (
     <section style={{ padding: "3.5rem 1rem", background: "#f5ede0" }}>
       <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
-        <div style={{ textAlign: "center", marginBottom: "2.5rem" }}>
-          <h2
-            style={{
-              color: "#2a1a0a",
-              fontSize: "clamp(1.15rem, 2.5vw, 1.75rem)",
-              fontWeight: 800,
-              margin: "0.25rem 0 0",
-            }}
-          >
-            دسته‌بندی محصولات
-          </h2>
-        </div>
 
         <div
           style={{
