@@ -1,32 +1,33 @@
 
 
-## Restyle the floating contact trigger
+## Restyle floating contact to a pill chat bubble (bottom-right)
 
-Turn the round phone FAB into an elegant rounded-square "بپرس" button that gently bounces to attract attention, while keeping the existing two-option popover (call + WhatsApp) intact.
+Match the reference: a soft white rounded pill with a small chat icon + "بپرس" text, anchored to the bottom-right corner.
 
-### Visual changes (`src/components/floating-contact.tsx`)
+### Changes to `src/components/floating-contact.tsx`
 
-**Trigger button** — replace the 56px circle with:
-- Shape: rounded-square, ~64×64px (`h-16 w-16 rounded-2xl`).
-- Background: saffron (`bg-accent`), deep brown text (`text-primary`).
-- Content: Persian word **«بپرس»** centered, semibold, ~lg size. No icon when closed.
-- When the popover is open: swap "بپرس" for the `X` icon (so users have a clear close affordance).
-- Soft shadow (`shadow-lg`), subtle border (`border border-primary/10`) for definition on light backgrounds.
-- Keep focus ring + hover scale.
+**Position**
+- Move container from `bottom-6 left-6` → `bottom-6 right-6`.
+- Change popover anchor alignment so it opens above and aligns to the right edge (`items-end` on the container).
 
-**Bounce animation** — slow, gentle, infinite vertical bounce:
-- Add a custom keyframe `gentle-bounce` in `src/styles.css` (translateY 0 → -8px → 0) running ~2.4s ease-in-out infinite.
-- Apply via a utility class `animate-gentle-bounce` on the button.
-- Pause the bounce when the popover is open (`open ? "" : "animate-gentle-bounce"`) so it sits still while the user reads options.
-- Remove the old `animate-ping` pulse ring (the bounce replaces it as the attention cue).
+**Trigger button (closed state)**
+- Shape: horizontal pill (`h-12 rounded-full px-4`), auto width.
+- Background: white (`bg-white`), subtle border (`border border-border/60`), soft shadow (`shadow-lg`).
+- Content (in order, RTL): small chat bubble icon (`MessageCircleMore` from lucide, `h-5 w-5`, saffron `text-accent`) + "بپرس" label (`text-sm font-semibold text-foreground`), gap-2.
+- Keep gentle bounce animation, hover scale, focus ring.
 
-**Popover** — unchanged: same card with تماس تلفنی + واتساپ rows, same delay (3s) before first appearance, same click-outside / Escape behavior.
+**Trigger button (open state)**
+- Collapse to a compact circle (`h-11 w-11 rounded-full p-0`) showing just the `X` icon, same white background — feels like a clean close affordance.
+- Bounce paused while open (already handled).
+
+**Popover**
+- Same content (تماس تلفنی + واتساپ rows), unchanged.
+- Container alignment switches to `items-end` so the popover hugs the right edge under/above the pill in RTL layout.
 
 ### Files
-- `src/components/floating-contact.tsx` — swap icon for "بپرس" text, change shape to rounded-square, apply bounce class, drop ping ring.
-- `src/styles.css` — add `@keyframes gentle-bounce` and `.animate-gentle-bounce` utility (3-line addition).
+- `src/components/floating-contact.tsx` — position, trigger shape, icon swap, alignment.
 
 ### Out of scope
-- No change to the popover content, phone numbers, or position (stays bottom-left).
-- No change to the 3-second reveal delay.
+- No CSS changes (`animate-gentle-bounce` stays).
+- No change to popover content, phone numbers, or 3-second reveal delay.
 
