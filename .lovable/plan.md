@@ -1,41 +1,45 @@
+## Update contact information across the site
 
+### New contact details
 
-## Use the new artwork as the header logo
+- **Phone (call)**: +98 938 043 4939
+- **Phone (WhatsApp / Telegram / Rubika / Eitaa / Bale)**: +98 915 049 4939
+- **Instagram**: Khajavi.saffron111
+- **Email**: [info@khajavisaffron.ir](mailto:info@khajavisaffron.ir) (kept — not in the new list, but retained unless you say otherwise)
+- **Rubika channel**: [https://rubika.ir/saffron_khajavi](https://rubika.ir/saffron_khajavi)
 
-### Goal
-Replace the current text-only header lockup with the uploaded calligraphic artwork (saffron crocus + "زعفران خواجوی" wordmark). Keep the footer using the same artwork for consistency, and store a copy for social sharing.
+### Files to update
 
-### Approach
+**1. `src/components/site-footer.tsx**`
+Replace the "تماس با ما" block with:
 
-**1. Save the asset**
-- Copy `user-uploads://log-png.png` → `src/assets/brand-logo.png` (used by header + footer via bundler import).
-- Copy the same file → `public/og-image.png` (referenced by absolute URL in social meta tags).
+- 📍  خراسان جنوبی، قائنات، بیهود
+- 📞 تماس: +۹۸ ۹۳۸ ۰۴۳ ۴۹۳۹
+- 💬 واتساپ / تلگرام / روبیکا / ایتا / بله: +۹۸ ۹۱۵ ۰۴۹ ۴۹۳۹
+- ✉ [info@khajavisaffron.ir](mailto:info@khajavisaffron.ir)
+- 📷 اینستاگرام: Khajavi.saffron111
+- Add a Rubika channel link row (using `MessageCircle` icon from lucide) → [https://rubika.ir/saffron_khajavi](https://rubika.ir/saffron_khajavi)
 
-**2. Update `BrandLockup` component**
-Replace the text/SVG markup with an `<img>` of the artwork. The artwork already contains both wordmark and icon, so no extra elements are needed.
-- `header` variant: `h-10` (40px tall) on mobile, `h-12` (48px) on `md+`. Width auto.
-- `footer` variant: `h-20` (80px tall). Width auto. The artwork has transparent background so it sits cleanly on the dark footer — but since the ink is dark brown, we'll wrap it in a subtle parchment-tinted backdrop (`bg-[color:var(--parchment)]/95 rounded-md px-4 py-3`) so it stays legible against the deep brown footer.
-- Drop the `font-brand` text spans entirely.
+Make Instagram and Rubika rows actual `<a>` links (instagram.com/khajavi.saffron111 and the rubika URL), opening in a new tab.
 
-**3. Header sizing check**
-Current header is `h-16` (64px). A 48px logo leaves 8px padding top/bottom — comfortable. The artwork is wide (~5:1 aspect ratio at 48px tall ≈ 240px wide), which fits the header on desktop. On mobile, 40px tall ≈ 200px wide — still fine alongside the icon cluster.
+**2. `src/routes/contact.tsx**`
+Replace the info cards array with:
 
-**4. Social sharing meta**
-Add to `src/routes/__root.tsx` `head()`:
-- `<meta property="og:image" content="/og-image.png" />`
-- `<meta name="twitter:image" content="/og-image.png" />`
-- `<meta name="twitter:card" content="summary_large_image" />`
+- آدرس: خراسان جنوبی، قائنات، بیهود، پلاک ۱۲ (kept)
+- تماس مستقیم: +۹۸ ۹۳۸ ۰۴۳ ۴۹۳۹
+- پیام‌رسان‌ها (واتساپ، تلگرام، روبیکا، ایتا، بله): +۹۸ ۹۱۵ ۰۴۹ ۴۹۳۹
+- ایمیل: [info@khajavisaffron.ir](mailto:info@khajavisaffron.ir)
+- اینستاگرام: Khajavi.saffron111 (clickable link)
+- کانال روبیکا: [https://rubika.ir/saffron_khajavi](https://rubika.ir/saffron_khajavi) (clickable link)
+- ساعات کاری: شنبه تا پنج‌شنبه، ۹ تا 20 (kept)
 
-Note: this is the wordmark artwork, not a 1200×630 social card. It will display as the share preview but won't fill the full WhatsApp/Twitter card area. Acceptable as a starting point; a dedicated 1200×630 composition can be generated later if desired.
+Use appropriate lucide icons (`Phone`, `MessageCircle`, `Send`, `Instagram`, `Mail`, `MapPin`, `Clock`).
 
-### Files touched
-- `src/assets/brand-logo.png` — new (copied from upload)
-- `public/og-image.png` — new (copied from upload)
-- `src/components/brand/brand-lockup.tsx` — swap text markup for `<img>`
-- `src/routes/__root.tsx` — add og:image / twitter:image meta tags
+**3. Quick search for stray references**
+Grep for the old placeholder `۹۱۵ ۰۰۰ ۰۰۰۰` and `khajavi.saffron@` across the codebase and replace any remaining occurrences (likely none beyond the two files above, but will verify during implementation).
 
 ### Out of scope
-- No changes to `site-header.tsx` or `site-footer.tsx` — they already render `<BrandLockup />`, so updating the lockup component cascades automatically.
-- `saffron-mark.tsx` stays in the codebase but unused (can be deleted later if you want).
-- No dedicated 1200×630 social card generated this round — using the logo artwork directly.
 
+- No new routes or components.
+- Email kept as-is (not listed in new info but currently present); will remove if you confirm it should go.
+- Address detail ("خیابان زعفران، پلاک ۱۲") kept as-is since not contradicted by the new info.
