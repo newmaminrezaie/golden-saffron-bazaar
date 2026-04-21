@@ -25,7 +25,7 @@ export function SiteFooter() {
             "radial-gradient(ellipse at center, black 55%, transparent 85%)",
         }}
       />
-      <div className="mx-auto max-w-7xl px-4 md:px-8 pt-28 md:pt-32 pb-12 grid gap-10 md:gap-12 md:grid-cols-4">
+      <div className="mx-auto max-w-7xl px-4 md:px-8 pt-40 md:pt-48 pb-12 grid gap-10 md:gap-12 md:grid-cols-4">
         <div>
           <h4 className="text-base font-bold mb-4 text-white">تماس با ما</h4>
           <ul className="list-none p-0 m-0 space-y-3 text-sm leading-7 text-white/80">
