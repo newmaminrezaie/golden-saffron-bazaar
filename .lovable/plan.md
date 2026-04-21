@@ -1,35 +1,32 @@
 
 
-## Add خشکبار category with three products
+## Restyle the floating contact trigger
 
-### Catalog changes (`src/data/products.ts`)
+Turn the round phone FAB into an elegant rounded-square "بپرس" button that gently bounces to attract attention, while keeping the existing two-option popover (call + WhatsApp) intact.
 
-**1. Add new category** to the `CATEGORIES` tuple:
-- `"خشکبار"` — appended after `"عمده‌فروشی"` so it shows as the last filter chip in the shop.
+### Visual changes (`src/components/floating-contact.tsx`)
 
-**2. Add three new products** to the `PRODUCTS` array:
+**Trigger button** — replace the 56px circle with:
+- Shape: rounded-square, ~64×64px (`h-16 w-16 rounded-2xl`).
+- Background: saffron (`bg-accent`), deep brown text (`text-primary`).
+- Content: Persian word **«بپرس»** centered, semibold, ~lg size. No icon when closed.
+- When the popover is open: swap "بپرس" for the `X` icon (so users have a clear close affordance).
+- Soft shadow (`shadow-lg`), subtle border (`border border-primary/10`) for definition on light backgrounds.
+- Keep focus ring + hover scale.
 
-| id  | name           | weight  | price (تومان) | notes |
-|-----|----------------|---------|---------------|-------|
-| p13 | زرشک پفکی     | ۲۵۰ گرم | 320,000       | reuse existing `productP2` (already a barberry image) as cover |
-| p14 | توت خشک       | ۲۵۰ گرم | 280,000       | Unsplash dried mulberry image |
-| p15 | برگه زردآلو   | ۲۵۰ گرم | 350,000       | Unsplash dried apricot image |
+**Bounce animation** — slow, gentle, infinite vertical bounce:
+- Add a custom keyframe `gentle-bounce` in `src/styles.css` (translateY 0 → -8px → 0) running ~2.4s ease-in-out infinite.
+- Apply via a utility class `animate-gentle-bounce` on the button.
+- Pause the bounce when the popover is open (`open ? "" : "animate-gentle-bounce"`) so it sits still while the user reads options.
+- Remove the old `animate-ping` pulse ring (the bounce replaces it as the attention cue).
 
-Each product gets:
-- `category: "خشکبار"`
-- A short Persian `shortDescription` (one line)
-- A longer `description` (origin + usage, 2 short paragraphs)
-- 2–3 `highlights` bullets (origin, packaging, no additives)
-- Sensible defaults: `inStock: true`, no badge
+**Popover** — unchanged: same card with تماس تلفنی + واتساپ rows, same delay (3s) before first appearance, same click-outside / Escape behavior.
 
-Note: existing `p2` ("زرشک پفکی قائنات") is currently mis-categorized as "زعفران نگین". It will be **re-categorized to "خشکبار"** so the catalog stays consistent (zereshk is dried fruit, not saffron). Its other fields stay untouched.
-
-### Why no other files change
-- The shop page (`src/routes/shop.tsx`) reads `CATEGORIES` and `PRODUCTS` directly, so the new chip and product cards appear automatically.
-- Single-product routes (`src/routes/shop.$slug.tsx`) are generated from product slugs, so `/shop/p13`, `/shop/p14`, `/shop/p15` will work with no extra wiring.
-- Category grid on the homepage (`src/components/home/category-grid.tsx`) — will check during implementation; if it has a hardcoded list, I'll add خشکبار there too. If it derives from `CATEGORIES`, no change needed.
+### Files
+- `src/components/floating-contact.tsx` — swap icon for "بپرس" text, change shape to rounded-square, apply bounce class, drop ping ring.
+- `src/styles.css` — add `@keyframes gentle-bounce` and `.animate-gentle-bounce` utility (3-line addition).
 
 ### Out of scope
-- No real product photography — using one existing asset + two stock images. Swap later by editing the `images: [...]` arrays.
-- Prices are reasonable placeholders for Iranian dried-fruit market; adjust as needed.
+- No change to the popover content, phone numbers, or position (stays bottom-left).
+- No change to the 3-second reveal delay.
 
