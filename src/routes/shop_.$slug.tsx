@@ -4,7 +4,7 @@ import { ShoppingBag, ChevronRight } from "lucide-react";
 import { formatToman, getProductBySlug, PRODUCTS } from "@/data/products";
 import { cn } from "@/lib/utils";
 
-export const Route = createFileRoute("/shop/$slug")({
+export const Route = createFileRoute("/shop_/$slug")({
   loader: ({ params }) => {
     const product = getProductBySlug(params.slug);
     if (!product) throw notFound();
