@@ -52,22 +52,9 @@ export const Route = createRootRoute({
       { name: "twitter:image", content: "/og-image.png" },
     ],
     links: [
+      { rel: "preload", href: appCss, as: "style" },
       { rel: "stylesheet", href: appCss },
       { rel: "icon", type: "image/png", href: "/favicon.png" },
-      { rel: "preconnect", href: "https://fonts.googleapis.com" },
-      { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
-      {
-        rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap",
-      },
-      {
-        rel: "stylesheet",
-        href: "https://cdn.jsdelivr.net/gh/aminroosta/Estedad-font@v1.0.0/dist/Farsi-Digits-Estedad.css",
-      },
-      {
-        rel: "stylesheet",
-        href: "https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css",
-      },
     ],
   }),
   shellComponent: RootShell,
