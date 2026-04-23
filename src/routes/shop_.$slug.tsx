@@ -77,6 +77,27 @@ export const Route = createFileRoute("/shop_/$slug")({
 function ProductPage() {
   const { product } = Route.useLoaderData();
   const [activeImg, setActiveImg] = useState(0);
+  const [tierIdx, setTierIdx] = useState(0);
+  const tiers = product.priceTiers;
+  const hasTiers = !!tiers && tiers.length > 0;
+  const selectedTier = hasTiers ? tiers![tierIdx] ?? tiers![0] : null;
+  const basePerGram = hasTiers ? tiers![0].price / tiers![0].quantity : 0;
+  const selectedPerGram = selectedTier ? selectedTier.price / selectedTier.quantity : 0;
+  const savingsPct =
+    hasTiers && tierIdx > 0 && basePerGram > 0
+      ? Math.round((1 - selectedPerGram / basePerGram) * 100)
+      : 0;
+  const displayPrice = selectedTier ? selectedTier.price : product.price;
+
+  // Dev-only invariant check
+  useEffect(() => {
+    if (import.meta.env.DEV && hasTiers && tiers![0].price !== product.price) {
+      console.warn(
+        `[products] "${product.slug}": priceTiers[0].price (${tiers![0].price}) does not match product.price (${product.price}). They MUST be equal.`,
+      );
+    }
+  }, [product.slug, product.price, tiers, hasTiers]);
+
   const related = PRODUCTS.filter(
     (p) => p.category === product.category && p.slug !== product.slug,
   ).slice(0, 4);
