@@ -23,6 +23,22 @@ import productP4 from "@/assets/product-p4.jpeg";
  *   Copy this template into the PRODUCTS array, give it a UNIQUE `id`/`slug`,
  *   and fill in the fields. It will automatically appear in the shop, in its
  *   category filter, and get its own page at /shop/<slug>.
+ *
+ * VOLUME / TIERED PRICING (optional):
+ *   Add a `priceTiers` array to let customers pick different quantities on the
+ *   product detail page (e.g., ۱ گرم / ۲ گرم / ۵ گرم / ۱۰ گرم).
+ *   Example:
+ *     priceTiers: [
+ *       { quantity: 1, price: 190000 },   // base — MUST match `price` below
+ *       { quantity: 2, price: 360000 },
+ *       { quantity: 5, price: 850000 },
+ *       { quantity: 10, price: 1650000 },
+ *     ]
+ *   ⚠️ INVARIANT: priceTiers[0].price MUST equal the product's `price` field
+ *     (and priceTiers[0].quantity should be the base/unit quantity for the
+ *     product). The savings percentage on the page is computed by comparing
+ *     each tier's per-gram rate to priceTiers[0]'s per-gram rate, so this
+ *     must stay in sync. A dev-only console.warn fires if they mismatch.
  * ========================================================================== */
 
 export type Product = {
@@ -39,6 +55,11 @@ export type Product = {
   description?: string;
   highlights?: string[];
   inStock?: boolean;
+  /**
+   * Optional volume pricing. priceTiers[0] MUST mirror `price` exactly
+   * (same base quantity + same total price). See HOW-TO header above.
+   */
+  priceTiers?: { quantity: number; price: number; label?: string }[];
 };
 
 export const CATEGORIES = [
