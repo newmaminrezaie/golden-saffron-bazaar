@@ -1,69 +1,63 @@
 
 
-## Add `robots.txt` and `sitemap.xml`
+## Add "محصولات کادویی و سازمانی" section
 
-Since the site is **static-prerendered** and deployed to Nginx (no server runtime at request time), both files will be **generated at build time** and emitted into `dist/` so Nginx serves them as plain static files at `/robots.txt` and `/sitemap.xml`.
+A new horizontal-sliding showcase below `محصولات پرفروش` on the home page, featuring the gift-packaged Negin saffrons in ornate boxes, set against a deep crimson Persian ornamental pattern background like the reference image.
 
-### Approach
+### What gets featured
 
-Use a small Vite plugin inside `vite.config.ts` that runs after the prerender step and writes both files into the build output. It already knows every URL (the `routes` array we hand to the prerenderer), so we reuse that single source of truth — no drift between sitemap and actually-built pages.
+Filter `PRODUCTS` to the four gift/boxed Negin items already in the catalog:
+- زعفران سوپرنگین ظرف چوبی (`p-598`)
+- زعفران سوپرنگین ظرف گرد (`p-622`)
+- زعفران سوپرنگین جعبه مخمل (`p-762`)
+- زعفران سوپرنگین ظرف خاتم (`p-768`)
 
-The site URL needs to be configurable. I'll add `VITE_SITE_URL` to `.env.example` (e.g. `https://khajavi-saffron.com`) and read it in the config with a sensible fallback.
+Selection rule: `category === "زعفران نگین"` AND name matches gift-packaging keywords (`ظرف چوبی`, `ظرف گرد`, `جعبه مخمل`, `ظرف خاتم`). This stays data-driven — adding a new gift box product later auto-appears.
 
-### `robots.txt` (static file)
+### The ornamental background
 
-Create `public/robots.txt` — Vite copies `public/` verbatim to `dist/`, so this needs zero plugin work:
+Save the uploaded reference (`user-uploads://layer-desktop.jpg`) to `src/assets/ornament-crimson.jpg` and use it as a `background-image` on the section with:
+- `background-repeat: repeat` so the pattern tiles seamlessly across any width
+- A subtle dark vignette overlay (`radial-gradient` from transparent center to `rgba(0,0,0,0.35)` edges) so cards stay readable
+- The crimson tone (`#a8131a`-ish) frames the gold/wood gift boxes beautifully and ties to saffron's "طلای سرخ" identity
 
-```
-User-agent: *
-Allow: /
+### The slider
 
-Sitemap: https://yourdomain.com/sitemap.xml
-```
+Native CSS scroll-snap horizontal carousel (no extra library — keeps bundle lean and matches the project's existing lightweight approach):
 
-The `Sitemap:` line will be templated from `VITE_SITE_URL` at build time via the same plugin (it'll overwrite this file in `dist/` with the resolved URL). That keeps the source readable while still letting the deployed file have the correct domain.
-
-### `sitemap.xml` (build-time generated)
-
-A `writeSeoFiles` Vite plugin in `vite.config.ts`:
-- Hooks into `closeBundle` (runs after prerender finishes)
-- Builds the URL list from the same arrays already used for prerender: `/`, `/about`, `/contact`, `/shop`, `/blog`, all `/shop/<slug>`, all `/blog/<slug>`
-- For blog URLs, uses each article's `publishedAt` as `<lastmod>` (parsed from `articles.json`, already loaded above)
-- For other URLs, uses today's build date as `<lastmod>`
-- Sets sensible `<changefreq>` / `<priority>` (home + shop = higher, static pages = lower)
-- Writes `dist/sitemap.xml` and rewrites `dist/robots.txt` with the resolved `Sitemap:` URL
-
-Output shape:
-
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://yourdomain.com/</loc>
-    <lastmod>2026-04-23</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>1.0</priority>
-  </url>
-  <url>
-    <loc>https://yourdomain.com/blog/khavass-zafaran</loc>
-    <lastmod>2025-...</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  ...
-</urlset>
+```text
+┌──────────────────────────────────────────────────────┐
+│   [crimson ornamental pattern background]            │
+│                                                      │
+│   محصولات کادویی و سازمانی                          │
+│   gift & corporate                                   │
+│                                                      │
+│   ◄  ┌────┐ ┌────┐ ┌────┐ ┌────┐  ►                 │
+│      │card│ │card│ │card│ │card│                    │
+│      └────┘ └────┘ └────┘ └────┘                    │
+│   • • • •  (scroll dots / snap indicators)           │
+└──────────────────────────────────────────────────────┘
 ```
 
-### Files touched
+Behavior:
+- Horizontal `overflow-x: auto` with `scroll-snap-type: x mandatory`
+- Each card `scroll-snap-align: start`, fixed width (~260px mobile, ~300px desktop)
+- Two arrow buttons (right/left, RTL-aware) scroll by one card-width via `scrollBy({ left: ±width })`
+- Hide native scrollbar (cosmetic), keep keyboard + touch swipe working
+- Cards reuse the existing `<ProductCard>` so prices, badges, image hover-cycle, and links to `/shop/$slug` all work for free
 
-1. **`public/robots.txt`** (new) — readable default, gets its `Sitemap:` line rewritten in `dist/` at build time.
-2. **`vite.config.ts`** (edit) — add a `writeSeoFiles` plugin in the `vite.plugins` array that emits `dist/sitemap.xml` and rewrites `dist/robots.txt`. Reuses the existing `PRODUCT_SLUGS` and parsed `articles` data so there's only one source of truth.
-3. **`.env.example`** (edit) — add `VITE_SITE_URL=https://yourdomain.com` with a comment.
-4. **`DEPLOYMENT.md`** (edit) — short note that `/robots.txt` and `/sitemap.xml` are auto-generated at build time and that `VITE_SITE_URL` must be set in `.env` before `npm run build`. Also a one-liner reminder to submit the sitemap in Google Search Console after first deploy.
+Section heading styled like `featured-products.tsx` (Persian title + small English overline), but with light/parchment text colors since the background is dark crimson.
+
+### Files
+
+1. **`src/assets/ornament-crimson.jpg`** (new) — copy of the uploaded pattern.
+2. **`src/components/home/gift-corporate.tsx`** (new) — the section component (background, heading, scroll-snap rail, arrow controls, dot indicators).
+3. **`src/routes/index.tsx`** (edit) — import and render `<GiftCorporate />` directly under `<FeaturedProducts />`.
 
 ### Out of scope
 
-- No `?category=...` shop URLs in the sitemap — they're filtered views of the same `/shop` page; including them risks Google flagging duplicates. Can be added later with `<link rel="canonical">` if you want.
-- No image sitemap extension (can add later for product images if you want stronger Image Search).
-- No automatic submission to Google — manual via Search Console after first publish.
+- No new products or schema changes — purely a curated view of existing data.
+- No separate `/gifts` route (can add later if you want a dedicated landing).
+- No autoplay (gift shoppers want to browse at their own pace; autoplay tends to feel pushy on premium products).
+- No CMS-style admin to pick which products show — selection stays in code via the keyword rule.
 
