@@ -1,65 +1,84 @@
 
 
-## Add tiered/volume pricing to product detail page
+## Add a blog (`مقالات`) page — prerendered & Google-indexable
 
-Let users buy a product in different quantities (e.g., ۱ گرم, ۲ گرم, ۵ گرم) with per-tier pricing, showing the savings vs. base per-unit price.
+A `/blog` listing + `/blog/$slug` article pages, with content sourced from a single hosted JSON file so you can add new articles without code changes (just edit the JSON, redeploy or re-fetch on next build).
 
-### Data model — `src/data/products.ts`
+### Key decision: how "hosted" works with this site
 
-Extend the `Product` type with one optional field:
+The site is built as **static prerendered HTML** (`vite.config.ts` → `target: "static"`, `prerender.enabled: true`). For Google to actually index articles, the article HTML must exist at build time. So:
 
-```ts
-export type Product = {
-  // ...existing fields
-  priceTiers?: { quantity: number; price: number; label?: string }[];
-};
+- Articles live in **one JSON file you host yourself** (recommended: `public/articles.json` in this project, or any external URL like GitHub raw, a CDN, or your own server).
+- At **build time**, `vite.config.ts` fetches/reads that JSON and feeds article slugs into the prerender list — same pattern already used for product slugs.
+- Each article page is also generated as a fully-populated static `.html` file (title, meta description, og tags, full article body) → fully crawlable by Google.
+- To "add an article", you edit the JSON and trigger a rebuild. No code changes.
+
+If you want truly **no-rebuild** publishing (edit JSON → live in seconds with no deploy), that requires switching off static prerender for `/blog/*` and accepting weaker SEO. Default plan below uses the prerender approach for best SEO. I'll flag the alternative at the end.
+
+### Article JSON schema (`public/articles.json`)
+
+```json
+[
+  {
+    "slug": "khavass-zafaran",
+    "title": "خواص زعفران برای سلامتی",
+    "excerpt": "نگاهی کوتاه به فواید زعفران اصل قائنات…",
+    "coverImage": "/blog/khavass-cover.jpg",
+    "author": "خانواده خواجوی",
+    "publishedAt": "2025-01-15",
+    "tags": ["سلامتی", "زعفران"],
+    "content": "## مقدمه\n\nزعفران یکی از…\n\n### بخش دوم\n\n…"
+  }
+]
 ```
 
-- `quantity` — numeric grams (used for math + sorting).
-- `price` — total price for that tier (Toman).
-- `label` — optional Persian label override (e.g., "نیم مثقال"). If absent, derived from `quantity` as `${toFa(quantity)} گرم`.
+- `content` is **Markdown** so you can write rich articles (headings, lists, links, images) in plain text.
+- `coverImage` doubles as the `og:image` for that article.
+- File can live at `public/articles.json` (shipped with the build) **or** any external URL — both are supported by the build script.
 
-**Invariant (per user clarification):** `priceTiers[0]` MUST mirror the base `price` field exactly — same quantity (the unit/base quantity for that product) and same price. This guarantees a consistent per-gram base for savings math. Will be enforced by:
-- A clear comment in the HOW-TO header at the top of `products.ts`.
-- A dev-only `console.warn` in the route component if `priceTiers[0].price !== product.price` (silent in production, helpful while authoring data).
+### Files to add / change
 
-I'll add `priceTiers` to **two example products** following this rule:
-- `zafaran-negin-1gram` — base 1g matches `product.price`, then larger tiers (2g, 5g, 10g) at progressively better per-gram rates.
-- `zafaran-narmeh` — same pattern.
+1. **`public/articles.json`** — new file, seeded with 2 example articles in Persian so you can see the layout immediately.
 
-The user can copy the pattern to other products later.
+2. **`src/lib/articles.ts`** — typed `Article` interface + a tiny helper to fetch/parse the JSON. Used by both the route loaders and the prerender step.
 
-### UI — `src/routes/shop_.$slug.tsx`
+3. **`src/routes/blog.tsx`** — `/blog` listing page, title `مقالات`. Loader reads `articles.json`, renders a responsive grid of cards (cover image, title, excerpt, date, author). Persian RTL, matching the existing site styling. Per-route `head()` with title/description/og.
 
-Add a tier selector block between the price display and the "add to cart" button, only when `product.priceTiers?.length` is truthy.
+4. **`src/routes/blog_.$slug.tsx`** — single-article page (uses the `blog_` underscore convention you already established for `shop_.$slug.tsx` so it doesn't nest under the listing). Loader finds the article by slug, renders Markdown via `react-markdown` + `remark-gfm`, with prose typography. Per-article `head()` derives `title`, `description` (from `excerpt`), `og:title`, `og:description`, `og:image` (from `coverImage`), `og:type: article`. Includes JSON-LD `Article` schema for richer Google results. 404 boundary if slug unknown.
 
-**Selector**: horizontal row of pill buttons (one per tier) showing the Persian quantity label. Selected button uses the deep-brown background like the CTA; unselected uses bordered/secondary style. Wraps on mobile.
+5. **`src/components/site-header.tsx`** — add `{ to: "/blog", label: "مقالات" }` to `navItems` (appears in both desktop nav and mobile menu automatically).
 
-**Selected-tier display** (replaces the existing single price line when tiers exist):
-- Total price (large, bold) — `formatToman(selectedTier.price)`.
-- Per-gram price below it in muted text — e.g., `هر گرم: ۱۷۰٬۰۰۰ تومان`.
-- Savings badge when the selected tier's per-gram price is lower than the base per-gram (computed from `priceTiers[0]`): `صرفه‌جویی ۱۰٪ نسبت به خرید تکی` in accent color. Hidden for the base tier or when savings ≤ 0.
+6. **`src/components/site-footer.tsx`** — add a "مقالات" link (small touch, helps internal linking & SEO).
 
-**CTA button**: when tiers exist, the button text becomes `افزودن به سبد — {formatToman(selectedTier.price)}`. Default selected tier on mount = index `0` (the base tier).
+7. **`vite.config.ts`** — extend the existing slug-extraction pattern: read `public/articles.json`, push `/blog` and `/blog/${slug}` for every article into the `prerender.routes` array. This guarantees every article gets a static HTML file even if the crawler misses one.
 
-When `priceTiers` is absent, the page renders exactly as today (no behavioral change).
+8. **New deps**: `react-markdown`, `remark-gfm` (small, well-supported, pure JS — safe for the static build).
 
-### State
+### SEO specifics (what makes Google actually index this)
 
-Single `useState<number>(0)` for the selected tier index. Derived values (`selectedTier`, `perGram`, `savingsPct`) computed inline from the tiers array — no extra effects.
+- Each article becomes a real `.html` file at `/blog/<slug>/index.html` with full content in the body — Google crawls it like any static page.
+- Per-article `<title>`, `<meta name="description">`, `og:title`, `og:description`, `og:image`, `og:type=article` derived from loader data.
+- JSON-LD `Article` schema (headline, author, datePublished, image) embedded in `<head>` — boosts rich-result eligibility.
+- `<html lang="fa" dir="rtl">` already set in `__root.tsx` ✅.
+- Listing page links to every article with `<Link>` — internal linking for crawl discovery.
+- (Optional follow-up if you want it later: add `/sitemap.xml` and `/robots.txt`. Out of scope for this turn unless you want them included.)
 
-### Persian-digit helper
+### How to add a new article (the "easy" part)
 
-A tiny local `toFa(n: number): string` helper inside the route file mapping `0-9` to `۰-۹` for quantity labels and per-gram price.
+1. Open `public/articles.json`.
+2. Append a new object: slug, title, excerpt, coverImage, author, publishedAt, tags, content (Markdown).
+3. Commit & redeploy → new article auto-appears on `/blog` and gets its own prerendered, Google-indexable page.
+
+That's it — no React, no route files, no rebuild config to touch.
+
+### Alternative (if you'd rather skip rebuilds)
+
+Set the article page to fetch JSON at runtime from an external URL instead of prerendering. Pros: edit JSON → instant publish, no deploy. Cons: Google sees an empty shell on first crawl (Google does run JS, but indexing is slower and weaker for SEO-critical content; social previews like WhatsApp/Telegram won't see the article at all). **I do not recommend this for an SEO-focused blog**, but say the word and I'll switch the plan.
 
 ### Out of scope
 
-- No cart state changes (cart isn't wired up yet).
-- No changes to the product card / shop listing — tiers are detail-page only.
-- No backend / persistence.
-
-### Files touched
-
-1. `src/data/products.ts` — extend type, add `priceTiers` to two products, update HOW-TO comment with the `priceTiers[0] === base price` invariant.
-2. `src/routes/shop_.$slug.tsx` — tier selector UI, swap price display + CTA label when tiers exist, dev-only invariant warning.
+- Comments, search, pagination (can add later if the blog grows).
+- Categories/tag pages.
+- RSS feed.
+- Sitemap.xml (mention it for a follow-up).
 
