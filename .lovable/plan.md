@@ -1,48 +1,69 @@
 
 
-## Per-category SEO metadata on `/shop?category=...`
+## Add `robots.txt` and `sitemap.xml`
 
-Right now `/shop` has one static `head()` regardless of which category filter is active. I'll make the `<title>`, `<meta description>`, `og:title`, and `og:description` change based on the `?category=` search param so each filtered view gets its own SEO-friendly preview in Persian.
+Since the site is **static-prerendered** and deployed to Nginx (no server runtime at request time), both files will be **generated at build time** and emitted into `dist/` so Nginx serves them as plain static files at `/robots.txt` and `/sitemap.xml`.
 
-### How it works in TanStack Router
+### Approach
 
-`head()` receives `{ match }`, and `match.search` contains the validated search params. Since `validateSearch` already normalizes `category` to a valid `Category` value (or `"همه"`), we can safely build per-category metadata from it.
+Use a small Vite plugin inside `vite.config.ts` that runs after the prerender step and writes both files into the build output. It already knows every URL (the `routes` array we hand to the prerenderer), so we reuse that single source of truth — no drift between sitemap and actually-built pages.
 
-```tsx
-head: ({ match }) => {
-  const category = match.search.category;
-  const meta = buildShopMeta(category);
-  return { meta };
-}
+The site URL needs to be configurable. I'll add `VITE_SITE_URL` to `.env.example` (e.g. `https://khajavi-saffron.com`) and read it in the config with a sensible fallback.
+
+### `robots.txt` (static file)
+
+Create `public/robots.txt` — Vite copies `public/` verbatim to `dist/`, so this needs zero plugin work:
+
+```
+User-agent: *
+Allow: /
+
+Sitemap: https://yourdomain.com/sitemap.xml
 ```
 
-### Per-category copy (Persian)
+The `Sitemap:` line will be templated from `VITE_SITE_URL` at build time via the same plugin (it'll overwrite this file in `dist/` with the resolved URL). That keeps the source readable while still letting the deployed file have the correct domain.
 
-A small lookup map keyed by category, each entry providing `title` and `description`. Examples:
+### `sitemap.xml` (build-time generated)
 
-| Category | Title | Description |
-|---|---|---|
-| همه | فروشگاه زعفران خواجوی \| زعفران اصل قائنات | خرید آنلاین انواع زعفران سرگل، نگین، دسته، نرمه و خشکبار اصل قائنات مستقیم از تولیدکننده. |
-| زعفران سرگل | خرید زعفران سرگل اصل قائنات \| زعفران خواجوی | زعفران سرگل ممتاز قائنات با عطر و رنگ بی‌نظیر، مستقیم از مزرعه با ضمانت اصالت. |
-| زعفران نگین | خرید زعفران نگین درجه یک \| زعفران خواجوی | زعفران نگین قائنات با رشته‌های بلند و یکدست، مناسب هدیه و مصارف ویژه. |
-| زعفران دسته | خرید زعفران دسته اصل \| زعفران خواجوی | زعفران دسته قائنات همراه با ریشه سفید، با قیمت اقتصادی و کیفیت تضمین‌شده. |
-| زعفران نرمه | خرید زعفران نرمه و پودر \| زعفران خواجوی | زعفران نرمه و پودر زعفران اصل قائنات، مناسب آشپزی روزمره و صنایع غذایی. |
-| خشکبار | خرید خشکبار قائنات \| زعفران خواجوی | خشکبار درجه یک قائنات شامل زرشک، عناب و سایر محصولات منطقه با کیفیت ممتاز. |
-| عمده‌فروشی | عمده‌فروشی زعفران قائنات \| زعفران خواجوی | فروش عمده زعفران اصل قائنات برای صادرات، صنایع غذایی و فروشگاه‌ها با قیمت ویژه. |
+A `writeSeoFiles` Vite plugin in `vite.config.ts`:
+- Hooks into `closeBundle` (runs after prerender finishes)
+- Builds the URL list from the same arrays already used for prerender: `/`, `/about`, `/contact`, `/shop`, `/blog`, all `/shop/<slug>`, all `/blog/<slug>`
+- For blog URLs, uses each article's `publishedAt` as `<lastmod>` (parsed from `articles.json`, already loaded above)
+- For other URLs, uses today's build date as `<lastmod>`
+- Sets sensible `<changefreq>` / `<priority>` (home + shop = higher, static pages = lower)
+- Writes `dist/sitemap.xml` and rewrites `dist/robots.txt` with the resolved `Sitemap:` URL
 
-(Final wording can be tweaked — these are my proposed defaults. If you want to edit any, tell me which.)
+Output shape:
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://yourdomain.com/</loc>
+    <lastmod>2026-04-23</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://yourdomain.com/blog/khavass-zafaran</loc>
+    <lastmod>2025-...</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  ...
+</urlset>
+```
 
 ### Files touched
 
-**`src/routes/shop.tsx`** — only file changed:
-1. Add a `SHOP_META: Record<Category, { title: string; description: string }>` map at module scope.
-2. Replace the static `head` block with a function form `head: ({ match }) => { ... }` that reads `match.search.category` and emits `title`, `description`, `og:title`, `og:description` from the map.
-3. Fall back to the "همه" entry if anything's off (defensive, though `validateSearch` already prevents it).
+1. **`public/robots.txt`** (new) — readable default, gets its `Sitemap:` line rewritten in `dist/` at build time.
+2. **`vite.config.ts`** (edit) — add a `writeSeoFiles` plugin in the `vite.plugins` array that emits `dist/sitemap.xml` and rewrites `dist/robots.txt`. Reuses the existing `PRODUCT_SLUGS` and parsed `articles` data so there's only one source of truth.
+3. **`.env.example`** (edit) — add `VITE_SITE_URL=https://yourdomain.com` with a comment.
+4. **`DEPLOYMENT.md`** (edit) — short note that `/robots.txt` and `/sitemap.xml` are auto-generated at build time and that `VITE_SITE_URL` must be set in `.env` before `npm run build`. Also a one-liner reminder to submit the sitemap in Google Search Console after first deploy.
 
 ### Out of scope
 
-- No `og:image` per category (no per-category artwork exists yet — would just be a generic image, which the SSR guidance says to omit rather than reuse).
-- No JSON-LD `ItemList` schema (can add later if you want richer Google results for category pages).
-- No `<link rel="canonical">` handling for `?category=همه` vs `/shop` — can add if you want to consolidate duplicates.
-- No changes to product detail or blog metadata.
+- No `?category=...` shop URLs in the sitemap — they're filtered views of the same `/shop` page; including them risks Google flagging duplicates. Can be added later with `<link rel="canonical">` if you want.
+- No image sitemap extension (can add later for product images if you want stronger Image Search).
+- No automatic submission to Google — manual via Search Console after first publish.
 
