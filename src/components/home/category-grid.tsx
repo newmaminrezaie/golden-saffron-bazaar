@@ -4,7 +4,7 @@ import saffronNegin from "@/assets/saffron-negin.jpg";
 import saffronPushal from "@/assets/saffron-pushal.jpg";
 import saffronPowder from "@/assets/saffron-powder.jpeg";
 import wholesale from "@/assets/wholesale.png";
-import driedFruits from "@/assets/dried-fruits.png";
+import driedFruits from "@/assets/dried-fruits.webp";
 import { PRODUCTS } from "@/data/products";
 
 type Cat = {
