@@ -11,23 +11,63 @@ export const Route = createFileRoute("/shop")({
     const valid = (CATEGORIES as readonly string[]).includes(raw) ? (raw as Category) : "همه";
     return { category: valid };
   },
-  head: () => ({
-    meta: [
-      { title: "فروشگاه زعفران | زعفران خواجوی" },
-      {
-        name: "description",
-        content:
-          "فروشگاه آنلاین زعفران خواجوی؛ خرید انواع زعفران سرگل، نگین، پوشال، پودر زعفران و بسته‌های هدیه با قیمت مستقیم از تولیدکننده.",
-      },
-      { property: "og:title", content: "فروشگاه زعفران خواجوی" },
-      {
-        property: "og:description",
-        content: "تنوع کامل محصولات زعفران اصل قائنات با ضمانت کیفیت.",
-      },
-    ],
-  }),
+  head: ({ match }) => {
+    const category = (match.search as { category: Category }).category;
+    const m = SHOP_META[category] ?? SHOP_META["همه"];
+    return {
+      meta: [
+        { title: m.title },
+        { name: "description", content: m.description },
+        { property: "og:title", content: m.title },
+        { property: "og:description", content: m.description },
+      ],
+    };
+  },
   component: ShopPage,
 });
+
+const SHOP_META: Record<Category, { title: string; description: string }> = {
+  "همه": {
+    title: "فروشگاه زعفران خواجوی | زعفران اصل قائنات",
+    description:
+      "خرید آنلاین انواع زعفران سرگل، نگین، دسته، نرمه و خشکبار اصل قائنات مستقیم از تولیدکننده.",
+  },
+  "ریشه زعفران": {
+    title: "خرید ریشه زعفران قائنات | زعفران خواجوی",
+    description:
+      "ریشه زعفران اصل قائنات با عطر طبیعی، مناسب دمنوش و مصارف خانگی با قیمت مناسب.",
+  },
+  "دمنوش و چای": {
+    title: "خرید دمنوش و چای زعفران | زعفران خواجوی",
+    description:
+      "انواع دمنوش‌های گیاهی و چای زعفران اصل قائنات، طبیعی و خوش‌عطر برای لحظات آرامش.",
+  },
+  "زعفران نگین": {
+    title: "خرید زعفران نگین درجه یک | زعفران خواجوی",
+    description:
+      "زعفران نگین قائنات با رشته‌های بلند و یکدست، مناسب هدیه و مصارف ویژه.",
+  },
+  "زعفران دسته": {
+    title: "خرید زعفران دسته اصل | زعفران خواجوی",
+    description:
+      "زعفران دسته قائنات همراه با ریشه سفید، با قیمت اقتصادی و کیفیت تضمین‌شده.",
+  },
+  "زعفران نرمه": {
+    title: "خرید زعفران نرمه و پودر | زعفران خواجوی",
+    description:
+      "زعفران نرمه و پودر زعفران اصل قائنات، مناسب آشپزی روزمره و صنایع غذایی.",
+  },
+  "خشکبار": {
+    title: "خرید خشکبار قائنات | زعفران خواجوی",
+    description:
+      "خشکبار درجه یک قائنات شامل زرشک، عناب و سایر محصولات منطقه با کیفیت ممتاز.",
+  },
+  "عمده‌فروشی": {
+    title: "عمده‌فروشی زعفران قائنات | زعفران خواجوی",
+    description:
+      "فروش عمده زعفران اصل قائنات برای صادرات، صنایع غذایی و فروشگاه‌ها با قیمت ویژه.",
+  },
+};
 
 function ShopPage() {
   const { category: active } = Route.useSearch();
