@@ -132,7 +132,7 @@ function ArticlePage() {
               <>
                 <span>•</span>
                 <ul className="flex flex-wrap gap-2">
-                  {article.tags.map((t) => (
+                  {article.tags.map((t: string) => (
                     <li
                       key={t}
                       className="rounded-full bg-secondary px-2.5 py-0.5 text-[11px] font-bold text-foreground/80"
