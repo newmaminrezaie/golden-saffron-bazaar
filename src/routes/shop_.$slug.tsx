@@ -1,8 +1,13 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { createFileRoute, Link, notFound, useRouter } from "@tanstack/react-router";
 import { ShoppingBag, ChevronRight } from "lucide-react";
 import { formatToman, getProductBySlug, PRODUCTS } from "@/data/products";
 import { cn } from "@/lib/utils";
+
+const FA_DIGITS = ["۰", "۱", "۲", "۳", "۴", "۵", "۶", "۷", "۸", "۹"];
+function toFa(n: number): string {
+  return String(n).replace(/\d/g, (d) => FA_DIGITS[Number(d)]);
+}
 
 export const Route = createFileRoute("/shop_/$slug")({
   loader: ({ params }) => {
