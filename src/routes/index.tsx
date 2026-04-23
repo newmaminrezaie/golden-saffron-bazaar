@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Hero } from "@/components/home/hero";
 import { CategoryGrid } from "@/components/home/category-grid";
 import { FeaturedProducts } from "@/components/home/featured-products";
+import { GiftCorporate } from "@/components/home/gift-corporate";
 import { PromiseStrip } from "@/components/home/promise-strip";
 import { AboutTeaser } from "@/components/home/about-teaser";
 
@@ -30,6 +31,7 @@ function Home() {
       <Hero />
       <CategoryGrid />
       <FeaturedProducts />
+      <GiftCorporate />
       <PromiseStrip />
       <AboutTeaser />
     </>
