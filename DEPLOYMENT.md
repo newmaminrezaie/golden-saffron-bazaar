@@ -105,6 +105,33 @@ target with `=404` instead.
 ## 4. Environment variables
 
 Only `VITE_*` variables are read at build time and inlined into the client
-bundle. To change `VITE_PAYMENT_API_URL`, edit `.env` and **rebuild**.
-Anything secret (API keys, DB credentials, Zarinpal merchant ID) belongs in
-the separate payment service, never in this frontend.
+bundle. To change `VITE_PAYMENT_API_URL` or `VITE_SITE_URL`, edit `.env` and
+**rebuild**. Anything secret (API keys, DB credentials, Zarinpal merchant ID)
+belongs in the separate payment service, never in this frontend.
+
+Required for SEO:
+
+- `VITE_SITE_URL` — your real production origin (e.g. `https://khajavi-saffron.com`,
+  no trailing slash). Used to generate absolute URLs in `sitemap.xml` and the
+  `Sitemap:` line of `robots.txt`. If unset, both files fall back to
+  `https://yourdomain.com` — make sure to set it before the production build.
+
+---
+
+## 5. SEO: `robots.txt` and `sitemap.xml`
+
+Both files are emitted automatically into `dist/client/` during `npm run build`
+and uploaded to the VPS as part of the normal `rsync` step — no extra Nginx
+config is needed. They become available at `/robots.txt` and `/sitemap.xml`.
+
+- **`sitemap.xml`** is generated from the same route list used by the
+  prerenderer (home, static pages, every product slug in `src/data/products.ts`,
+  every blog slug in `public/articles.json`). Blog entries use their
+  `publishedAt` as `<lastmod>`.
+- **`robots.txt`** starts from `public/robots.txt` and gets its `Sitemap:` line
+  rewritten with the resolved `VITE_SITE_URL` at build time.
+
+After the first deploy, submit `https://yourdomain.com/sitemap.xml` in
+[Google Search Console](https://search.google.com/search-console) so Google
+discovers all pages quickly. Re-submission isn't needed on every build —
+Google re-crawls the sitemap on its own schedule.
