@@ -6,6 +6,7 @@ import { BrandLockup } from "./brand/brand-lockup";
 const navItems = [
   { to: "/", label: "خانه" },
   { to: "/shop", label: "فروشگاه" },
+  { to: "/blog", label: "مقالات" },
   { to: "/about", label: "درباره ما" },
   { to: "/contact", label: "تماس با ما" },
 ] as const;

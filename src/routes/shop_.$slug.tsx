@@ -196,7 +196,7 @@ function ProductPage() {
               <div className="mt-5">
                 <p className="mb-2 text-xs font-bold text-foreground/80">انتخاب مقدار:</p>
                 <div className="flex flex-wrap gap-2">
-                  {tiers!.map((t, i) => {
+                  {tiers!.map((t: { quantity: number; price: number; label?: string }, i: number) => {
                     const label = t.label ?? `${toFa(t.quantity)} گرم`;
                     const active = i === tierIdx;
                     return (

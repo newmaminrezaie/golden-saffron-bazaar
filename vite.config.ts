@@ -18,26 +18,37 @@ const PRODUCT_SLUGS = Array.from(
   (m) => m[1],
 );
 
-export default defineConfig({
-  // Turn off Cloudflare Workers build target — output is plain static files.
-  cloudflare: false,
+// Read article slugs from the hosted articles.json so each blog post gets a
+// fully prerendered HTML page (Google-indexable, social-preview-friendly).
+// To add a new article: edit `public/articles.json` and rebuild — no code changes.
+let ARTICLE_SLUGS: string[] = [];
+try {
+  const articlesRaw = readFileSync(
+    fileURLToPath(new URL("./public/articles.json", import.meta.url)),
+    "utf-8",
+  );
+  const articles = JSON.parse(articlesRaw) as Array<{ slug: string }>;
+  ARTICLE_SLUGS = articles.map((a) => a.slug).filter(Boolean);
+} catch {
+  // articles.json missing or invalid — blog will simply have no prerendered posts
+  ARTICLE_SLUGS = [];
+}
 
-  // Forwarded to tanstackStart(). `target: "static"` + `prerender` produces
-  // one .html file per route in the build output directory.
+export default defineConfig({
+  cloudflare: false,
   tanstackStart: {
     target: "static",
     prerender: {
       enabled: true,
-      // Crawl every <Link> at build time so all reachable routes get HTML.
       crawlLinks: true,
-      // Explicit fallback list for dynamic routes, in case a slug is not
-      // linked from anywhere reachable by the crawler.
       routes: [
         "/",
         "/about",
         "/contact",
         "/shop",
+        "/blog",
         ...PRODUCT_SLUGS.map((slug) => `/shop/${slug}`),
+        ...ARTICLE_SLUGS.map((slug) => `/blog/${slug}`),
       ],
     },
   },
