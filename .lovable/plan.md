@@ -1,56 +1,48 @@
 
 
-## Fix: category cards should filter the shop page
+## Per-category SEO metadata on `/shop?category=...`
 
-Right now every category card on the home page links to `/shop`, so they all land on the unfiltered "همه" view. I'll wire them to deep-link into a filtered shop view via a `?category=` URL parameter.
+Right now `/shop` has one static `head()` regardless of which category filter is active. I'll make the `<title>`, `<meta description>`, `og:title`, and `og:description` change based on the `?category=` search param so each filtered view gets its own SEO-friendly preview in Persian.
 
-### Problem details
+### How it works in TanStack Router
 
-- `src/components/home/category-grid.tsx` — all 6 cards use `<Link to="/shop">` with no params.
-- `src/routes/shop.tsx` — filter state is a local `useState`, not URL-driven, so it can't be linked into.
-- Several category card names don't match the `CATEGORIES` list in `src/data/products.ts`. Mismatches mean even after we pass a filter, "همه" would still show:
-  - Card "زعفران پوشال" → CATEGORIES has no "پوشال" (closest: "زعفران دسته")
-  - Card "پودر زعفران" → CATEGORIES has no "پودر" (closest: "زعفران نرمه")
-  - Card "بسته‌های هدیه" → not in CATEGORIES at all
-  - Card "خشکبار" / "عمده‌فروشی" / "زعفران نگین" → match ✅
+`head()` receives `{ match }`, and `match.search` contains the validated search params. Since `validateSearch` already normalizes `category` to a valid `Category` value (or `"همه"`), we can safely build per-category metadata from it.
 
-### Changes
+```tsx
+head: ({ match }) => {
+  const category = match.search.category;
+  const meta = buildShopMeta(category);
+  return { meta };
+}
+```
 
-**1. `src/routes/shop.tsx` — read filter from URL search param**
+### Per-category copy (Persian)
 
-- Add Zod-like `validateSearch` so `?category=...` is typed.
-- Replace `useState<active>` with `Route.useSearch()` to read `category`, defaulting to `"همه"`.
-- Filter chip clicks become `<Link to="/shop" search={{ category: c }}>` (or `navigate({ search })`) so chip state stays URL-synced. This also gives shareable filtered URLs (good for SEO / sharing).
-- Unknown/invalid category values fall back to `"همه"`.
+A small lookup map keyed by category, each entry providing `title` and `description`. Examples:
 
-**2. `src/components/home/category-grid.tsx` — link each card to its filtered shop view**
+| Category | Title | Description |
+|---|---|---|
+| همه | فروشگاه زعفران خواجوی \| زعفران اصل قائنات | خرید آنلاین انواع زعفران سرگل، نگین، دسته، نرمه و خشکبار اصل قائنات مستقیم از تولیدکننده. |
+| زعفران سرگل | خرید زعفران سرگل اصل قائنات \| زعفران خواجوی | زعفران سرگل ممتاز قائنات با عطر و رنگ بی‌نظیر، مستقیم از مزرعه با ضمانت اصالت. |
+| زعفران نگین | خرید زعفران نگین درجه یک \| زعفران خواجوی | زعفران نگین قائنات با رشته‌های بلند و یکدست، مناسب هدیه و مصارف ویژه. |
+| زعفران دسته | خرید زعفران دسته اصل \| زعفران خواجوی | زعفران دسته قائنات همراه با ریشه سفید، با قیمت اقتصادی و کیفیت تضمین‌شده. |
+| زعفران نرمه | خرید زعفران نرمه و پودر \| زعفران خواجوی | زعفران نرمه و پودر زعفران اصل قائنات، مناسب آشپزی روزمره و صنایع غذایی. |
+| خشکبار | خرید خشکبار قائنات \| زعفران خواجوی | خشکبار درجه یک قائنات شامل زرشک، عناب و سایر محصولات منطقه با کیفیت ممتاز. |
+| عمده‌فروشی | عمده‌فروشی زعفران قائنات \| زعفران خواجوی | فروش عمده زعفران اصل قائنات برای صادرات، صنایع غذایی و فروشگاه‌ها با قیمت ویژه. |
 
-- Add a `category?: string` field to each `Cat` (omit it for "بسته‌های هدیه" since no matching category exists — that card will link to `/shop` unfiltered, OR we add a new category, see Q below).
-- Change `<Link to="/shop">` to `<Link to="/shop" search={{ category: c.category ?? "همه" }}>`.
-
-**3. Fix category-name mismatches** in `category-grid.tsx`:
-- "زعفران پوشال" → rename card to "زعفران دسته" (matches existing data)
-- "پودر زعفران" → rename card to "زعفران نرمه"
-- "بسته‌های هدیه" → either remove the card, link to unfiltered shop, OR add a "بسته هدیه" category (needs your call — see question)
-
-Also update each card's `count: "X محصول"` to the actual count from `PRODUCTS.filter(p => p.category === ...).length` (computed at module load, formatted with Persian digits) so the numbers stop being made up.
-
-### Open question
-
-The "بسته‌های هدیه" card has no matching category in `CATEGORIES` and no products tagged that way. Options:
-- **A)** Remove the card from the grid.
-- **B)** Keep the card, link it to `/shop` unfiltered (current broken behavior, just intentional).
-- **C)** Add a new "بسته هدیه" category to `CATEGORIES` and tag relevant products with it (you'd tell me which products).
-
-I'll default to **A (remove)** unless you say otherwise — having a card that leads nowhere meaningful is worse than not having it.
+(Final wording can be tweaked — these are my proposed defaults. If you want to edit any, tell me which.)
 
 ### Files touched
 
-1. `src/routes/shop.tsx` — URL-driven filter via `validateSearch` + `Route.useSearch()`; chips become Links.
-2. `src/components/home/category-grid.tsx` — add `category` to each card, rename mismatched names, recompute counts from PRODUCTS, point Links to `/shop?category=…`, drop the gift-box card (pending your answer).
+**`src/routes/shop.tsx`** — only file changed:
+1. Add a `SHOP_META: Record<Category, { title: string; description: string }>` map at module scope.
+2. Replace the static `head` block with a function form `head: ({ match }) => { ... }` that reads `match.search.category` and emits `title`, `description`, `og:title`, `og:description` from the map.
+3. Fall back to the "همه" entry if anything's off (defensive, though `validateSearch` already prevents it).
 
 ### Out of scope
 
-- No new product data, no schema changes to `Product`.
-- No new categories unless you pick option C above.
+- No `og:image` per category (no per-category artwork exists yet — would just be a generic image, which the SSR guidance says to omit rather than reuse).
+- No JSON-LD `ItemList` schema (can add later if you want richer Google results for category pages).
+- No `<link rel="canonical">` handling for `?category=همه` vs `/shop` — can add if you want to consolidate duplicates.
+- No changes to product detail or blog metadata.
 
