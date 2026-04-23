@@ -3,13 +3,13 @@ import type { CSSProperties } from "react";
 import saffronNegin from "@/assets/saffron-negin.jpg";
 import saffronPushal from "@/assets/saffron-pushal.jpg";
 import saffronPowder from "@/assets/saffron-powder.jpeg";
-import giftBoxes from "@/assets/gift-boxes.jpg";
 import wholesale from "@/assets/wholesale.png";
 import driedFruits from "@/assets/dried-fruits.png";
+import { PRODUCTS } from "@/data/products";
 
 type Cat = {
   name: string;
-  count: string;
+  category: string;
   area: string;
   img: string;
   pos: string;
@@ -17,10 +17,17 @@ type Cat = {
   labelStyle: CSSProperties;
 };
 
+// Persian digit formatter
+const toFa = (n: number) => n.toLocaleString("fa-IR");
+const countFor = (cat: string) => {
+  const n = PRODUCTS.filter((p) => p.category === cat).length;
+  return cat === "عمده‌فروشی" && n === 0 ? "تماس بگیرید" : `${toFa(n)} محصول`;
+};
+
 const CATS: Cat[] = [
   {
     name: "زعفران نگین",
-    count: "۸ محصول",
+    category: "زعفران نگین",
     area: "b",
     img: saffronNegin,
     pos: "center 55%",
@@ -28,8 +35,8 @@ const CATS: Cat[] = [
     labelStyle: { top: "1rem", right: "1.25rem", textAlign: "right" },
   },
   {
-    name: "زعفران پوشال",
-    count: "۶ محصول",
+    name: "زعفران دسته",
+    category: "زعفران دسته",
     area: "c",
     img: saffronPushal,
     pos: "center 45%",
@@ -37,8 +44,8 @@ const CATS: Cat[] = [
     labelStyle: { bottom: "1rem", left: "1.25rem", textAlign: "left" },
   },
   {
-    name: "پودر زعفران",
-    count: "۵ محصول",
+    name: "زعفران نرمه",
+    category: "زعفران نرمه",
     area: "d",
     img: saffronPowder,
     pos: "center 50%",
@@ -46,17 +53,8 @@ const CATS: Cat[] = [
     labelStyle: { bottom: "1rem", left: "50%", transform: "translateX(-50%)", textAlign: "center" },
   },
   {
-    name: "بسته‌های هدیه",
-    count: "۹ محصول",
-    area: "e",
-    img: giftBoxes,
-    pos: "center 50%",
-    scrim: "linear-gradient(180deg, rgba(0,0,0,0) 40%, rgba(42,26,10,0.78) 100%)",
-    labelStyle: { bottom: "1.25rem", right: "1.25rem", textAlign: "right" },
-  },
-  {
     name: "عمده‌فروشی",
-    count: "تماس بگیرید",
+    category: "عمده‌فروشی",
     area: "f",
     img: wholesale,
     pos: "center 50%",
@@ -65,7 +63,7 @@ const CATS: Cat[] = [
   },
   {
     name: "خشکبار",
-    count: "۳ محصول",
+    category: "خشکبار",
     area: "g",
     img: driedFruits,
     pos: "center 50%",
@@ -86,7 +84,6 @@ export function CategoryGrid() {
             gridTemplateColumns: "repeat(2, 1fr)",
             gridTemplateAreas: `
               "b c"
-              "e e"
               "d f"
               "g g"
             `,
@@ -96,6 +93,7 @@ export function CategoryGrid() {
           {CATS.map((c) => (
             <Link
               to="/shop"
+              search={{ category: c.category }}
               key={c.area}
               style={{
                 gridArea: c.area,
@@ -103,7 +101,7 @@ export function CategoryGrid() {
                 display: "block",
                 borderRadius: "1rem",
                 overflow: "hidden",
-                minHeight: c.area === "e" || c.area === "f" ? "240px" : "200px",
+                minHeight: c.area === "f" ? "240px" : "200px",
                 boxShadow: "0 6px 20px -10px rgba(42,26,10,0.35)",
               }}
               className="group cat-card"
@@ -140,7 +138,7 @@ export function CategoryGrid() {
               >
                 <h3 style={{ margin: 0, fontSize: "1.15rem", fontWeight: 800 }}>{c.name}</h3>
                 <p style={{ margin: "0.25rem 0 0", fontSize: "0.85rem", opacity: 0.9 }}>
-                  {c.count}
+                  {countFor(c.category)}
                 </p>
               </div>
             </Link>
@@ -154,9 +152,8 @@ export function CategoryGrid() {
           .cat-grid {
             grid-template-columns: repeat(4, 1fr) !important;
             grid-template-areas:
-              "e e b b"
-              "c d f f"
-              "g g g g" !important;
+              "b b c d"
+              "f f g g" !important;
           }
         }
       `}</style>

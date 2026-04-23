@@ -1,10 +1,16 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { ProductCard } from "@/components/product-card";
 import { CATEGORIES, PRODUCTS } from "@/data/products";
 import { cn } from "@/lib/utils";
 
+type Category = (typeof CATEGORIES)[number];
+
 export const Route = createFileRoute("/shop")({
+  validateSearch: (search: Record<string, unknown>): { category: Category } => {
+    const raw = typeof search.category === "string" ? search.category : "همه";
+    const valid = (CATEGORIES as readonly string[]).includes(raw) ? (raw as Category) : "همه";
+    return { category: valid };
+  },
   head: () => ({
     meta: [
       { title: "فروشگاه زعفران | زعفران خواجوی" },
@@ -24,7 +30,7 @@ export const Route = createFileRoute("/shop")({
 });
 
 function ShopPage() {
-  const [active, setActive] = useState<(typeof CATEGORIES)[number]>("همه");
+  const { category: active } = Route.useSearch();
   const items = active === "همه" ? PRODUCTS : PRODUCTS.filter((p) => p.category === active);
 
   return (
@@ -41,9 +47,10 @@ function ShopPage() {
         {/* Filter chips */}
         <div className="mb-8 flex flex-wrap justify-center gap-2">
           {CATEGORIES.map((c) => (
-            <button
+            <Link
               key={c}
-              onClick={() => setActive(c)}
+              to="/shop"
+              search={{ category: c }}
               className={cn(
                 "rounded-full border px-4 py-2 text-xs md:text-sm font-bold transition",
                 active === c
@@ -52,7 +59,7 @@ function ShopPage() {
               )}
             >
               {c}
-            </button>
+            </Link>
           ))}
         </div>
 
