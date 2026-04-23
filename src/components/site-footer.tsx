@@ -36,6 +36,7 @@ export function SiteFooter() {
           <ul className="list-none p-0 m-0 space-y-2.5 text-sm leading-7 text-white/80">
             <li><Link to="/" className="hover:text-[color:var(--saffron)]">خانه</Link></li>
             <li><Link to="/shop" className="hover:text-[color:var(--saffron)]">فروشگاه</Link></li>
+            <li><Link to="/blog" className="hover:text-[color:var(--saffron)]">مقالات</Link></li>
             <li><Link to="/about" className="hover:text-[color:var(--saffron)]">درباره ما</Link></li>
             <li><Link to="/contact" className="hover:text-[color:var(--saffron)]">تماس با ما</Link></li>
           </ul>
