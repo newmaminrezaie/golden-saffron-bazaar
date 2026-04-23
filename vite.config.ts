@@ -1,7 +1,6 @@
 // Static-site build for self-hosted Nginx deployment.
-// We still use Lovable's wrapper (so the in-app preview/HMR keeps working),
-// but we disable the Cloudflare Worker preset and ask TanStack Start to
-// prerender every route to plain HTML in `dist/`.
+// The TanStack Start config wrapper disables the Cloudflare Worker preset
+// and asks the framework to prerender every route to plain HTML in `dist/`.
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from "node:fs";
 import { fileURLToPath } from "node:url";
