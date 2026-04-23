@@ -2,11 +2,11 @@ import { createFileRoute, Link, notFound, useRouter } from "@tanstack/react-rout
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { ChevronRight } from "lucide-react";
-import { fetchArticleBySlug, formatPersianDate } from "@/lib/articles";
+import { getArticleBySlug, formatPersianDate } from "@/lib/articles";
 
 export const Route = createFileRoute("/blog_/$slug")({
-  loader: async ({ params }) => {
-    const article = await fetchArticleBySlug(params.slug);
+  loader: ({ params }) => {
+    const article = getArticleBySlug(params.slug);
     if (!article) throw notFound();
     return { article };
   },

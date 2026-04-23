@@ -1,8 +1,8 @@
 import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
-import { fetchArticles, formatPersianDate, type Article } from "@/lib/articles";
+import { getArticles, formatPersianDate, type Article } from "@/lib/articles";
 
 export const Route = createFileRoute("/blog")({
-  loader: () => fetchArticles(),
+  loader: () => getArticles(),
   head: () => ({
     meta: [
       { title: "مقالات | زعفران خواجوی" },
