@@ -1,8 +1,13 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { createFileRoute, Link, notFound, useRouter } from "@tanstack/react-router";
 import { ShoppingBag, ChevronRight } from "lucide-react";
 import { formatToman, getProductBySlug, PRODUCTS } from "@/data/products";
 import { cn } from "@/lib/utils";
+
+const FA_DIGITS = ["۰", "۱", "۲", "۳", "۴", "۵", "۶", "۷", "۸", "۹"];
+function toFa(n: number): string {
+  return String(n).replace(/\d/g, (d) => FA_DIGITS[Number(d)]);
+}
 
 export const Route = createFileRoute("/shop_/$slug")({
   loader: ({ params }) => {
@@ -72,6 +77,27 @@ export const Route = createFileRoute("/shop_/$slug")({
 function ProductPage() {
   const { product } = Route.useLoaderData();
   const [activeImg, setActiveImg] = useState(0);
+  const [tierIdx, setTierIdx] = useState(0);
+  const tiers = product.priceTiers;
+  const hasTiers = !!tiers && tiers.length > 0;
+  const selectedTier = hasTiers ? tiers![tierIdx] ?? tiers![0] : null;
+  const basePerGram = hasTiers ? tiers![0].price / tiers![0].quantity : 0;
+  const selectedPerGram = selectedTier ? selectedTier.price / selectedTier.quantity : 0;
+  const savingsPct =
+    hasTiers && tierIdx > 0 && basePerGram > 0
+      ? Math.round((1 - selectedPerGram / basePerGram) * 100)
+      : 0;
+  const displayPrice = selectedTier ? selectedTier.price : product.price;
+
+  // Dev-only invariant check
+  useEffect(() => {
+    if (import.meta.env.DEV && hasTiers && tiers![0].price !== product.price) {
+      console.warn(
+        `[products] "${product.slug}": priceTiers[0].price (${tiers![0].price}) does not match product.price (${product.price}). They MUST be equal.`,
+      );
+    }
+  }, [product.slug, product.price, tiers, hasTiers]);
+
   const related = PRODUCTS.filter(
     (p) => p.category === product.category && p.slug !== product.slug,
   ).slice(0, 4);
@@ -145,15 +171,54 @@ function ProductPage() {
             )}
 
             <div className="mt-6 flex items-end gap-3">
-              {product.oldPrice && (
+              {product.oldPrice && !hasTiers && (
                 <span className="text-sm text-muted-foreground line-through">
                   {formatToman(product.oldPrice)}
                 </span>
               )}
               <span className="text-2xl font-extrabold text-foreground">
-                {formatToman(product.price)}
+                {formatToman(displayPrice)}
               </span>
+              {hasTiers && (
+                <span className="pb-1 text-xs text-muted-foreground">
+                  هر گرم: {formatToman(Math.round(selectedPerGram))}
+                </span>
+              )}
             </div>
+
+            {hasTiers && savingsPct > 0 && (
+              <p className="mt-2 text-xs font-bold text-[color:var(--brown-medium)]">
+                صرفه‌جویی {toFa(savingsPct)}٪ نسبت به خرید تکی
+              </p>
+            )}
+
+            {hasTiers && (
+              <div className="mt-5">
+                <p className="mb-2 text-xs font-bold text-foreground/80">انتخاب مقدار:</p>
+                <div className="flex flex-wrap gap-2">
+                  {tiers!.map((t, i) => {
+                    const label = t.label ?? `${toFa(t.quantity)} گرم`;
+                    const active = i === tierIdx;
+                    return (
+                      <button
+                        key={i}
+                        type="button"
+                        onClick={() => setTierIdx(i)}
+                        className={cn(
+                          "rounded-full border px-4 py-2 text-xs font-bold transition",
+                          active
+                            ? "border-[color:var(--brown-deep)] bg-[color:var(--brown-deep)] text-[color:var(--parchment)]"
+                            : "border-border bg-background text-foreground/80 hover:border-[color:var(--brown-medium)]",
+                        )}
+                        aria-pressed={active}
+                      >
+                        {label}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
 
             <button
               type="button"
@@ -161,7 +226,11 @@ function ProductPage() {
               className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-full bg-[color:var(--brown-deep)] px-6 py-3 text-sm font-bold text-[color:var(--parchment)] transition hover:bg-[color:var(--brown-medium)] disabled:cursor-not-allowed disabled:opacity-50 md:w-auto"
             >
               <ShoppingBag className="size-4" />
-              {product.inStock === false ? "ناموجود" : "افزودن به سبد خرید"}
+              {product.inStock === false
+                ? "ناموجود"
+                : hasTiers
+                  ? `افزودن به سبد — ${formatToman(displayPrice)}`
+                  : "افزودن به سبد خرید"}
             </button>
 
             {product.description && (
