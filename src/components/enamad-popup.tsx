@@ -30,8 +30,7 @@ export function EnamadPopup() {
 
   return (
     <div
-      className="fixed bottom-6 right-6 z-50 bg-white rounded-xl border border-black/10 shadow-xl p-2 flex items-center justify-center"
-      style={{ width: 140, height: 140 }}
+      className="fixed bottom-4 left-4 md:bottom-6 md:left-6 z-50 bg-white rounded-xl border border-black/10 shadow-xl p-2 flex items-center justify-center w-[90px] h-[90px] md:w-[120px] md:h-[120px]"
       role="dialog"
       aria-label="نماد اعتماد الکترونیکی"
     >
@@ -39,9 +38,9 @@ export function EnamadPopup() {
         type="button"
         onClick={dismiss}
         aria-label="بستن"
-        className="absolute -top-2 -left-2 bg-white border border-black/10 rounded-full w-7 h-7 flex items-center justify-center shadow hover:bg-gray-50 transition"
+        className="absolute -top-2 -right-2 bg-white border border-black/10 rounded-full w-6 h-6 md:w-7 md:h-7 flex items-center justify-center shadow hover:bg-gray-50 transition"
       >
-        <X className="size-4 text-[color:var(--brown-deep)]" />
+        <X className="size-3.5 md:size-4 text-[color:var(--brown-deep)]" />
       </button>
       <a
         referrerPolicy="origin"
