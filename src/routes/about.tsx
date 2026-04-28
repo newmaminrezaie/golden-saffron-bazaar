@@ -102,6 +102,7 @@ function AboutPage() {
           </p>
           <Link
             to="/shop"
+            search={{ category: "همه" }}
             className="mt-6 inline-flex items-center gap-2 rounded-full bg-[color:var(--saffron)] px-6 py-3 text-sm font-bold text-[color:var(--brown-deep)] transition hover:opacity-90"
           >
             مشاهده محصولات ←

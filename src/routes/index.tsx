@@ -5,6 +5,7 @@ import { FeaturedProducts } from "@/components/home/featured-products";
 import { GiftCorporate } from "@/components/home/gift-corporate";
 import { PromiseStrip } from "@/components/home/promise-strip";
 import { AboutTeaser } from "@/components/home/about-teaser";
+import { EnamadPopup } from "@/components/enamad-popup";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -34,6 +35,7 @@ function Home() {
       <GiftCorporate />
       <PromiseStrip />
       <AboutTeaser />
+      <EnamadPopup />
     </>
   );
 }
