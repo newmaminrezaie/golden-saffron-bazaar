@@ -87,8 +87,23 @@ export function SiteFooter() {
         <div className="md:col-span-3">
           <h4 className="text-base font-bold tracking-tight mb-4 text-white">نمادهای اعتماد</h4>
           <div className="grid grid-cols-3 gap-3">
+            <a
+              referrerPolicy="origin"
+              target="_blank"
+              rel="noopener noreferrer"
+              href="https://trustseal.enamad.ir/?id=720710&Code=wRYn3reyeBtj2jZJ2oZYzZfyeKkh6don"
+              aria-label="نماد اعتماد الکترونیکی"
+              className="bg-white/95 rounded-xl border border-white/10 p-2 w-full aspect-square flex items-center justify-center shadow-sm hover:bg-white transition"
+            >
+              <img
+                referrerPolicy="origin"
+                src="https://trustseal.enamad.ir/logo.aspx?id=720710&Code=wRYn3reyeBtj2jZJ2oZYzZfyeKkh6don"
+                alt="نماد اعتماد الکترونیکی"
+                data-code="wRYn3reyeBtj2jZJ2oZYzZfyeKkh6don"
+                style={{ cursor: "pointer", maxWidth: "100%", maxHeight: "100%" }}
+              />
+            </a>
             {[
-              { Icon: ShieldCheck, label: "eNAMAD.ir", sub: "جهت اطمینان کلیک نمایید", aria: "نماد اعتماد الکترونیکی" },
               { Icon: Award, label: "Emalls", sub: "مرجع خرید آنلاین", aria: "ایمالز" },
               { Icon: BadgeCheck, label: "samandehi.ir", sub: "ساماندهی", aria: "ساماندهی" },
             ].map(({ Icon, label, sub, aria }) => (
