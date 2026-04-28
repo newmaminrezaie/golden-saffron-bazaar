@@ -31,8 +31,15 @@ export function GiftCorporate() {
     if (!rail) return;
     const onScroll = () => {
       const card = rail.querySelector<HTMLElement>("[data-gift-card]");
-      const width = (card?.offsetWidth ?? 280) + 16;
-      const idx = Math.round(Math.abs(rail.scrollLeft) / width);
+      const width = (card?.offsetWidth ?? 240) + 16;
+      const maxScroll = rail.scrollWidth - rail.clientWidth;
+      const pos = Math.abs(rail.scrollLeft);
+      // If we're at (or within 8px of) the end, lock to the last index — avoids
+      // RTL rounding glitches on iOS Safari where the last dot never lights up.
+      const idx =
+        pos >= maxScroll - 8
+          ? giftProducts.length - 1
+          : Math.round(pos / width);
       setActiveIndex(Math.min(giftProducts.length - 1, Math.max(0, idx)));
     };
     rail.addEventListener("scroll", onScroll, { passive: true });
@@ -93,14 +100,18 @@ export function GiftCorporate() {
 
         <div
           ref={railRef}
-          className="flex snap-x snap-mandatory gap-4 overflow-x-auto pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-          style={{ scrollSnapType: "x mandatory" }}
+          className="flex snap-x snap-mandatory gap-4 overflow-x-auto overscroll-x-contain pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          style={{
+            scrollSnapType: "x mandatory",
+            touchAction: "pan-x",
+            scrollPaddingInline: "1rem",
+          }}
         >
           {giftProducts.map((p) => (
             <div
               key={p.id}
               data-gift-card
-              className="w-[260px] shrink-0 snap-start md:w-[300px]"
+              className="w-[240px] shrink-0 snap-start md:w-[300px]"
             >
               <ProductCard p={p} />
             </div>
@@ -109,8 +120,18 @@ export function GiftCorporate() {
 
         <div className="mt-5 flex justify-center gap-2">
           {giftProducts.map((_, i) => (
-            <span
+            <button
               key={i}
+              type="button"
+              aria-label={`رفتن به محصول ${i + 1}`}
+              onClick={() => {
+                const rail = railRef.current;
+                if (!rail) return;
+                const card = rail.querySelector<HTMLElement>("[data-gift-card]");
+                const width = (card?.offsetWidth ?? 240) + 16;
+                const dir = getComputedStyle(rail).direction === "rtl" ? -1 : 1;
+                rail.scrollTo({ left: dir * i * width, behavior: "smooth" });
+              }}
               className={`h-1.5 rounded-full transition-all ${
                 i === activeIndex
                   ? "w-6 bg-[color:var(--parchment)]"
