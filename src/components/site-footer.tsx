@@ -23,7 +23,7 @@ export function SiteFooter() {
             "radial-gradient(ellipse at center, black 55%, transparent 85%)",
         }}
       />
-      <div className="mx-auto max-w-7xl px-6 md:px-10 pt-20 md:pt-24 pb-10 grid gap-10 md:gap-8 md:grid-cols-12">
+      <div className="mx-auto max-w-7xl px-6 md:px-10 pt-32 md:pt-36 pb-10 grid gap-10 md:gap-8 md:grid-cols-12">
         <div className="md:col-span-4">
           <p className="text-sm leading-7 text-white/75 mb-6">
             زعفران ممتاز و اصل قائنات،<br />

@@ -43,7 +43,7 @@ export function GiftCorporate() {
 
   return (
     <section
-      className="relative overflow-hidden px-4 py-16 md:py-24"
+      className="relative overflow-hidden px-4 py-8 md:py-12"
       style={{
         backgroundImage: `url(${ornament})`,
         backgroundRepeat: "repeat",
