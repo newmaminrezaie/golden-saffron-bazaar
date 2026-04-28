@@ -63,9 +63,6 @@ export function GiftCorporate() {
       <div className="relative mx-auto max-w-7xl">
         <div className="mb-8 flex items-end justify-between gap-4">
           <div>
-            <p className="font-display text-2xl text-[color:var(--parchment)]/80">
-              gift &amp; corporate
-            </p>
             <h2 className="text-2xl md:text-3xl font-extrabold text-[color:var(--parchment)]">
               محصولات کادویی و سازمانی
             </h2>
