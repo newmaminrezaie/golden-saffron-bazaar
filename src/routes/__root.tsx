@@ -40,16 +40,32 @@ export const Route = createRootRoute({
         content:
           "زعفران خواجوی - عرضه‌کننده زعفران ممتاز قائنات؛ سرگل، نگین، پوشال و پودر زعفران اصل با ضمانت کیفیت.",
       },
+      {
+        name: "keywords",
+        content:
+          "زعفران خواجوی, زعفران قائنات, زعفران نگین, زعفران سرگل, خرید زعفران, طلای سرخ, زعفران اصل, زعفران گناباد, خشکبار قائنات",
+      },
       { name: "author", content: "Khajavi Saffron" },
+      { name: "robots", content: "index, follow" },
+      { httpEquiv: "Content-Language", content: "fa-IR" },
+      { property: "og:locale", content: "fa_IR" },
+      { property: "og:site_name", content: "زعفران خواجوی" },
       { property: "og:title", content: "زعفران خواجوی" },
       {
         property: "og:description",
         content: "زعفران ممتاز و اصل قائنات با ضمانت کیفیت.",
       },
       { property: "og:type", content: "website" },
-      { property: "og:image", content: "/og-image.png" },
+      { property: "og:url", content: "https://khajavisaffron.ir/" },
+      { property: "og:image", content: "https://khajavisaffron.ir/og-image.png" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:image", content: "/og-image.png" },
+      { name: "twitter:title", content: "زعفران خواجوی" },
+      {
+        name: "twitter:description",
+        content: "زعفران ممتاز و اصل قائنات با ضمانت کیفیت.",
+      },
+      { name: "twitter:image", content: "https://khajavisaffron.ir/og-image.png" },
+      { name: "theme-color", content: "#5a3e2e" },
     ],
     links: [
       { rel: "preload", href: appCss, as: "style" },
@@ -57,6 +73,26 @@ export const Route = createRootRoute({
       { rel: "icon", type: "image/png", href: "/favicon.png" },
       { rel: "shortcut icon", href: "/favicon.ico" },
       { rel: "apple-touch-icon", href: "/favicon.png" },
+      { rel: "canonical", href: "https://khajavisaffron.ir/" },
+    ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          name: "زعفران خواجوی",
+          alternateName: "Khajavi Saffron",
+          url: "https://khajavisaffron.ir",
+          logo: "https://khajavisaffron.ir/favicon.png",
+          description:
+            "تولید و عرضه زعفران اصل قائنات؛ سرگل، نگین، دسته، نرمه و خشکبار با ضمانت کیفیت.",
+          sameAs: [
+            "https://instagram.com/khajavi.saffron111",
+            "https://rubika.ir/saffron_khajavi",
+          ],
+        }),
+      },
     ],
   }),
   shellComponent: RootShell,
