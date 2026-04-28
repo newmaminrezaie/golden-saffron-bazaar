@@ -5,7 +5,6 @@ import {
   Mail,
   MapPin,
   MessageCircle,
-  Award,
   BadgeCheck,
 } from "lucide-react";
 import khajaviEmblem from "@/assets/khajavi-emblem.png";
