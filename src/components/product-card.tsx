@@ -40,8 +40,6 @@ export function ProductCard({ p }: { p: Product }) {
         className="relative aspect-square overflow-hidden bg-secondary"
         onMouseEnter={startCycle}
         onMouseLeave={stopCycle}
-        onTouchStart={startCycle}
-        onTouchEnd={stopCycle}
       >
         {images.map((src, i) => (
           <img
