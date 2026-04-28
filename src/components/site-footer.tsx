@@ -5,9 +5,9 @@ import {
   Mail,
   MapPin,
   MessageCircle,
-  BadgeCheck,
 } from "lucide-react";
 import khajaviEmblem from "@/assets/khajavi-emblem.png";
+import samandehiSeal from "@/assets/samandehi.png";
 
 export function SiteFooter() {
   return (
