@@ -115,20 +115,19 @@ export function SiteFooter() {
                 style={{ maxWidth: "100%", maxHeight: "100%" }}
               />
             </a>
-            {[
-              { Icon: BadgeCheck, label: "samandehi.ir", sub: "ساماندهی", aria: "ساماندهی" },
-            ].map(({ Icon, label, sub, aria }) => (
-              <a
-                key={label}
-                href="#"
-                aria-label={aria}
-                className="bg-white/95 rounded-xl border border-white/10 p-2 w-full aspect-square flex flex-col items-center justify-center text-center shadow-sm text-[color:var(--brown-deep)] hover:bg-white transition"
-              >
-                <Icon className="size-6 mb-1" />
-                <span className="text-[11px] font-bold leading-tight" dir="ltr">{label}</span>
-                <span className="text-[10px] leading-tight text-[color:var(--brown-deep)]/70">{sub}</span>
-              </a>
-            ))}
+            <a
+              href="https://samandehi.ir"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="نماد ساماندهی"
+              className="bg-white/95 rounded-xl border border-white/10 p-2 w-full aspect-square flex items-center justify-center shadow-sm hover:bg-white transition"
+            >
+              <img
+                src={samandehiSeal}
+                alt="نماد ساماندهی"
+                style={{ maxWidth: "100%", maxHeight: "100%" }}
+              />
+            </a>
           </div>
         </div>
       </div>
