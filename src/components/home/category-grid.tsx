@@ -5,11 +5,13 @@ import saffronPushal from "@/assets/saffron-pushal.jpg";
 import saffronPowder from "@/assets/saffron-powder.jpeg";
 import wholesale from "@/assets/wholesale.png";
 import driedFruits from "@/assets/dried-fruits.webp";
-import { PRODUCTS } from "@/data/products";
+import { CATEGORIES, PRODUCTS } from "@/data/products";
+
+type Category = (typeof CATEGORIES)[number];
 
 type Cat = {
   name: string;
-  category: string;
+  category: Category;
   area: string;
   img: string;
   pos: string;

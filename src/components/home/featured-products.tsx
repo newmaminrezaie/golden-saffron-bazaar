@@ -16,6 +16,7 @@ export function FeaturedProducts() {
           </div>
           <Link
             to="/shop"
+            search={{ category: "همه" }}
             className="text-sm font-bold text-[color:var(--brown-medium)] hover:text-accent transition"
           >
             مشاهده همه ←

@@ -66,6 +66,7 @@ export const Route = createFileRoute("/shop_/$slug")({
       </p>
       <Link
         to="/shop"
+        search={{ category: "همه" }}
         className="mt-6 inline-block rounded-full bg-[color:var(--brown-deep)] px-5 py-2 text-sm font-bold text-[color:var(--parchment)]"
       >
         بازگشت به فروشگاه
@@ -111,7 +112,7 @@ function ProductPage() {
             خانه
           </Link>
           <ChevronRight className="size-3 rotate-180" />
-          <Link to="/shop" className="hover:text-foreground">
+          <Link to="/shop" search={{ category: "همه" }} className="hover:text-foreground">
             فروشگاه
           </Link>
           <ChevronRight className="size-3 rotate-180" />

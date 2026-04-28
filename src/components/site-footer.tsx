@@ -5,7 +5,6 @@ import {
   Mail,
   MapPin,
   MessageCircle,
-  ShieldCheck,
   Award,
   BadgeCheck,
 } from "lucide-react";
@@ -35,7 +34,7 @@ export function SiteFooter() {
           <h4 className="text-base font-bold tracking-tight mb-4 mt-2 text-white">دسترسی سریع</h4>
           <ul className="list-none p-0 m-0 space-y-2.5 text-sm leading-7 text-white/80">
             <li><Link to="/" className="hover:text-[color:var(--saffron)]">خانه</Link></li>
-            <li><Link to="/shop" className="hover:text-[color:var(--saffron)]">فروشگاه</Link></li>
+            <li><Link to="/shop" search={{ category: "همه" }} className="hover:text-[color:var(--saffron)]">فروشگاه</Link></li>
             <li><Link to="/blog" className="hover:text-[color:var(--saffron)]">مقالات</Link></li>
             <li><Link to="/about" className="hover:text-[color:var(--saffron)]">درباره ما</Link></li>
             <li><Link to="/contact" className="hover:text-[color:var(--saffron)]">تماس با ما</Link></li>
