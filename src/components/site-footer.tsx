@@ -5,7 +5,6 @@ import {
   Mail,
   MapPin,
   MessageCircle,
-  Award,
   BadgeCheck,
 } from "lucide-react";
 import khajaviEmblem from "@/assets/khajavi-emblem.png";
@@ -102,8 +101,21 @@ export function SiteFooter() {
                 style={{ cursor: "pointer", maxWidth: "100%", maxHeight: "100%" }}
               />
             </a>
+            <a
+              href="https://emalls.ir/Shop/77208/"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="نشان اعتباری ایمالز"
+              className="bg-white/95 rounded-xl border border-white/10 p-2 w-full aspect-square flex items-center justify-center shadow-sm hover:bg-white transition"
+            >
+              <img
+                referrerPolicy="origin"
+                src="https://service.emalls.ir/neshan?id=77208"
+                alt="نشان اعتباری ایمالز"
+                style={{ maxWidth: "100%", maxHeight: "100%" }}
+              />
+            </a>
             {[
-              { Icon: Award, label: "Emalls", sub: "مرجع خرید آنلاین", aria: "ایمالز" },
               { Icon: BadgeCheck, label: "samandehi.ir", sub: "ساماندهی", aria: "ساماندهی" },
             ].map(({ Icon, label, sub, aria }) => (
               <a
