@@ -1,7 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { ShoppingBag } from "lucide-react";
+import { toast } from "sonner";
 import { formatToman, type Product } from "@/data/products";
+import { useCart } from "@/lib/cart";
 import { cn } from "@/lib/utils";
 
 export function ProductCard({ p }: { p: Product }) {
@@ -9,6 +11,7 @@ export function ProductCard({ p }: { p: Product }) {
   const hasMultiple = images.length > 1;
   const [index, setIndex] = useState(0);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const { add } = useCart();
 
   const startCycle = () => {
     if (!hasMultiple || intervalRef.current) return;
@@ -93,6 +96,16 @@ export function ProductCard({ p }: { p: Product }) {
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
+              add({
+                lineId: `${p.id}::default`,
+                productId: p.id,
+                slug: p.slug,
+                name: p.name,
+                unitPrice: p.price,
+                image: p.images[0],
+                weight: p.weight,
+              });
+              toast.success(`${p.name} به سبد افزوده شد`);
             }}
             className="inline-flex items-center gap-1.5 rounded-full bg-[color:var(--brown-deep)] px-3 py-2 text-xs font-bold text-[color:var(--parchment)] transition hover:bg-[color:var(--brown-medium)]"
             aria-label={`افزودن ${p.name} به سبد خرید`}

@@ -2,6 +2,10 @@ import { Link } from "@tanstack/react-router";
 import { Search, ShoppingBag, User, Menu, X } from "lucide-react";
 import { useState } from "react";
 import { BrandLockup } from "./brand/brand-lockup";
+import { useCart } from "@/lib/cart";
+
+const FA = ["۰", "۱", "۲", "۳", "۴", "۵", "۶", "۷", "۸", "۹"];
+const toFa = (n: number) => String(n).replace(/\d/g, (d) => FA[Number(d)]);
 
 const navItems = [
   { to: "/", label: "خانه" },
@@ -13,6 +17,7 @@ const navItems = [
 
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
+  const { count, open: openCart } = useCart();
 
   return (
     <header className="sticky top-0 z-50 border-b border-border/60 bg-background/85 backdrop-blur">
@@ -45,11 +50,18 @@ export function SiteHeader() {
           <button aria-label="حساب کاربری" className="p-2 rounded-full hover:bg-secondary transition hidden sm:inline-flex">
             <User className="size-5" />
           </button>
-          <button aria-label="سبد خرید" className="p-2 rounded-full hover:bg-secondary transition relative">
+          <button
+            type="button"
+            onClick={openCart}
+            aria-label="سبد خرید"
+            className="p-2 rounded-full hover:bg-secondary transition relative"
+          >
             <ShoppingBag className="size-5" />
-            <span className="absolute -top-0.5 -left-0.5 size-4 rounded-full bg-accent text-[10px] font-bold text-accent-foreground grid place-items-center">
-              ۰
-            </span>
+            {count > 0 && (
+              <span className="absolute -top-0.5 -left-0.5 size-4 rounded-full bg-accent text-[10px] font-bold text-accent-foreground grid place-items-center">
+                {toFa(count)}
+              </span>
+            )}
           </button>
           <button
             aria-label="منو"

@@ -6,6 +6,8 @@ import { SiteFooter } from "@/components/site-footer";
 import { Toaster } from "@/components/ui/sonner";
 import { FloatingContact } from "@/components/floating-contact";
 import { AnnouncementBar } from "@/components/announcement-bar";
+import { CartProvider } from "@/lib/cart";
+import { CartDrawer } from "@/components/cart-drawer";
 
 function NotFoundComponent() {
   return (
@@ -116,15 +118,18 @@ function RootShell({ children }: { children: React.ReactNode }) {
 
 function RootComponent() {
   return (
-    <div className="min-h-screen flex flex-col bg-background text-foreground">
-      <AnnouncementBar />
-      <SiteHeader />
-      <main className="flex-1">
-        <Outlet />
-      </main>
-      <SiteFooter />
-      <Toaster richColors position="top-center" />
-      <FloatingContact />
-    </div>
+    <CartProvider>
+      <div className="min-h-screen flex flex-col bg-background text-foreground">
+        <AnnouncementBar />
+        <SiteHeader />
+        <main className="flex-1">
+          <Outlet />
+        </main>
+        <SiteFooter />
+        <Toaster richColors position="top-center" />
+        <FloatingContact />
+        <CartDrawer />
+      </div>
+    </CartProvider>
   );
 }
