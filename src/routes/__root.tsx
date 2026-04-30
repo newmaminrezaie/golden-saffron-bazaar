@@ -1,4 +1,13 @@
-import { Outlet, Link, createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
+import {
+  Outlet,
+  Link,
+  createRootRoute,
+  HeadContent,
+  Scripts,
+  useLocation,
+  useRouter,
+} from "@tanstack/react-router";
+import { useEffect } from "react";
 
 import appCss from "../styles.css?url";
 import { SiteHeader } from "@/components/site-header";
@@ -6,7 +15,7 @@ import { SiteFooter } from "@/components/site-footer";
 import { Toaster } from "@/components/ui/sonner";
 import { FloatingContact } from "@/components/floating-contact";
 import { AnnouncementBar } from "@/components/announcement-bar";
-import { CartProvider } from "@/lib/cart";
+import { CartProvider, useCart } from "@/lib/cart";
 import { CartDrawer } from "@/components/cart-drawer";
 
 function NotFoundComponent() {
@@ -119,6 +128,7 @@ function RootShell({ children }: { children: React.ReactNode }) {
 function RootComponent() {
   return (
     <CartProvider>
+      <ReopenCartFromUrl />
       <div className="min-h-screen flex flex-col bg-background text-foreground">
         <AnnouncementBar />
         <SiteHeader />
@@ -132,4 +142,34 @@ function RootComponent() {
       </div>
     </CartProvider>
   );
+}
+
+/**
+ * When a route arrives with `?reopen=cart` (e.g. from /payment/failed),
+ * open the cart drawer and strip the param so a refresh doesn't reopen it.
+ */
+function ReopenCartFromUrl() {
+  const { open } = useCart();
+  const location = useLocation();
+  const router = useRouter();
+
+  // location.search is the parsed query object in TanStack Router.
+  const search = location.search as Record<string, unknown>;
+  const reopen = search?.reopen;
+
+  useEffect(() => {
+    if (reopen !== "cart") return;
+    open();
+    router.navigate({
+      to: location.pathname,
+      search: (prev: Record<string, unknown>) => {
+        const { reopen: _ignored, ...rest } = (prev ?? {}) as Record<string, unknown>;
+        void _ignored;
+        return rest;
+      },
+      replace: true,
+    });
+  }, [reopen, location.pathname, open, router]);
+
+  return null;
 }

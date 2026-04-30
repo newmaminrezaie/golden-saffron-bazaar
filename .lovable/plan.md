@@ -1,35 +1,85 @@
-## Goal
-Add `/admin/orders` page in the React app to view all orders placed (from the Express backend).
+# Wire frontend checkout flow
 
-## Backend (already exists)
-`GET /api/orders` on the Express server (port 3002) requires header `x-admin-token: $ADMIN_TOKEN`. Returns `{ ok, count, orders: [...] }` where each order has id, created_at, customer info, items, subtotal, shipping, total, method, status, authority, raw_callback.
+The Express backend at `/api/*` is already complete and contractually defines the flow. The frontend only partially uses it (Zibal request only, no result pages, no card-to-card UI). This plan finishes the wiring.
 
-No backend changes needed.
+## Backend contract (already implemented, do not change)
 
-## Frontend changes
+```text
+POST /api/order          -> Zibal: { ok, order_id, total, redirect }
+POST /api/order-sep      -> Saman: { ok, order_id, total, redirect }
+POST /api/order-card     -> Card-to-card: { ok, order_id, total, subtotal,
+                            shipping, card:{number,holder,bank}, instructions }
+GET  /payment/callback     (Zibal -> /payment/success?order=… or /payment/failed?…)
+GET/POST /payment/callback-sep (same)
+```
 
-### 1. New route `src/routes/admin.orders.tsx`
-- Admin token gate: prompt for token, store in `localStorage` (`khajavi_admin_token`). Simple — this is a private staff page, not a public auth surface; the real security is the server-side token check.
-- On mount (and after token entry), fetch `${VITE_API_BASE}/api/orders` with header `x-admin-token`.
-- Show RTL table with columns: شناسه سفارش، تاریخ، مشتری، موبایل، روش پرداخت، وضعیت، مبلغ کل، اقلام (expandable).
-- Filter chips by status: all / pending / paid / failed / awaiting_card_confirm.
-- Refresh button + auto-refresh every 30s.
-- Status badges with colors (paid=green, pending=amber, failed=red, awaiting_card_confirm=blue).
-- "Logout" button to clear stored token.
-- `head()` with `noindex` meta so search engines skip it.
+All three POSTs accept the same body:
+`{ customer:{name,phone,address,postal_code?,note?}, items:[{id,name,qty,price}], subtotal }`
 
-### 2. API base config
-Add `VITE_API_BASE` usage. Default to `https://khajavisaffron.ir` in production; allow override via env. Read with `import.meta.env.VITE_API_BASE ?? ""` (empty string means same-origin, which is correct on the live domain when nginx proxies `/api` to the Express server).
+## Changes
 
-### 3. Small helpers (inline in the route file, no new shared modules)
-- `formatToman(n)` — fa-IR digits + " تومان".
-- `formatDate(ts)` — fa-IR locale, jalaali if available via `Intl` (fallback to default).
-- `statusLabel(s)` / `statusColor(s)`.
+### 1. Cart drawer — add payment-method selector
+File: `src/components/cart-drawer.tsx`
 
-## Out of scope
-- No order mutation (mark paid / refund / delete) — view only.
-- No pagination beyond the existing `limit` query param (default backend limit applies).
-- No role table in Supabase — this admin page uses the existing Express `ADMIN_TOKEN`, matching how the backend was designed.
+- Add a small segmented control above the submit button: «زیبال» (default), «کارت‌به‌کارت». (Skip Saman unless requested.)
+- Reuse the existing customer form + validation.
+- On submit:
+  - Zibal: POST `/api/order`, then `window.location.href = data.redirect` (current behaviour).
+  - Card: POST `/api/order-card`, then client-side navigate to `/payment/card?order=<id>` carrying the response in `sessionStorage` (key `khajavi.cardOrder.<id>`).
+- On any successful response, call `clear()` from `useCart` and `close()` the drawer before navigating, so the cart is empty when the user returns.
+- Persist the customer form to `localStorage` (`khajavi.checkoutForm.v1`) so a failed redirect doesn't lose what they typed.
+
+### 2. New route `/payment/success`
+File: `src/routes/payment.success.tsx`
+
+- Reads `?order=KHJ-…` from `Route.useSearch()`.
+- Shows a confirmation card: green check, "پرداخت با موفقیت انجام شد"، شماره سفارش (with the existing `CopyButton`), and a note that اطلاعات سفارش از طریق تماس/پیامک ارسال خواهد شد.
+- Buttons: «بازگشت به فروشگاه» (`/shop`) and «صفحه اصلی» (`/`).
+- `head()` sets `noindex,nofollow` (transactional page).
+- Calls `clear()` once on mount as a safety net.
+
+### 3. New route `/payment/failed`
+File: `src/routes/payment.failed.tsx`
+
+- Reads `?order=…&reason=…` from search.
+- Shows a red error card with a Persian explanation and a small details line containing the raw `reason` value (helpful for support).
+- Buttons: «بازگشت به سبد خرید» (re-opens the cart drawer via a small URL flag, e.g. `?reopen=cart`) and «تماس با پشتیبانی».
+- The cart is **not** cleared so the user can retry.
+
+### 4. New route `/payment/card`
+File: `src/routes/payment.card.tsx`
+
+- Reads `?order=…` from search and pulls the saved response from `sessionStorage`.
+- Shows:
+  - شماره سفارش + مبلغ کل (`total` toman) با دکمه کپی روی شماره سفارش.
+  - کادر آبی شماره کارت `6037 9974 6126 4344`، نام صاحب حساب «مجید خواجوی»، بانک ملی ایران، با دکمه‌های کپی (uses existing `CopyButton`).
+  - متن `instructions` که سرور فرستاده.
+  - دکمه واتس‌اپ که یک متن آماده می‌سازد: شامل شماره سفارش + مبلغ + متن «شماره پیگیری و چهار رقم آخر کارت من: …» و آن را در `wa.me/989XXXXXXXXX` باز می‌کند (شماره از یک ثابت در فایل).
+- اگر sessionStorage خالی است (مثلا کاربر مستقیم آدرس را وارد کرده)، یک پیام خطا با لینک بازگشت به سبد نمایش داده می‌شود.
+
+### 5. Re-open cart on `?reopen=cart`
+File: `src/routes/__root.tsx` (or wherever `<CartDrawer />` mounts) — add a tiny effect that reads `location.search`, opens the cart if `reopen=cart`, then strips the param via `router.navigate({ replace:true })`.
+
+## Technical notes
+
+- All three new routes use `createFileRoute` with `validateSearch` (zod) to strongly type query params.
+- Uses existing `API_BASE = import.meta.env.VITE_API_BASE` pattern; on production this is empty so calls go to `/api/...` on the same origin (matches Nginx setup).
+- No Supabase / Lovable Cloud involved — pure fetch to the Express server.
+- All copy buttons reuse `src/components/copy-button.tsx`.
+- Telegram notification is already fired from the server's verify step; nothing needed on the client.
 
 ## Files
-- create `src/routes/admin.orders.tsx`
+
+Create:
+- `src/routes/payment.success.tsx`
+- `src/routes/payment.failed.tsx`
+- `src/routes/payment.card.tsx`
+
+Edit:
+- `src/components/cart-drawer.tsx` (method selector, card flow, cart clearing, form persistence)
+- `src/routes/__root.tsx` (handle `?reopen=cart`)
+
+## Out of scope
+
+- Saman (`/api/order-sep`) — backend ready, but no UI entry point added unless you want it.
+- A dedicated `/checkout` page — current in-drawer checkout is kept; ask if you want it promoted to a full page later.

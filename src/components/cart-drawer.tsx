@@ -1,6 +1,15 @@
-import { useState } from "react";
-import { Link } from "@tanstack/react-router";
-import { Loader2, Minus, Plus, ShoppingBag, Trash2, X } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Link, useNavigate } from "@tanstack/react-router";
+import {
+  CreditCard,
+  Landmark,
+  Loader2,
+  Minus,
+  Plus,
+  ShoppingBag,
+  Trash2,
+  X,
+} from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -9,6 +18,10 @@ import {
 } from "@/components/ui/sheet";
 import { useCart } from "@/lib/cart";
 import { formatToman } from "@/data/products";
+import {
+  CARD_ORDER_STORAGE_PREFIX,
+  type CardOrderPayload,
+} from "@/routes/payment.card";
 
 const FA = ["۰", "۱", "۲", "۳", "۴", "۵", "۶", "۷", "۸", "۹"];
 const toFa = (n: number) => String(n).replace(/\d/g, (d) => FA[Number(d)]);
@@ -16,6 +29,7 @@ const toFa = (n: number) => String(n).replace(/\d/g, (d) => FA[Number(d)]);
 const SHIPPING_FEE = 30000;
 const API_BASE =
   (import.meta.env.VITE_API_BASE as string | undefined)?.replace(/\/$/, "") ?? "";
+const FORM_STORAGE_KEY = "khajavi.checkoutForm.v1";
 
 type CustomerForm = {
   name: string;
@@ -25,6 +39,8 @@ type CustomerForm = {
   note: string;
 };
 
+type PaymentMethod = "zibal" | "card";
+
 const EMPTY_FORM: CustomerForm = {
   name: "",
   phone: "",
@@ -32,6 +48,18 @@ const EMPTY_FORM: CustomerForm = {
   postal_code: "",
   note: "",
 };
+
+function readSavedForm(): CustomerForm {
+  if (typeof window === "undefined") return EMPTY_FORM;
+  try {
+    const raw = window.localStorage.getItem(FORM_STORAGE_KEY);
+    if (!raw) return EMPTY_FORM;
+    const parsed = JSON.parse(raw) as Partial<CustomerForm>;
+    return { ...EMPTY_FORM, ...parsed };
+  } catch {
+    return EMPTY_FORM;
+  }
+}
 
 function validate(form: CustomerForm): string | null {
   if (form.name.trim().length < 2) return "نام و نام خانوادگی را وارد کنید.";
@@ -44,19 +72,53 @@ function validate(form: CustomerForm): string | null {
 }
 
 export function CartDrawer() {
-  const { items, isOpen, close, remove, setQty, subtotal, count } = useCart();
+  const { items, isOpen, close, remove, setQty, subtotal, count, clear } = useCart();
+  const navigate = useNavigate();
   const total = subtotal + (items.length > 0 ? SHIPPING_FEE : 0);
 
   const [form, setForm] = useState<CustomerForm>(EMPTY_FORM);
+  const [method, setMethod] = useState<PaymentMethod>("zibal");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Hydrate the saved form once on mount.
+  useEffect(() => {
+    setForm(readSavedForm());
+  }, []);
+
+  // Persist form (debounce-light) so a failed payment redirect doesn't lose it.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    try {
+      window.localStorage.setItem(FORM_STORAGE_KEY, JSON.stringify(form));
+    } catch {
+      /* ignore quota */
+    }
+  }, [form]);
 
   const updateField =
     (key: keyof CustomerForm) =>
     (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
       setForm((f) => ({ ...f, [key]: e.target.value }));
 
-  const handleZibalCheckout = async () => {
+  const buildPayload = () => ({
+    customer: {
+      name: form.name.trim(),
+      phone: form.phone.trim(),
+      address: form.address.trim(),
+      postal_code: form.postal_code.trim() || undefined,
+      note: form.note.trim() || undefined,
+    },
+    items: items.map((it) => ({
+      id: it.productId,
+      name: it.variantLabel ? `${it.name} (${it.variantLabel})` : it.name,
+      qty: it.qty,
+      price: it.unitPrice,
+    })),
+    subtotal,
+  });
+
+  const handleCheckout = async () => {
     if (submitting) return;
     setError(null);
     if (items.length === 0) return;
@@ -67,35 +129,26 @@ export function CartDrawer() {
       return;
     }
 
-    const payload = {
-      customer: {
-        name: form.name.trim(),
-        phone: form.phone.trim(),
-        address: form.address.trim(),
-        postal_code: form.postal_code.trim() || undefined,
-        note: form.note.trim() || undefined,
-      },
-      items: items.map((it) => ({
-        id: it.productId,
-        name: it.variantLabel ? `${it.name} (${it.variantLabel})` : it.name,
-        qty: it.qty,
-        price: it.unitPrice,
-      })),
-      subtotal,
-    };
-
+    const payload = buildPayload();
     setSubmitting(true);
+
     try {
-      const r = await fetch(`${API_BASE}/api/order`, {
+      const endpoint = method === "card" ? "/api/order-card" : "/api/order";
+      const r = await fetch(`${API_BASE}${endpoint}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
       const data = (await r.json().catch(() => null)) as
-        | { ok: boolean; redirect?: string; message?: string; error?: string }
+        | (CardOrderPayload & {
+            ok: boolean;
+            redirect?: string;
+            message?: string;
+            error?: string;
+          })
         | null;
 
-      if (!r.ok || !data?.ok || !data.redirect) {
+      if (!r.ok || !data?.ok) {
         setError(
           data?.message ||
             data?.error ||
@@ -105,7 +158,42 @@ export function CartDrawer() {
         return;
       }
 
-      window.location.href = data.redirect;
+      if (method === "zibal") {
+        if (!data.redirect) {
+          setError("درگاه پرداخت پاسخ معتبر برنگرداند.");
+          setSubmitting(false);
+          return;
+        }
+        // Empty cart and dismiss drawer before leaving the SPA.
+        clear();
+        close();
+        window.location.href = data.redirect;
+        return;
+      }
+
+      // Card-to-card: stash the response so the dedicated page can render it.
+      try {
+        sessionStorage.setItem(
+          CARD_ORDER_STORAGE_PREFIX + data.order_id,
+          JSON.stringify({
+            order_id: data.order_id,
+            total: data.total,
+            subtotal: data.subtotal,
+            shipping: data.shipping,
+            card: data.card,
+            instructions: data.instructions,
+          } satisfies CardOrderPayload),
+        );
+      } catch {
+        /* ignore */
+      }
+      clear();
+      close();
+      setSubmitting(false);
+      navigate({
+        to: "/payment/card",
+        search: { order: data.order_id },
+      });
     } catch (err) {
       setError(
         err instanceof Error
@@ -249,7 +337,7 @@ export function CartDrawer() {
                 <input
                   type="tel"
                   inputMode="numeric"
-                  placeholder="شماره موبایل (مثال: ۰۹۱۲۱۲۳۴۵۶۷)"
+                  placeholder="شماره موبایل (مثال: 09121234567)"
                   value={form.phone}
                   onChange={updateField("phone")}
                   className="w-full rounded-lg border border-border/70 bg-background px-3 py-2 text-sm text-foreground outline-none focus:border-[color:var(--brown-medium)]"
@@ -274,6 +362,27 @@ export function CartDrawer() {
                   autoComplete="postal-code"
                   dir="ltr"
                 />
+              </div>
+
+              {/* Payment method */}
+              <div className="mb-3">
+                <div className="mb-1.5 text-[11px] font-bold text-muted-foreground">
+                  روش پرداخت
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  <MethodOption
+                    active={method === "zibal"}
+                    onSelect={() => setMethod("zibal")}
+                    icon={<CreditCard className="size-4" />}
+                    label="پرداخت آنلاین (زیبال)"
+                  />
+                  <MethodOption
+                    active={method === "card"}
+                    onSelect={() => setMethod("card")}
+                    icon={<Landmark className="size-4" />}
+                    label="کارت‌به‌کارت"
+                  />
+                </div>
               </div>
 
               <dl className="space-y-1.5 text-sm">
@@ -304,19 +413,24 @@ export function CartDrawer() {
 
               <button
                 type="button"
-                onClick={handleZibalCheckout}
+                onClick={handleCheckout}
                 disabled={submitting}
                 className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-full bg-[color:var(--brown-deep)] px-5 py-3 text-sm font-extrabold text-[color:var(--parchment)] transition hover:bg-[color:var(--brown-medium)] disabled:cursor-not-allowed disabled:opacity-70"
               >
                 {submitting ? (
                   <>
                     <Loader2 className="size-4 animate-spin" />
-                    در حال انتقال به درگاه…
+                    {method === "zibal" ? "در حال انتقال به درگاه…" : "در حال ثبت سفارش…"}
+                  </>
+                ) : method === "zibal" ? (
+                  <>
+                    <CreditCard className="size-4" />
+                    پرداخت با زیبال
                   </>
                 ) : (
                   <>
-                    <ShoppingBag className="size-4" />
-                    پرداخت با زیبال
+                    <Landmark className="size-4" />
+                    ثبت سفارش کارت‌به‌کارت
                   </>
                 )}
               </button>
@@ -333,5 +447,34 @@ export function CartDrawer() {
         )}
       </SheetContent>
     </Sheet>
+  );
+}
+
+function MethodOption({
+  active,
+  onSelect,
+  icon,
+  label,
+}: {
+  active: boolean;
+  onSelect: () => void;
+  icon: React.ReactNode;
+  label: string;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onSelect}
+      aria-pressed={active}
+      className={
+        "flex items-center justify-center gap-2 rounded-lg border px-3 py-2 text-xs font-bold transition " +
+        (active
+          ? "border-[color:var(--brown-deep)] bg-[color:var(--brown-deep)]/10 text-[color:var(--brown-deep)]"
+          : "border-border/70 bg-background text-foreground/70 hover:border-[color:var(--brown-medium)]/60 hover:text-foreground")
+      }
+    >
+      {icon}
+      <span className="leading-tight">{label}</span>
+    </button>
   );
 }
