@@ -323,9 +323,32 @@ function Row({
                   </div>
                 )}
                 {order.authority && (
-                  <div>
+                  <div className="flex items-center gap-2">
                     <span className="text-muted-foreground">کد پیگیری: </span>
                     <span className="font-mono text-xs">{order.authority}</span>
+                    <CopyButton value={order.authority} label="کپی" compact />
+                  </div>
+                )}
+                {order.method === "card" && (
+                  <div className="mt-2 rounded-lg border border-sky-300/60 bg-sky-50/60 p-2.5 text-xs">
+                    <div className="mb-1 font-bold text-sky-900">
+                      شماره کارت برای دریافت کارت‌به‌کارت
+                    </div>
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="font-mono tracking-wider text-foreground" dir="ltr">
+                        {CARD_NUMBER}
+                      </span>
+                      <CopyButton value={CARD_NUMBER} label="کپی شماره کارت" />
+                    </div>
+                    <div className="mt-1 text-[11px] text-muted-foreground">
+                      {CARD_HOLDER} — {CARD_BANK}
+                    </div>
+                    <div className="mt-1 text-[11px] text-muted-foreground">
+                      ۴ رقم آخر برای تطبیق:{" "}
+                      <span className="font-mono text-foreground">
+                        {CARD_NUMBER.replace(/\s+/g, "").slice(-4)}
+                      </span>
+                    </div>
                   </div>
                 )}
                 <div className="pt-2 text-xs text-muted-foreground">
