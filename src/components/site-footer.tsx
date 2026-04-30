@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import khajaviEmblem from "@/assets/khajavi-emblem.png";
 import samandehiSeal from "@/assets/samandehi.png";
+import { EnamadSeal } from "@/components/enamad-seal";
 
 export function SiteFooter() {
   return (
