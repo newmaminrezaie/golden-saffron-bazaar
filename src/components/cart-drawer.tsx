@@ -1,5 +1,6 @@
+import { useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { Minus, Plus, ShoppingBag, Trash2, X } from "lucide-react";
+import { Loader2, Minus, Plus, ShoppingBag, Trash2, X } from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -13,10 +14,107 @@ const FA = ["۰", "۱", "۲", "۳", "۴", "۵", "۶", "۷", "۸", "۹"];
 const toFa = (n: number) => String(n).replace(/\d/g, (d) => FA[Number(d)]);
 
 const SHIPPING_FEE = 30000;
+const API_BASE =
+  (import.meta.env.VITE_API_BASE as string | undefined)?.replace(/\/$/, "") ?? "";
+
+type CustomerForm = {
+  name: string;
+  phone: string;
+  address: string;
+  postal_code: string;
+  note: string;
+};
+
+const EMPTY_FORM: CustomerForm = {
+  name: "",
+  phone: "",
+  address: "",
+  postal_code: "",
+  note: "",
+};
+
+function validate(form: CustomerForm): string | null {
+  if (form.name.trim().length < 2) return "نام و نام خانوادگی را وارد کنید.";
+  if (!/^0?9\d{9}$/.test(form.phone.trim()))
+    return "شماره موبایل نامعتبر است (مثال: 09121234567).";
+  if (form.address.trim().length < 5) return "آدرس کامل را وارد کنید.";
+  if (form.postal_code && !/^\d{10}$/.test(form.postal_code.trim()))
+    return "کدپستی باید ۱۰ رقم باشد.";
+  return null;
+}
 
 export function CartDrawer() {
   const { items, isOpen, close, remove, setQty, subtotal, count } = useCart();
   const total = subtotal + (items.length > 0 ? SHIPPING_FEE : 0);
+
+  const [form, setForm] = useState<CustomerForm>(EMPTY_FORM);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const updateField =
+    (key: keyof CustomerForm) =>
+    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
+      setForm((f) => ({ ...f, [key]: e.target.value }));
+
+  const handleZibalCheckout = async () => {
+    if (submitting) return;
+    setError(null);
+    if (items.length === 0) return;
+
+    const v = validate(form);
+    if (v) {
+      setError(v);
+      return;
+    }
+
+    const payload = {
+      customer: {
+        name: form.name.trim(),
+        phone: form.phone.trim(),
+        address: form.address.trim(),
+        postal_code: form.postal_code.trim() || undefined,
+        note: form.note.trim() || undefined,
+      },
+      items: items.map((it) => ({
+        id: it.productId,
+        name: it.variantLabel ? `${it.name} (${it.variantLabel})` : it.name,
+        qty: it.qty,
+        price: it.unitPrice,
+      })),
+      subtotal,
+    };
+
+    setSubmitting(true);
+    try {
+      const r = await fetch(`${API_BASE}/api/order`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      const data = (await r.json().catch(() => null)) as
+        | { ok: boolean; redirect?: string; message?: string; error?: string }
+        | null;
+
+      if (!r.ok || !data?.ok || !data.redirect) {
+        setError(
+          data?.message ||
+            data?.error ||
+            "ثبت سفارش با خطا مواجه شد. لطفاً دوباره تلاش کنید.",
+        );
+        setSubmitting(false);
+        return;
+      }
+
+      window.location.href = data.redirect;
+    } catch (err) {
+      setError(
+        err instanceof Error
+          ? `ارتباط با سرور برقرار نشد: ${err.message}`
+          : "ارتباط با سرور برقرار نشد.",
+      );
+      setSubmitting(false);
+    }
+  };
 
   return (
     <Sheet open={isOpen} onOpenChange={(o) => !o && close()}>
@@ -138,6 +236,46 @@ export function CartDrawer() {
             </ul>
 
             <div className="border-t border-border/60 bg-secondary/40 px-5 py-4">
+              {/* Customer form */}
+              <div className="mb-3 grid gap-2">
+                <input
+                  type="text"
+                  placeholder="نام و نام خانوادگی"
+                  value={form.name}
+                  onChange={updateField("name")}
+                  className="w-full rounded-lg border border-border/70 bg-background px-3 py-2 text-sm text-foreground outline-none focus:border-[color:var(--brown-medium)]"
+                  autoComplete="name"
+                />
+                <input
+                  type="tel"
+                  inputMode="numeric"
+                  placeholder="شماره موبایل (مثال: ۰۹۱۲۱۲۳۴۵۶۷)"
+                  value={form.phone}
+                  onChange={updateField("phone")}
+                  className="w-full rounded-lg border border-border/70 bg-background px-3 py-2 text-sm text-foreground outline-none focus:border-[color:var(--brown-medium)]"
+                  autoComplete="tel"
+                  dir="ltr"
+                />
+                <textarea
+                  placeholder="آدرس کامل پستی"
+                  value={form.address}
+                  onChange={updateField("address")}
+                  rows={2}
+                  className="w-full resize-none rounded-lg border border-border/70 bg-background px-3 py-2 text-sm text-foreground outline-none focus:border-[color:var(--brown-medium)]"
+                  autoComplete="street-address"
+                />
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  placeholder="کدپستی (۱۰ رقمی، اختیاری)"
+                  value={form.postal_code}
+                  onChange={updateField("postal_code")}
+                  className="w-full rounded-lg border border-border/70 bg-background px-3 py-2 text-sm text-foreground outline-none focus:border-[color:var(--brown-medium)]"
+                  autoComplete="postal-code"
+                  dir="ltr"
+                />
+              </div>
+
               <dl className="space-y-1.5 text-sm">
                 <div className="flex justify-between text-foreground/80">
                   <dt>جمع کالاها</dt>
@@ -155,13 +293,32 @@ export function CartDrawer() {
                 </div>
               </dl>
 
+              {error && (
+                <p
+                  role="alert"
+                  className="mt-3 rounded-lg border border-destructive/40 bg-destructive/10 px-3 py-2 text-xs font-bold text-destructive"
+                >
+                  {error}
+                </p>
+              )}
+
               <button
                 type="button"
-                onClick={close}
-                className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-full bg-[color:var(--brown-deep)] px-5 py-3 text-sm font-extrabold text-[color:var(--parchment)] transition hover:bg-[color:var(--brown-medium)]"
+                onClick={handleZibalCheckout}
+                disabled={submitting}
+                className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-full bg-[color:var(--brown-deep)] px-5 py-3 text-sm font-extrabold text-[color:var(--parchment)] transition hover:bg-[color:var(--brown-medium)] disabled:cursor-not-allowed disabled:opacity-70"
               >
-                <ShoppingBag className="size-4" />
-                ادامه فرایند خرید
+                {submitting ? (
+                  <>
+                    <Loader2 className="size-4 animate-spin" />
+                    در حال انتقال به درگاه…
+                  </>
+                ) : (
+                  <>
+                    <ShoppingBag className="size-4" />
+                    پرداخت با زیبال
+                  </>
+                )}
               </button>
               <button
                 type="button"
