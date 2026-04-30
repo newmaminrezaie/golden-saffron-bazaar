@@ -1,5 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { CopyButton } from "@/components/copy-button";
+
+// Card-to-card payment details shown to admins so they can match a customer's transfer.
+const CARD_NUMBER = "6037 9974 6126 4344";
+const CARD_HOLDER = "مجید خواجوی";
+const CARD_BANK = "بانک ملی ایران";
 
 export const Route = createFileRoute("/admin/orders")({
   head: () => ({
