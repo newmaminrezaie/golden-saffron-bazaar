@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { X } from "lucide-react";
+import { EnamadSeal } from "@/components/enamad-seal";
 
 const STORAGE_KEY = "enamad-popup-dismissed";
 
@@ -42,21 +43,7 @@ export function EnamadPopup() {
       >
         <X className="size-3.5 md:size-4 text-[color:var(--brown-deep)]" />
       </button>
-      <a
-        referrerPolicy="origin"
-        target="_blank"
-        rel="noopener noreferrer"
-        href="https://trustseal.enamad.ir/?id=720710&Code=wRYn3reyeBtj2jZJ2oZYzZfyeKkh6don"
-        className="block w-full h-full flex items-center justify-center"
-      >
-        <img
-          referrerPolicy="origin"
-          src="https://trustseal.enamad.ir/logo.aspx?id=720710&Code=wRYn3reyeBtj2jZJ2oZYzZfyeKkh6don"
-          alt="نماد اعتماد الکترونیکی"
-          data-code="wRYn3reyeBtj2jZJ2oZYzZfyeKkh6don"
-          style={{ cursor: "pointer", maxWidth: "100%", maxHeight: "100%" }}
-        />
-      </a>
+      <EnamadSeal className="block w-full h-full flex items-center justify-center [&_img]:max-w-full [&_img]:max-h-full" />
     </div>
   );
 }
