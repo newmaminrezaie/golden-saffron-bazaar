@@ -128,6 +128,7 @@ function RootShell({ children }: { children: React.ReactNode }) {
 function RootComponent() {
   return (
     <CartProvider>
+      <ReopenCartFromUrl />
       <div className="min-h-screen flex flex-col bg-background text-foreground">
         <AnnouncementBar />
         <SiteHeader />
@@ -141,4 +142,34 @@ function RootComponent() {
       </div>
     </CartProvider>
   );
+}
+
+/**
+ * When a route arrives with `?reopen=cart` (e.g. from /payment/failed),
+ * open the cart drawer and strip the param so a refresh doesn't reopen it.
+ */
+function ReopenCartFromUrl() {
+  const { open } = useCart();
+  const location = useLocation();
+  const router = useRouter();
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.searchStr);
+    if (params.get("reopen") !== "cart") return;
+    open();
+    params.delete("reopen");
+    const next = params.toString();
+    router.navigate({
+      to: location.pathname,
+      search: (prev: Record<string, unknown>) => {
+        const { reopen: _r, ...rest } = (prev ?? {}) as Record<string, unknown>;
+        void _r;
+        return rest;
+      },
+      replace: true,
+    });
+    void next;
+  }, [location.pathname, location.searchStr, open, router]);
+
+  return null;
 }
