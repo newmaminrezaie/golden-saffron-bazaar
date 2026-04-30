@@ -153,23 +153,23 @@ function ReopenCartFromUrl() {
   const location = useLocation();
   const router = useRouter();
 
+  // location.search is the parsed query object in TanStack Router.
+  const search = location.search as Record<string, unknown>;
+  const reopen = search?.reopen;
+
   useEffect(() => {
-    const params = new URLSearchParams(location.searchStr);
-    if (params.get("reopen") !== "cart") return;
+    if (reopen !== "cart") return;
     open();
-    params.delete("reopen");
-    const next = params.toString();
     router.navigate({
       to: location.pathname,
       search: (prev: Record<string, unknown>) => {
-        const { reopen: _r, ...rest } = (prev ?? {}) as Record<string, unknown>;
-        void _r;
+        const { reopen: _ignored, ...rest } = (prev ?? {}) as Record<string, unknown>;
+        void _ignored;
         return rest;
       },
       replace: true,
     });
-    void next;
-  }, [location.pathname, location.searchStr, open, router]);
+  }, [reopen, location.pathname, open, router]);
 
   return null;
 }
