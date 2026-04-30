@@ -106,7 +106,7 @@ export const PRODUCTS: Product[] = [
     category: "زعفران نگین",
     weight: "۱ گرم",
     price: 260000,
-    oldPrice: 250000,
+    oldPrice: 320000,
     images: [
       "/images/1gramNegin1.webp",
       "/images/1gramNegin2.webp",
@@ -256,7 +256,7 @@ export const PRODUCTS: Product[] = [
     category: "ریشه زعفران",
     weight: "نیم مثقال (۲.۳ گرم)",
     price: 200000,
-    oldPrice: 150000,
+    oldPrice: 240000,
     images: [
       "/images/Sefid1Final.webp",
       "/images/Sefid2Final.webp",
@@ -282,7 +282,7 @@ export const PRODUCTS: Product[] = [
     category: "زعفران نرمه",
     weight: "۱ مثقال (۴.۶۰۸ گرم)",
     price: 390000,
-    oldPrice: 400000,
+    oldPrice: 470000,
     images: [
       "/images/narmeh11.webp",
       "/images/narmeh2.webp",
