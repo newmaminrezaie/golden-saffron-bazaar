@@ -1,4 +1,13 @@
-import { Outlet, Link, createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
+import {
+  Outlet,
+  Link,
+  createRootRoute,
+  HeadContent,
+  Scripts,
+  useLocation,
+  useRouter,
+} from "@tanstack/react-router";
+import { useEffect } from "react";
 
 import appCss from "../styles.css?url";
 import { SiteHeader } from "@/components/site-header";
@@ -6,7 +15,7 @@ import { SiteFooter } from "@/components/site-footer";
 import { Toaster } from "@/components/ui/sonner";
 import { FloatingContact } from "@/components/floating-contact";
 import { AnnouncementBar } from "@/components/announcement-bar";
-import { CartProvider } from "@/lib/cart";
+import { CartProvider, useCart } from "@/lib/cart";
 import { CartDrawer } from "@/components/cart-drawer";
 
 function NotFoundComponent() {
