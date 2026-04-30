@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { createFileRoute, Link, notFound, useRouter } from "@tanstack/react-router";
 import { ShoppingBag, ChevronRight } from "lucide-react";
+import { toast } from "sonner";
 import { formatToman, getProductBySlug, PRODUCTS } from "@/data/products";
+import { useCart } from "@/lib/cart";
 import { cn } from "@/lib/utils";
 
 const FA_DIGITS = ["۰", "۱", "۲", "۳", "۴", "۵", "۶", "۷", "۸", "۹"];
@@ -79,6 +81,7 @@ function ProductPage() {
   const { product } = Route.useLoaderData();
   const [activeImg, setActiveImg] = useState(0);
   const [tierIdx, setTierIdx] = useState(0);
+  const { add } = useCart();
   const tiers = product.priceTiers;
   const hasTiers = !!tiers && tiers.length > 0;
   const selectedTier = hasTiers ? tiers![tierIdx] ?? tiers![0] : null;
@@ -224,6 +227,24 @@ function ProductPage() {
             <button
               type="button"
               disabled={product.inStock === false}
+              onClick={() => {
+                if (product.inStock === false) return;
+                const variantLabel =
+                  hasTiers && selectedTier
+                    ? selectedTier.label ?? `${toFa(selectedTier.quantity)} گرم`
+                    : undefined;
+                add({
+                  lineId: `${product.id}::${variantLabel ?? "default"}`,
+                  productId: product.id,
+                  slug: product.slug,
+                  name: product.name,
+                  variantLabel,
+                  unitPrice: displayPrice,
+                  image: product.images[0],
+                  weight: product.weight,
+                });
+                toast.success(`${product.name} به سبد افزوده شد`);
+              }}
               className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-full bg-[color:var(--brown-deep)] px-6 py-3 text-sm font-bold text-[color:var(--parchment)] transition hover:bg-[color:var(--brown-medium)] disabled:cursor-not-allowed disabled:opacity-50 md:w-auto"
             >
               <ShoppingBag className="size-4" />
