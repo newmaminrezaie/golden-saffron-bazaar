@@ -1,233 +1,91 @@
-# Express Payment Backend — `server/` for khajavisaffron.ir
+# Cart drawer — pop-up sidebar instead of redirecting to a cart page
 
-A standalone Node/Express backend living in `server/` (its own `package.json`, deployed separately on the VPS). Frontend reaches it via `VITE_PAYMENT_API_URL`. SQLite stores orders. Three payment methods: **به پرداخت ملت (Zibal)**, **سامان (Sep)**, and **کارت‌به‌کارت** (manual transfer to مجید خواجوی).
-
----
-
-## Folder layout
-
-```text
-server/
-├── package.json
-├── .env.example
-├── .gitignore
-├── README.md
-├── data/                  # SQLite db lives here (gitignored)
-│   └── .gitkeep
-└── src/
-    ├── index.js           # Express bootstrap, CORS, routes mount
-    ├── db.js              # better-sqlite3 init + migrations
-    ├── telegram.js        # notify() helper (no-op if env missing)
-    ├── utils.js           # money/order id helpers, constants
-    └── routes/
-        ├── orders.js      # POST /api/order (Zibal), POST /api/order-sep,
-        │                  # POST /api/order-card, GET /api/orders
-        └── callback.js    # GET /payment/callback (Zibal),
-                           # GET /payment/callback-sep (Saman POST→GET bridge)
-```
+Right now the "افزودن" buttons on `ProductCard` and the big "افزودن به سبد خرید" button on the product page do nothing, the header bag icon is a static stub showing `۰`, and there is no cart state at all. We'll add a real cart that lives in `localStorage` and surfaces as a slide-in drawer (using the existing shadcn `Sheet`). Adding a product opens the drawer and shows a toast — never navigates away from the current page.
 
 ---
 
-## Dependencies (`server/package.json`)
+## What will be built
 
-- `express`, `cors`, `dotenv`, `better-sqlite3`, `node-fetch@3`, `zod`
-- dev: `nodemon`
-- scripts: `start` → `node src/index.js`, `dev` → `nodemon src/index.js`
+### 1. Cart store — `src/lib/cart.tsx` (new)
 
-Node ≥ 18. Listens on `PORT` (default **3002**).
+Tiny React Context provider, no extra dependency.
 
----
+- `CartItem` shape: `{ lineId, productId, slug, name, variantLabel?, unitPrice, qty, image?, weight? }`
+  - `lineId = "${productId}::${variantLabel ?? "default"}"` so different tiers of the same product (e.g. ۱ گرم vs ۲ گرم نگین) become separate lines.
+- API exposed via `useCart()`:
+  - `items`, `count`, `subtotal`
+  - `isOpen`, `open()`, `close()`
+  - `add(item)` — merges qty if `lineId` exists, **auto-opens the drawer**
+  - `remove(lineId)`, `setQty(lineId, qty)` (qty ≤ 0 removes), `clear()`
+- Persists to `localStorage` under `khajavi.cart.v1`. SSR-safe: hydrate on mount only, never read storage during render.
 
-## `.env.example`
+### 2. Drawer UI — `src/components/cart-drawer.tsx` (new)
 
-```text
-ZIBAL_MERCHANT_ID=your_zibal_merchant_id
-SEP_MERCHANT_ID=your_sep_merchant_id
-SEP_TERMINAL_ID=your_sep_terminal_id
-TELEGRAM_BOT_TOKEN=
-TELEGRAM_CHAT_ID=
-ADMIN_TOKEN=khajavi_admin_2026
-PORT=3002
+Uses `Sheet` (`side="left"` so it slides in from the visual leading edge in RTL — with `dir="rtl"` set on the panel).
 
-# Public site origin used to build callback URLs and success/fail redirects
-SITE_URL=https://khajavisaffron.ir
+- Header: bag icon + "سبد خرید" + count badge.
+- **Empty state**: friendly illustration + "مشاهده فروشگاه" link (closes drawer, navigates to `/shop`).
+- **Item list**: thumbnail (links to product page), title, variant/weight, qty stepper (`-` / number / `+`), line total, trash icon.
+- **Footer summary**:
+  - جمع کالاها (subtotal)
+  - هزینه پست و بسته‌بندی — fixed **30,000 تومان** (matches the backend rule we locked in)
+  - مبلغ قابل پرداخت (subtotal + 30k)
+  - "ادامه فرایند خرید" button (for now it just closes — checkout page is a future task; we'll wire it to the payment backend later)
+  - "ادامه خرید" link to close the drawer
 
-# Card-to-card details (shown to user on /payment/card)
-CARD_NUMBER=PLACEHOLDER-XXXX-XXXX-XXXX-XXXX
-CARD_HOLDER=مجید خواجوی
-CARD_BANK=
-```
+### 3. Mount the provider + drawer — `src/routes/__root.tsx`
 
----
+Wrap the existing layout content (`AnnouncementBar`, `SiteHeader`, `<Outlet />`, `SiteFooter`, etc.) inside `<CartProvider>` and render `<CartDrawer />` once at the root so it's available on every page.
 
-## Database (SQLite via better-sqlite3)
+### 4. Wire the bag icon — `src/components/site-header.tsx`
 
-Single table created on boot:
+- Replace the static `۰` badge with the live `count` from `useCart()`; hide the badge when count is 0.
+- Bag button calls `open()` on click.
+- Mobile menu unchanged.
 
-```sql
-CREATE TABLE IF NOT EXISTS orders (
-  id              TEXT PRIMARY KEY,         -- e.g. KHJ-1730000000-AB12
-  created_at      INTEGER NOT NULL,
-  customer_name   TEXT,
-  phone           TEXT,
-  address         TEXT,
-  postal_code     TEXT,
-  note            TEXT,
-  items_json      TEXT NOT NULL,            -- cart snapshot
-  subtotal        INTEGER NOT NULL,         -- toman
-  shipping        INTEGER NOT NULL,         -- always 30000
-  total           INTEGER NOT NULL,         -- subtotal + shipping
-  method          TEXT NOT NULL,            -- 'zibal' | 'sep' | 'card'
-  gateway_ref     TEXT,                     -- trackId (Zibal) / RefNum (Sep)
-  authority       TEXT,                     -- token returned by gateway
-  status          TEXT NOT NULL,            -- 'pending'|'paid'|'failed'|'awaiting_card_confirm'
-  paid_at         INTEGER,
-  raw_callback    TEXT
-);
-CREATE INDEX IF NOT EXISTS idx_orders_status ON orders(status);
-```
+### 5. Wire the "افزودن" button on cards — `src/components/product-card.tsx`
 
----
+The button already calls `e.preventDefault()` to stop the surrounding `<Link>`. Add an `onClick` that:
+- Builds `lineId = ${p.id}::default`.
+- Calls `add({ ..., unitPrice: p.price, image: p.images[0], weight: p.weight })`.
+- Fires `toast.success(`${p.name} به سبد افزوده شد`)` via the existing `sonner` toaster (already mounted in `__root.tsx`).
+- The drawer auto-opens because `add()` calls `setIsOpen(true)`.
 
-## Pricing rule (locked)
+### 6. Wire the product detail page — `src/routes/shop_.$slug.tsx`
 
-Every order: `total = subtotal + 30000`. The 30,000 toman is the **fixed هزینه بسته‌بندی / پست‌کرایه**, applied regardless of cart total or method. No free-shipping threshold, ever.
+The big "افزودن به سبد خرید — {price}" button:
+- For products **without** tiers: add a single line at `product.price`.
+- For products **with** `priceTiers` (e.g. نگین ۱ گرمی, نرمه): use the currently-selected tier (`tiers[tierIdx]`).
+  - `variantLabel` = `t.label ?? "${t.quantity} گرم"`
+  - `qty` added = `t.quantity` (selecting "۲ گرم" adds 2 units of the ۱ گرمی line; cleaner UX = treat each tier as its own line so the cart shows "۲ گرم × 1" rather than "۱ گرم × 2"). **Decision: treat each tier as its own line** — `lineId = "${product.id}::${label}"`, qty starts at 1, `unitPrice = t.price`. This keeps the cart math identical to what the user clicked.
+- Disabled when `inStock === false`.
+- After add: toast + drawer opens automatically.
+
+### 7. No new dependencies
+
+- Sheet, Sonner toaster, all icons (`ShoppingBag`, `Trash2`, `Plus`, `Minus`, `X`) already exist in the project.
+- No router redirects, no new routes.
 
 ---
 
-## Endpoints
+## RTL / styling notes
 
-All POSTs accept JSON: `{ customer, items, subtotal }` where `customer = { name, phone, address, postal_code, note? }` and `items` is an array of `{ id, name, qty, price }`. Server **recomputes** subtotal from items (never trusts client total) and adds shipping.
-
-### 1. `POST /api/order` — Zibal (به پرداخت ملت)
-
-1. Validate body with zod, recompute totals.
-2. Insert order with `status='pending'`, `method='zibal'`.
-3. Call `https://gateway.zibal.ir/v1/request`:
-   ```json
-   {
-     "merchant": "<ZIBAL_MERCHANT_ID>",
-     "amount": <total * 10>,           // Zibal expects rial
-     "callbackUrl": "https://khajavisaffron.ir/payment/callback",
-     "orderId": "<order.id>",
-     "description": "سفارش زعفران خواجوی",
-     "mobile": "<phone>"
-   }
-   ```
-4. On `result === 100`, store `authority = trackId`, return `{ ok:true, redirect: "https://gateway.zibal.ir/start/<trackId>" }`.
-5. On error, mark order `failed`, return `{ ok:false, message }`.
-
-### 2. `GET /payment/callback` — Zibal verify
-
-Query: `?success=1&trackId=...&orderId=...&status=...`.
-
-1. Look up order by `orderId`.
-2. POST to `https://gateway.zibal.ir/v1/verify` with `{ merchant, trackId }`.
-3. If `result === 100` → mark `paid`, save `paid_at`, fire Telegram notify, redirect `302` to `${SITE_URL}/payment/success?order=<id>`.
-4. Else → mark `failed`, redirect to `${SITE_URL}/payment/failed?order=<id>&reason=<code>`.
-
-### 3. `POST /api/order-sep` — Saman (Sep)
-
-1. Validate + insert order (`method='sep'`, `status='pending'`).
-2. Call Sep token endpoint `https://sep.shaparak.ir/onlinepg/onlinepg`-style token API
-   `https://sep.shaparak.ir/MobilePG/MobilePayment` with:
-   ```json
-   {
-     "Action": "Token",
-     "TerminalId": "<SEP_TERMINAL_ID>",
-     "Amount": <total * 10>,           // rial
-     "ResNum": "<order.id>",
-     "RedirectUrl": "https://khajavisaffron.ir/payment/callback-sep",
-     "CellNumber": "<phone>"
-   }
-   ```
-3. On `Status === 1`, store `authority = Token`, return `{ ok:true, redirect: "https://sep.shaparak.ir/OnlinePG/SendToken?token=<Token>" }`.
-4. Otherwise mark failed.
-
-### 4. `POST /payment/callback-sep` (with GET bridge)
-
-Saman POSTs `application/x-www-form-urlencoded` (`State, RefNum, ResNum, TraceNo, ...`).
-
-1. Express route accepts both `POST` and `GET` on `/payment/callback-sep`.
-2. Look up order by `ResNum`. If `State !== 'OK'` → mark failed, redirect to `${SITE_URL}/payment/failed`.
-3. Else verify with Sep `VerifyTransaction`:
-   ```json
-   { "RefNum": "<RefNum>", "TerminalNumber": "<SEP_TERMINAL_ID>" }
-   ```
-4. If verified amount === stored total*10 → `paid`, store `gateway_ref=RefNum`, notify, redirect `302` to `${SITE_URL}/payment/success?order=<id>`. Otherwise mark failed and redirect.
-
-### 5. `POST /api/order-card` — کارت‌به‌کارت (مجید خواجوی)
-
-1. Validate + insert order with `method='card'`, `status='awaiting_card_confirm'`.
-2. No gateway call. Send Telegram notification (if configured) tagged "💳 کارت‌به‌کارت — در انتظار تایید".
-3. Return:
-   ```json
-   {
-     "ok": true,
-     "order_id": "<id>",
-     "total": <total>,
-     "card": {
-       "number": "<CARD_NUMBER>",
-       "holder": "مجید خواجوی",
-       "bank": "<CARD_BANK>"
-     },
-     "instructions": "پس از واریز، شماره پیگیری و ۴ رقم آخر کارت خود را به همراه شماره سفارش به ما اعلام کنید."
-   }
-   ```
-   Frontend later renders a static "card transfer" page using this data.
-
-### 6. `GET /api/orders` — admin list
-
-- Header `x-admin-token` must equal `process.env.ADMIN_TOKEN`, else `401`.
-- Optional `?status=paid|pending|...` and `?limit=100` query params.
-- Returns newest-first array.
-
-### 7. `GET /healthz`
-
-`{ ok: true, ts }` — for uptime checks.
+- Drawer slides from `side="left"` so in RTL it enters from the visual right (where the bag icon is) — matches user mental model.
+- Uses existing brand tokens: `--brown-deep`, `--brown-medium`, `--parchment`, plus shadcn semantic tokens (`bg-secondary`, `text-foreground`, etc.). No hardcoded colors.
+- Numbers shown via existing `toFa()` helper for Persian digits; prices via `formatToman()` from `src/data/products.ts`.
 
 ---
 
-## Telegram notification (`telegram.js`)
+## Files
 
-`notifyOrder(order, eventType)`:
-- If `TELEGRAM_BOT_TOKEN` or `TELEGRAM_CHAT_ID` missing → return silently (no throw).
-- Otherwise `POST https://api.telegram.org/bot<token>/sendMessage` with HTML body containing order id, method, total, customer name + phone, items list. All errors caught and logged — never block the payment flow.
+**Created**
+- `src/lib/cart.tsx`
+- `src/components/cart-drawer.tsx`
 
-Triggered on: successful Zibal verify, successful Sep verify, new card-to-card order.
+**Edited**
+- `src/routes/__root.tsx` — wrap with `CartProvider`, mount `<CartDrawer />`.
+- `src/components/site-header.tsx` — make bag icon open the drawer; live count badge.
+- `src/components/product-card.tsx` — implement add-to-cart on the small "افزودن" button.
+- `src/routes/shop_.$slug.tsx` — implement add-to-cart on the main product button (handles tier selection).
 
----
-
-## CORS / security
-
-- `cors({ origin: [SITE_URL, 'http://localhost:5173'], credentials: false })`.
-- `express.json({ limit: '64kb' })`.
-- Every input validated with zod; phone digits-only, length 10–11; `items.length` 1–50; `qty` 1–999; `price` positive integer.
-- Server **always recomputes** subtotal from `items` server-side; client `subtotal` is only used as a sanity check (mismatch → 400).
-- SQLite path: `server/data/orders.db` — folder created on boot if missing.
-
----
-
-## Notes for later (not built now)
-
-- Frontend wiring (checkout form posting to these endpoints, success/failed pages) is out of scope for this task — the backend is standalone.
-- Real merchant IDs / card number go into `server/.env` on the VPS; placeholders ship in `.env.example` only.
-- `server/` deploys independently (e.g. `pm2 start src/index.js --name khajavi-pay`); behind Nginx as `/api/` and `/payment/` reverse-proxy to `127.0.0.1:3002`.
-
----
-
-## Files to create (all new)
-
-- `server/package.json`
-- `server/.env.example`
-- `server/.gitignore` (`node_modules`, `data/*.db`, `.env`)
-- `server/README.md` (run + deploy instructions, Nginx snippet)
-- `server/src/index.js`
-- `server/src/db.js`
-- `server/src/telegram.js`
-- `server/src/utils.js`
-- `server/src/routes/orders.js`
-- `server/src/routes/callback.js`
-- `server/data/.gitkeep`
-
-No existing project files are modified.
+No backend changes; the 30,000 toman shipping line in the drawer mirrors the rule already enforced server-side in `server/src/utils.js`.
