@@ -236,9 +236,9 @@ router.post("/order-card", async (req, res) => {
     subtotal: order.subtotal,
     shipping: order.shipping,
     card: {
-      number: process.env.CARD_NUMBER || "",
+      number: process.env.CARD_NUMBER || "6037 9974 6126 4344",
       holder: process.env.CARD_HOLDER || "مجید خواجوی",
-      bank: process.env.CARD_BANK || "",
+      bank: process.env.CARD_BANK || "بانک ملی ایران",
     },
     instructions:
       "پس از واریز، شماره پیگیری و چهار رقم آخر کارت خود را به همراه شماره سفارش از طریق واتس‌اپ یا تماس برای ما ارسال کنید.",
