@@ -17,6 +17,7 @@ import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ShopSlugRouteImport } from './routes/shop_.$slug'
 import { Route as BlogSlugRouteImport } from './routes/blog_.$slug'
+import { Route as AdminOrdersRouteImport } from './routes/admin.orders'
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
@@ -58,6 +59,11 @@ const BlogSlugRoute = BlogSlugRouteImport.update({
   path: '/blog/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminOrdersRoute = AdminOrdersRouteImport.update({
+  id: '/admin/orders',
+  path: '/admin/orders',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -66,6 +72,7 @@ export interface FileRoutesByFullPath {
   '/contact': typeof ContactRoute
   '/shop': typeof ShopRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/admin/orders': typeof AdminOrdersRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/shop/$slug': typeof ShopSlugRoute
 }
@@ -76,6 +83,7 @@ export interface FileRoutesByTo {
   '/contact': typeof ContactRoute
   '/shop': typeof ShopRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/admin/orders': typeof AdminOrdersRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/shop/$slug': typeof ShopSlugRoute
 }
@@ -87,6 +95,7 @@ export interface FileRoutesById {
   '/contact': typeof ContactRoute
   '/shop': typeof ShopRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/admin/orders': typeof AdminOrdersRoute
   '/blog_/$slug': typeof BlogSlugRoute
   '/shop_/$slug': typeof ShopSlugRoute
 }
@@ -99,6 +108,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/shop'
     | '/sitemap.xml'
+    | '/admin/orders'
     | '/blog/$slug'
     | '/shop/$slug'
   fileRoutesByTo: FileRoutesByTo
@@ -109,6 +119,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/shop'
     | '/sitemap.xml'
+    | '/admin/orders'
     | '/blog/$slug'
     | '/shop/$slug'
   id:
@@ -119,6 +130,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/shop'
     | '/sitemap.xml'
+    | '/admin/orders'
     | '/blog_/$slug'
     | '/shop_/$slug'
   fileRoutesById: FileRoutesById
@@ -130,6 +142,7 @@ export interface RootRouteChildren {
   ContactRoute: typeof ContactRoute
   ShopRoute: typeof ShopRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  AdminOrdersRoute: typeof AdminOrdersRoute
   BlogSlugRoute: typeof BlogSlugRoute
   ShopSlugRoute: typeof ShopSlugRoute
 }
@@ -192,6 +205,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BlogSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/orders': {
+      id: '/admin/orders'
+      path: '/admin/orders'
+      fullPath: '/admin/orders'
+      preLoaderRoute: typeof AdminOrdersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -202,6 +222,7 @@ const rootRouteChildren: RootRouteChildren = {
   ContactRoute: ContactRoute,
   ShopRoute: ShopRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  AdminOrdersRoute: AdminOrdersRoute,
   BlogSlugRoute: BlogSlugRoute,
   ShopSlugRoute: ShopSlugRoute,
 }
