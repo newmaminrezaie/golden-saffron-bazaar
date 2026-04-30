@@ -52,6 +52,7 @@ export function CartDrawer() {
             </div>
             <Link
               to="/shop"
+              search={{ category: "همه" }}
               onClick={close}
               className="mt-2 inline-flex items-center justify-center rounded-full bg-[color:var(--brown-deep)] px-5 py-2.5 text-sm font-bold text-[color:var(--parchment)] transition hover:bg-[color:var(--brown-medium)]"
             >
