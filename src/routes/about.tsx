@@ -1,5 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Sprout, Hand, Sparkles } from "lucide-react";
+import ownerPortrait from "@/assets/owner-portrait.jpg";
+import ownerWorking from "@/assets/owner-working.jpg";
 
 export const Route = createFileRoute("/about")({
   head: () => ({
@@ -29,10 +31,10 @@ function AboutPage() {
         style={{ height: "55vh", minHeight: "360px", maxHeight: "560px" }}
       >
         <img
-          src="https://images.unsplash.com/photo-1605478371310-9b78ee5fdcce?auto=format&fit=crop&w=1920&q=80"
-          alt="مزرعه زعفران"
+          src={ownerWorking}
+          alt="بسته‌بندی زعفران اصل قائنات در کارگاه خواجوی"
           className="absolute inset-0 h-full w-full object-cover"
-          style={{ objectPosition: "center 45%" }}
+          style={{ objectPosition: "center 35%" }}
         />
         <div
           className="absolute inset-0"
@@ -69,6 +71,40 @@ function AboutPage() {
             هدف ما زنده نگه‌داشتن نام زعفران ایرانی در سفره‌های جهان است؛ با
             کیفیتی که شایسته نام قائنات باشد.
           </p>
+        </div>
+      </section>
+
+      {/* Founder */}
+      <section className="px-4 pb-6">
+        <div className="mx-auto grid max-w-6xl gap-10 md:grid-cols-2 md:items-center">
+          <div className="relative overflow-hidden rounded-3xl shadow-xl aspect-[4/5]">
+            <img
+              src={ownerPortrait}
+              alt="مجید خواجوی، بنیان‌گذار زعفران خواجوی"
+              className="h-full w-full object-cover"
+              style={{ objectPosition: "center 25%" }}
+              loading="lazy"
+            />
+          </div>
+          <div>
+            <p className="font-display text-3xl text-[color:var(--brown-medium)]">the founder</p>
+            <h2 className="mt-1 text-3xl md:text-4xl font-extrabold text-foreground leading-tight">
+              مجید خواجوی
+              <br />
+              بنیان‌گذار مجموعه
+            </h2>
+            <p className="mt-5 text-base leading-9 text-foreground/80">
+              مجید خواجوی، نسل سوم خانواده‌ای است که عمر خود را وقف پرورش زعفران
+              قائنات کرده‌اند. او شخصاً بر تمام مراحل کار، از انتخاب پیاز و
+              برداشت گل تا جداسازی کلاله و بسته‌بندی نهایی، نظارت می‌کند.
+            </p>
+            <p className="mt-3 text-base leading-9 text-foreground/80">
+              باور او ساده است: زعفرانی که به دست شما می‌رسد باید همان زعفرانی
+              باشد که خودش با افتخار سر سفره خانواده‌اش می‌گذارد. به همین دلیل
+              محصولات بدون واسطه از مزارع قائنات تهیه و با ضمانت اصالت ارسال
+              می‌شوند.
+            </p>
+          </div>
         </div>
       </section>
 
