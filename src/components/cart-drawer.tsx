@@ -374,7 +374,7 @@ export function CartDrawer() {
                     active={method === "zibal"}
                     onSelect={() => setMethod("zibal")}
                     icon={<CreditCard className="size-4" />}
-                    label="پرداخت آنلاین (زیبال)"
+                    label="پرداخت آنلاین (به پرداخت ملت)"
                   />
                   <MethodOption
                     active={method === "card"}
@@ -425,7 +425,7 @@ export function CartDrawer() {
                 ) : method === "zibal" ? (
                   <>
                     <CreditCard className="size-4" />
-                    پرداخت با زیبال
+                    پرداخت با به پرداخت ملت
                   </>
                 ) : (
                   <>
