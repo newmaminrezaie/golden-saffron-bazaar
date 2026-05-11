@@ -38,25 +38,35 @@ export function Hero() {
       }}
       aria-label="معرفی زعفران خواجوی"
     >
-      {/* Slideshow */}
-      {SLIDES.map((s, i) => (
-        <img
-          key={s.src}
-          src={s.src}
-          alt={s.alt}
-          loading={i === 0 ? "eager" : "lazy"}
-          style={{
-            position: "absolute",
-            inset: 0,
-            width: "100%",
-            height: "100%",
-            objectFit: "cover",
-            objectPosition: s.pos,
-            opacity: i === active ? 1 : 0,
-            transition: "opacity 1.5s ease-in-out",
-          }}
-        />
-      ))}
+      {/* Sliding track (RTL: positive translateX moves track to the right, revealing next slide from the left) */}
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          display: "flex",
+          width: `${SLIDES.length * 100}%`,
+          height: "100%",
+          transform: `translateX(${active * (100 / SLIDES.length)}%)`,
+          transition: "transform 900ms ease-in-out",
+        }}
+      >
+        {SLIDES.map((s, i) => (
+          <img
+            key={s.src}
+            src={s.src}
+            alt={s.alt}
+            loading={i === 0 ? "eager" : "lazy"}
+            style={{
+              width: `${100 / SLIDES.length}%`,
+              height: "100%",
+              objectFit: "cover",
+              objectPosition: s.pos,
+              flexShrink: 0,
+            }}
+          />
+        ))}
+      </div>
+
 
       {/* Soft warm tint */}
       <div
