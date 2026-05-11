@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Sprout, Hand, Sparkles } from "lucide-react";
 import ownerPortrait from "@/assets/owner-portrait.jpg";
 import ownerWorking from "@/assets/owner-working.jpg";
+import storefrontWide from "@/assets/storefront-wide.jpg";
 
 export const Route = createFileRoute("/about")({
   head: () => ({
@@ -31,10 +32,10 @@ function AboutPage() {
         style={{ height: "55vh", minHeight: "360px", maxHeight: "560px" }}
       >
         <img
-          src={ownerWorking}
-          alt="بسته‌بندی زعفران اصل قائنات در کارگاه خواجوی"
+          src={storefrontWide}
+          alt="ویترین فروشگاه زعفران خواجوی در قائن"
           className="absolute inset-0 h-full w-full object-cover"
-          style={{ objectPosition: "center 35%" }}
+          style={{ objectPosition: "center 45%" }}
         />
         <div
           className="absolute inset-0"
