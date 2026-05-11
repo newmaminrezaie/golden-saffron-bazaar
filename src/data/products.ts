@@ -81,8 +81,8 @@ export const PRODUCTS: Product[] = [
     name: "زعفران نگین (۴.۶ گرمی)",
     category: "زعفران نگین",
     weight: "۱ مثقال (۴.۶۰۸ گرم)",
-    price: 1127000,
-    oldPrice: 1495000,
+    price: 1100000,
+    oldPrice: 1400000,
     images: [
       "/images/negin1.webp",
       "/images/Negin1-2.webp",
@@ -105,8 +105,8 @@ export const PRODUCTS: Product[] = [
     name: "زعفران نگین (۱ گرمی)",
     category: "زعفران نگین",
     weight: "۱ گرم",
-    price: 299000,
-    oldPrice: 368000,
+    price: 200000,
+    oldPrice: 300000,
     images: [
       "/images/1gramNegin1.webp",
       "/images/1gramNegin2.webp",
@@ -114,10 +114,10 @@ export const PRODUCTS: Product[] = [
     ],
     shortDescription: "زعفران نگین سوپر صادراتی، امسالی و تازه، تمام قرمز. مناسب برای خرید تک‌نفره.",
     priceTiers: [
-      { quantity: 1, price: 299000 },
-      { quantity: 2, price: 494000 },
-      { quantity: 5, price: 1058000 },
-      { quantity: 10, price: 1978000 },
+      { quantity: 1, price: 200000 },
+      { quantity: 2, price: 400000 },
+      { quantity: 5, price: 1000000 },
+      { quantity: 10, price: 1900000 },
     ],
     description:
       "زعفران نگین گناباد؛ عطر و رنگی که از دل کویر می‌آید.\n\nاگر به‌دنبال خرید زعفران اصل با بالاترین قدرت رنگ‌دهی هستید، زعفران نگین گناباد انتخابی است که هیچ سرآشپز یا کدبانویی از آن نمی‌گذرد. این محصول که حاصل دسترنج کشاورزان خطه کویری گناباد است، با دقت فراوان پاک شده و تنها شامل کلاله‌های درشت و قرمز رنگ (بدون ذره‌ای خامه یا زردی) است.",
@@ -134,8 +134,8 @@ export const PRODUCTS: Product[] = [
     name: "زعفران سوپرنگین ظرف چوبی",
     category: "زعفران نگین",
     weight: "۱ مثقال (۴.۶۰۸ گرم)",
-    price: 1346000,
-    oldPrice: 1438000,
+    price: 1300000,
+    oldPrice: 1400000,
     images: [
       "/images/final-wooden1-UltraPic.webp",
       "/images/finalwooden22-1.webp",
@@ -159,7 +159,7 @@ export const PRODUCTS: Product[] = [
     name: "زعفران سوپرنگین ظرف گرد",
     category: "زعفران نگین",
     weight: "۱ مثقال (۴.۶۰۸ گرم)",
-    price: 1150000,
+    price: 1100000,
     images: [
       "/images/Round1-F.webp",
       "/images/roundNegin2-F.webp",
@@ -181,8 +181,8 @@ export const PRODUCTS: Product[] = [
     name: "زعفران سوپرنگین جعبه مخمل",
     category: "زعفران نگین",
     weight: "۱ مثقال (۴.۶۰۸ گرم)",
-    price: 1265000,
-    oldPrice: 1380000,
+    price: 1200000,
+    oldPrice: 1300000,
     images: [
       "/images/redbox1.webp",
       "/images/redbox2.webp",
@@ -205,7 +205,7 @@ export const PRODUCTS: Product[] = [
     name: "زعفران سوپرنگین ظرف خاتم",
     category: "زعفران نگین",
     weight: "۱ مثقال (۴.۶۰۸ گرم)",
-    price: 1460000,
+    price: 1400000,
     images: [
       "/images/Khatam1.webp",
       "/images/Khatam-negin-second.webp",
@@ -229,8 +229,8 @@ export const PRODUCTS: Product[] = [
     name: "زعفران دسته / دخترپیچ (۴.۶ گرمی)",
     category: "زعفران دسته",
     weight: "۱ مثقال (۴.۶۰۸ گرم)",
-    price: 897000,
-    oldPrice: 977000,
+    price: 800000,
+    oldPrice: 900000,
     images: [
       "/images/Daste1bgF.webp",
       "/images/Dasteh22-1.webp",
@@ -255,8 +255,8 @@ export const PRODUCTS: Product[] = [
     name: "ریشه زعفران (۲.۳ گرمی)",
     category: "ریشه زعفران",
     weight: "نیم مثقال (۲.۳ گرم)",
-    price: 230000,
-    oldPrice: 276000,
+    price: 200000,
+    oldPrice: 200000,
     images: [
       "/images/Sefid1Final.webp",
       "/images/Sefid2Final.webp",
@@ -281,8 +281,8 @@ export const PRODUCTS: Product[] = [
     name: "زعفران نرمه (۴.۶ گرمی)",
     category: "زعفران نرمه",
     weight: "۱ مثقال (۴.۶۰۸ گرم)",
-    price: 448000,
-    oldPrice: 540000,
+    price: 400000,
+    oldPrice: 500000,
     images: [
       "/images/narmeh11.webp",
       "/images/narmeh2.webp",
@@ -290,9 +290,9 @@ export const PRODUCTS: Product[] = [
     ],
     shortDescription: "زعفران نرمه آشپزخانه‌ای، مناسب رستوران‌ها، بستنی‌فروشی‌ها و دمنوش. وکیوم یک مثقالی.",
     priceTiers: [
-      { quantity: 1, price: 448000, label: "۱ مثقال" },
-      { quantity: 2, price: 782000, label: "۲ مثقال" },
-      { quantity: 5, price: 1748000, label: "۵ مثقال" },
+      { quantity: 1, price: 400000, label: "۱ مثقال" },
+      { quantity: 2, price: 700000, label: "۲ مثقال" },
+      { quantity: 5, price: 1700000, label: "۵ مثقال" },
     ],
     description:
       "زعفران نرمه یا آشپزخانه با قیمت ارزان مناسب آشپزخانه‌ها، بستنی‌فروشی‌ها و دمنوش است. این محصول در بسته یک مثقالی وکیوم شده تقدیم شما می‌شود.\n\nزعفران نرمه از باقی‌مانده زعفران نگین و ریشه زعفران ساخته می‌شود. این محصول خواص دارویی بالایی دارد. چاشنی‌دهنده به غذا یا عطردهنده به نوشیدنی دم‌شده شما است.",
