@@ -102,7 +102,7 @@ router.post("/order", async (req, res) => {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        merchant: process.env.ZIBAL_MERCHANT_ID || "zibal",
+        merchant: process.env.ZIBAL_MERCHANT_ID || "69f20f536bb5e9f6dbf68c25",
         amount: tomanToRial(order.total),
         callbackUrl: `${siteUrl()}/payment/callback`,
         orderId: order.id,
