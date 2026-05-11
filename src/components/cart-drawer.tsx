@@ -415,7 +415,7 @@ export function CartDrawer() {
                 type="button"
                 onClick={handleCheckout}
                 disabled={submitting}
-                className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-full bg-[color:var(--brown-deep)] px-5 py-3 text-sm font-extrabold text-[color:var(--parchment)] transition hover:bg-[color:var(--brown-medium)] disabled:cursor-not-allowed disabled:opacity-70"
+                className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-full bg-[color:var(--brown-deep)] px-5 py-3.5 text-sm font-extrabold text-[color:var(--parchment)] transition hover:bg-[color:var(--brown-medium)] disabled:cursor-not-allowed disabled:opacity-70"
               >
                 {submitting ? (
                   <>
