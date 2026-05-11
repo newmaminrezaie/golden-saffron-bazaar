@@ -35,7 +35,7 @@ function AboutPage() {
           src={storefrontWide}
           alt="ویترین فروشگاه زعفران خواجوی در قائن"
           className="absolute inset-0 h-full w-full object-cover"
-          style={{ objectPosition: "center 45%" }}
+          style={{ objectPosition: "35% 45%" }}
         />
         <div
           className="absolute inset-0"
