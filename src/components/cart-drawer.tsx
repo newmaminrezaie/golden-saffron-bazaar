@@ -272,7 +272,7 @@ export function CartDrawer() {
                         to="/shop/$slug"
                         params={{ slug: it.slug }}
                         onClick={close}
-                        className="text-sm font-bold text-foreground line-clamp-2 hover:text-accent"
+                        className="text-[15px] font-bold text-foreground line-clamp-2 hover:text-accent sm:text-sm"
                       >
                         {it.name}
                       </Link>
