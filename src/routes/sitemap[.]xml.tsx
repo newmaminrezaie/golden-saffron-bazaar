@@ -26,93 +26,70 @@ function urlEntry(opts: {
   return `  <url>\n${parts.join("\n")}\n  </url>`;
 }
 
-export const Route = createFileRoute("/sitemap.xml")({
-  server: {
-    handlers: {
-      GET: async () => {
-        const today = new Date().toISOString().split("T")[0];
-        const urls: string[] = [];
+async function buildSitemap(): Promise<string> {
+  const today = new Date().toISOString().split("T")[0];
+  const urls: string[] = [];
 
-        // Static pages
-        urls.push(
-          urlEntry({
-            loc: `${SITE_URL}/`,
-            lastmod: today,
-            changefreq: "weekly",
-            priority: "1.0",
-          }),
-          urlEntry({
-            loc: `${SITE_URL}/about`,
-            lastmod: today,
-            changefreq: "monthly",
-            priority: "0.7",
-          }),
-          urlEntry({
-            loc: `${SITE_URL}/contact`,
-            lastmod: today,
-            changefreq: "monthly",
-            priority: "0.6",
-          }),
-          urlEntry({
-            loc: `${SITE_URL}/blog`,
-            lastmod: today,
-            changefreq: "weekly",
-            priority: "0.8",
-          }),
-        );
+  urls.push(
+    urlEntry({ loc: `${SITE_URL}/`, lastmod: today, changefreq: "weekly", priority: "1.0" }),
+    urlEntry({ loc: `${SITE_URL}/about`, lastmod: today, changefreq: "monthly", priority: "0.7" }),
+    urlEntry({ loc: `${SITE_URL}/contact`, lastmod: today, changefreq: "monthly", priority: "0.6" }),
+    urlEntry({ loc: `${SITE_URL}/blog`, lastmod: today, changefreq: "weekly", priority: "0.8" }),
+  );
 
-        // Shop + every category as a filtered URL
-        for (const c of CATEGORIES) {
-          const qs = `?category=${encodeURIComponent(c)}`;
-          urls.push(
-            urlEntry({
-              loc: `${SITE_URL}/shop${c === "همه" ? "" : qs}`,
-              lastmod: today,
-              changefreq: "weekly",
-              priority: c === "همه" ? "0.9" : "0.7",
-            }),
-          );
-        }
+  for (const c of CATEGORIES) {
+    const qs = `?category=${encodeURIComponent(c)}`;
+    urls.push(
+      urlEntry({
+        loc: `${SITE_URL}/shop${c === "همه" ? "" : qs}`,
+        lastmod: today,
+        changefreq: "weekly",
+        priority: c === "همه" ? "0.9" : "0.7",
+      }),
+    );
+  }
 
-        // Product detail pages
-        for (const p of PRODUCTS) {
-          urls.push(
-            urlEntry({
-              loc: `${SITE_URL}/shop/${p.slug}`,
-              lastmod: today,
-              changefreq: "weekly",
-              priority: "0.8",
-            }),
-          );
-        }
+  for (const p of PRODUCTS) {
+    urls.push(
+      urlEntry({
+        loc: `${SITE_URL}/shop/${p.slug}`,
+        lastmod: today,
+        changefreq: "weekly",
+        priority: "0.8",
+      }),
+    );
+  }
 
-        // Blog articles
-        const articles = await getArticles();
-        for (const a of articles) {
-          urls.push(
-            urlEntry({
-              loc: `${SITE_URL}/blog/${a.slug}`,
-              lastmod: a.publishedAt
-                ? new Date(a.publishedAt).toISOString().split("T")[0]
-                : today,
-              changefreq: "monthly",
-              priority: "0.6",
-            }),
-          );
-        }
+  const articles = await getArticles();
+  for (const a of articles) {
+    urls.push(
+      urlEntry({
+        loc: `${SITE_URL}/blog/${a.slug}`,
+        lastmod: a.publishedAt
+          ? new Date(a.publishedAt).toISOString().split("T")[0]
+          : today,
+        changefreq: "monthly",
+        priority: "0.6",
+      }),
+    );
+  }
 
-        const xml = `<?xml version="1.0" encoding="UTF-8"?>
+  return `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${urls.join("\n")}
 </urlset>`;
+}
 
-        return new Response(xml, {
-          headers: {
-            "Content-Type": "application/xml; charset=utf-8",
-            "Cache-Control": "public, max-age=3600",
-          },
-        });
+export const Route = createFileRoute("/sitemap.xml")({
+  beforeLoad: async () => {
+    const xml = await buildSitemap();
+    throw new Response(xml, {
+      status: 200,
+      headers: {
+        "Content-Type": "application/xml; charset=utf-8",
+        "Cache-Control": "public, max-age=3600",
       },
-    },
+    });
   },
+  component: () => null,
 });
