@@ -208,11 +208,11 @@ export function CartDrawer() {
     <Sheet open={isOpen} onOpenChange={(o) => !o && close()}>
       <SheetContent
         side="left"
-        className="flex w-full flex-col gap-0 p-0 sm:max-w-md"
+        className="flex w-full flex-col gap-0 p-0 sm:max-w-lg"
         dir="rtl"
       >
-        <SheetHeader className="border-b border-border/60 px-5 py-4 text-right">
-          <SheetTitle className="flex items-center gap-2 text-base font-extrabold">
+        <SheetHeader className="border-b border-border/60 px-6 py-5 text-right">
+          <SheetTitle className="flex items-center gap-2 text-lg font-extrabold">
             <ShoppingBag className="size-5 text-[color:var(--brown-medium)]" />
             سبد خرید
             {count > 0 && (
@@ -247,14 +247,14 @@ export function CartDrawer() {
           </div>
         ) : (
           <>
-            <ul className="flex-1 divide-y divide-border/60 overflow-y-auto px-5">
+            <ul className="flex-1 divide-y divide-border/60 overflow-y-auto px-6">
               {items.map((it) => (
-                <li key={it.lineId} className="flex gap-3 py-4">
+                <li key={it.lineId} className="flex gap-4 py-5">
                   <Link
                     to="/shop/$slug"
                     params={{ slug: it.slug }}
                     onClick={close}
-                    className="size-20 shrink-0 overflow-hidden rounded-xl bg-secondary"
+                    className="size-20 shrink-0 overflow-hidden rounded-xl bg-secondary sm:size-24"
                   >
                     {it.image && (
                       <img
@@ -287,29 +287,29 @@ export function CartDrawer() {
                     </div>
 
                     {(it.variantLabel || it.weight) && (
-                      <p className="mt-0.5 text-[11px] text-muted-foreground">
+                      <p className="mt-1 text-xs text-muted-foreground">
                         {it.variantLabel || it.weight}
                       </p>
                     )}
 
-                    <div className="mt-auto flex items-end justify-between gap-2 pt-2">
+                    <div className="mt-auto flex items-end justify-between gap-2 pt-3">
                       <div className="inline-flex items-center rounded-full border border-border/70 bg-background">
                         <button
                           type="button"
                           onClick={() => setQty(it.lineId, it.qty - 1)}
                           aria-label="کاهش"
-                          className="grid size-8 place-items-center text-foreground/70 transition hover:text-foreground"
+                          className="grid size-9 place-items-center text-foreground/70 transition hover:text-foreground"
                         >
                           <Minus className="size-3.5" />
                         </button>
-                        <span className="min-w-7 text-center text-sm font-bold tabular-nums">
+                        <span className="min-w-8 text-center text-sm font-bold tabular-nums">
                           {toFa(it.qty)}
                         </span>
                         <button
                           type="button"
                           onClick={() => setQty(it.lineId, it.qty + 1)}
                           aria-label="افزایش"
-                          className="grid size-8 place-items-center text-foreground/70 transition hover:text-foreground"
+                          className="grid size-9 place-items-center text-foreground/70 transition hover:text-foreground"
                         >
                           <Plus className="size-3.5" />
                         </button>
@@ -323,15 +323,15 @@ export function CartDrawer() {
               ))}
             </ul>
 
-            <div className="border-t border-border/60 bg-secondary/40 px-5 py-4">
+            <div className="border-t border-border/60 bg-secondary/40 px-6 py-5">
               {/* Customer form */}
-              <div className="mb-3 grid gap-2">
+              <div className="mb-4 grid gap-3">
                 <input
                   type="text"
                   placeholder="نام و نام خانوادگی"
                   value={form.name}
                   onChange={updateField("name")}
-                  className="w-full rounded-lg border border-border/70 bg-background px-3 py-2 text-sm text-foreground outline-none focus:border-[color:var(--brown-medium)]"
+                  className="w-full rounded-xl border border-border/70 bg-background px-3 py-2.5 text-sm text-foreground outline-none focus:border-[color:var(--brown-medium)]"
                   autoComplete="name"
                 />
                 <input
@@ -340,7 +340,7 @@ export function CartDrawer() {
                   placeholder="شماره موبایل (مثال: 09121234567)"
                   value={form.phone}
                   onChange={updateField("phone")}
-                  className="w-full rounded-lg border border-border/70 bg-background px-3 py-2 text-sm text-foreground outline-none focus:border-[color:var(--brown-medium)]"
+                  className="w-full rounded-xl border border-border/70 bg-background px-3 py-2.5 text-sm text-foreground outline-none focus:border-[color:var(--brown-medium)]"
                   autoComplete="tel"
                   dir="ltr"
                 />
@@ -349,7 +349,7 @@ export function CartDrawer() {
                   value={form.address}
                   onChange={updateField("address")}
                   rows={2}
-                  className="w-full resize-none rounded-lg border border-border/70 bg-background px-3 py-2 text-sm text-foreground outline-none focus:border-[color:var(--brown-medium)]"
+                  className="w-full resize-none rounded-xl border border-border/70 bg-background px-3 py-2.5 text-sm text-foreground outline-none focus:border-[color:var(--brown-medium)]"
                   autoComplete="street-address"
                 />
                 <input
@@ -358,15 +358,15 @@ export function CartDrawer() {
                   placeholder="کدپستی (۱۰ رقمی، اختیاری)"
                   value={form.postal_code}
                   onChange={updateField("postal_code")}
-                  className="w-full rounded-lg border border-border/70 bg-background px-3 py-2 text-sm text-foreground outline-none focus:border-[color:var(--brown-medium)]"
+                  className="w-full rounded-xl border border-border/70 bg-background px-3 py-2.5 text-sm text-foreground outline-none focus:border-[color:var(--brown-medium)]"
                   autoComplete="postal-code"
                   dir="ltr"
                 />
               </div>
 
               {/* Payment method */}
-              <div className="mb-3">
-                <div className="mb-1.5 text-[11px] font-bold text-muted-foreground">
+              <div className="mb-4">
+                <div className="mb-2 text-[11px] font-bold text-muted-foreground">
                   روش پرداخت
                 </div>
                 <div className="grid grid-cols-2 gap-2">
@@ -385,7 +385,7 @@ export function CartDrawer() {
                 </div>
               </div>
 
-              <dl className="space-y-1.5 text-sm">
+              <dl className="space-y-2 text-sm">
                 <div className="flex justify-between text-foreground/80">
                   <dt>جمع کالاها</dt>
                   <dd className="font-bold">{formatToman(subtotal)}</dd>
@@ -394,7 +394,7 @@ export function CartDrawer() {
                   <dt>هزینه پست و بسته‌بندی</dt>
                   <dd className="font-bold">{formatToman(SHIPPING_FEE)}</dd>
                 </div>
-                <div className="mt-2 flex justify-between border-t border-border/60 pt-2 text-base">
+                <div className="mt-3 flex justify-between border-t border-border/60 pt-3 text-base">
                   <dt className="font-extrabold">مبلغ قابل پرداخت</dt>
                   <dd className="font-extrabold text-[color:var(--brown-deep)]">
                     {formatToman(total)}
@@ -415,7 +415,7 @@ export function CartDrawer() {
                 type="button"
                 onClick={handleCheckout}
                 disabled={submitting}
-                className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-full bg-[color:var(--brown-deep)] px-5 py-3 text-sm font-extrabold text-[color:var(--parchment)] transition hover:bg-[color:var(--brown-medium)] disabled:cursor-not-allowed disabled:opacity-70"
+                className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-full bg-[color:var(--brown-deep)] px-5 py-3.5 text-sm font-extrabold text-[color:var(--parchment)] transition hover:bg-[color:var(--brown-medium)] disabled:cursor-not-allowed disabled:opacity-70"
               >
                 {submitting ? (
                   <>
@@ -437,7 +437,7 @@ export function CartDrawer() {
               <button
                 type="button"
                 onClick={close}
-                className="mt-2 inline-flex w-full items-center justify-center gap-1.5 text-xs text-muted-foreground transition hover:text-foreground"
+                className="mt-3 inline-flex w-full items-center justify-center gap-1.5 text-[13px] text-muted-foreground transition hover:text-foreground"
               >
                 <X className="size-3.5" />
                 ادامه خرید
