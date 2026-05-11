@@ -1,7 +1,8 @@
 "use strict";
 
-// Fixed packaging / postal fee added to every order, regardless of total.
+// Packaging / postal fee. Waived for orders at/above the free-shipping threshold.
 const SHIPPING_FEE_TOMAN = 30000;
+const FREE_SHIPPING_THRESHOLD_TOMAN = 2000000;
 
 function generateOrderId() {
   const ts = Math.floor(Date.now() / 1000);
@@ -15,7 +16,7 @@ function tomanToRial(toman) {
 
 function computeTotals(items) {
   const subtotal = items.reduce((sum, it) => sum + it.price * it.qty, 0);
-  const shipping = SHIPPING_FEE_TOMAN;
+  const shipping = subtotal >= FREE_SHIPPING_THRESHOLD_TOMAN ? 0 : SHIPPING_FEE_TOMAN;
   const total = subtotal + shipping;
   return { subtotal, shipping, total };
 }
@@ -26,6 +27,7 @@ function formatToman(n) {
 
 module.exports = {
   SHIPPING_FEE_TOMAN,
+  FREE_SHIPPING_THRESHOLD_TOMAN,
   generateOrderId,
   tomanToRial,
   computeTotals,
