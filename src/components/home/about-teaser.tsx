@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import ownerPortrait from "@/assets/owner-portrait.jpg";
+import saffronField from "@/assets/saffron-field.jpg";
 
 export function AboutTeaser() {
   return (
@@ -7,10 +7,9 @@ export function AboutTeaser() {
       <div className="mx-auto grid max-w-6xl gap-10 md:grid-cols-2 md:items-center">
         <div className="relative overflow-hidden rounded-3xl shadow-xl aspect-[4/5] md:aspect-[5/6]">
           <img
-            src={ownerPortrait}
-            alt="مجید خواجوی، بنیان‌گذار زعفران خواجوی"
+            src={saffronField}
+            alt="مزرعه گل‌های زعفران در قائنات"
             className="h-full w-full object-cover"
-            style={{ objectPosition: "center 25%" }}
             loading="lazy"
           />
         </div>
