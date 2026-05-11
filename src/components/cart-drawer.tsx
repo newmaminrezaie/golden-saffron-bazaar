@@ -385,7 +385,7 @@ export function CartDrawer() {
                 </div>
               </div>
 
-              <dl className="space-y-1.5 text-sm">
+              <dl className="space-y-2 text-sm">
                 <div className="flex justify-between text-foreground/80">
                   <dt>جمع کالاها</dt>
                   <dd className="font-bold">{formatToman(subtotal)}</dd>
