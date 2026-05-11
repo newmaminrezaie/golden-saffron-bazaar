@@ -208,10 +208,10 @@ export function CartDrawer() {
     <Sheet open={isOpen} onOpenChange={(o) => !o && close()}>
       <SheetContent
         side="left"
-        className="flex w-full flex-col gap-0 p-0 sm:max-w-lg"
+        className="flex w-full flex-col gap-0 overflow-y-auto p-0 sm:max-w-lg sm:overflow-hidden"
         dir="rtl"
       >
-        <SheetHeader className="border-b border-border/60 px-6 py-5 text-right">
+        <SheetHeader className="sticky top-0 z-10 border-b border-border/60 bg-background px-6 py-5 text-right sm:static">
           <SheetTitle className="flex items-center gap-2 text-lg font-extrabold">
             <ShoppingBag className="size-5 text-[color:var(--brown-medium)]" />
             سبد خرید
