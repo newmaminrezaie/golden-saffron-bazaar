@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import khajaviEmblem from "@/assets/khajavi-emblem.png";
 import samandehiSeal from "@/assets/samandehi.png";
+import storefront from "@/assets/storefront.jpg";
 import { EnamadSeal } from "@/components/enamad-seal";
 
 export function SiteFooter() {
@@ -121,7 +122,25 @@ export function SiteFooter() {
       </div>
 
       <div className="border-t border-white/10">
-        <div className="mx-auto max-w-7xl px-6 md:px-10 py-5 text-center text-xs text-white/60">
+        <div className="mx-auto max-w-7xl px-6 md:px-10 py-8 grid gap-5 md:gap-8 md:grid-cols-[180px_1fr] items-center">
+          <div className="relative overflow-hidden rounded-2xl shadow-lg ring-1 ring-white/10 aspect-[4/3] w-40 md:w-44">
+            <img
+              src={storefront}
+              alt="ویترین فروشگاه زعفران خواجوی"
+              className="h-full w-full object-cover"
+              loading="lazy"
+            />
+          </div>
+          <div>
+            <h4 className="text-base font-bold tracking-tight mb-2 text-white">درباره فروشگاه</h4>
+            <p className="text-sm leading-8 text-white/75 max-w-2xl">
+              فروشگاه زعفران خواجوی از سال ۸۹ در قائن و گناباد تأسیس شد و از آن پس به ارائه خدمات در زمینه زعفران و خشکبار در خراسان رضوی پرداخت.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div className="border-t border-white/10">
           © {new Date().getFullYear()} زعفران خواجوی — تمامی حقوق محفوظ است.
         </div>
       </div>
