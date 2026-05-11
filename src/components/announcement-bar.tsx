@@ -15,7 +15,7 @@ export function AnnouncementBar() {
     >
       <div className="flex items-center gap-2 px-4">
         <Truck className="size-4 shrink-0" aria-hidden="true" />
-        <span>ارسال رایگان برای سفارش‌های بالای ۲,۰۰۰,۰۰۰ تومان</span>
+        <span>ارسال رایگان برای سفارش‌های بالای دو میلیون تومان</span>
       </div>
     </div>
   );
