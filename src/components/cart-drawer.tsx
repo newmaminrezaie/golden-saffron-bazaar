@@ -331,7 +331,7 @@ export function CartDrawer() {
                   placeholder="نام و نام خانوادگی"
                   value={form.name}
                   onChange={updateField("name")}
-                  className="w-full rounded-lg border border-border/70 bg-background px-3 py-2 text-sm text-foreground outline-none focus:border-[color:var(--brown-medium)]"
+                  className="w-full rounded-xl border border-border/70 bg-background px-3 py-2.5 text-sm text-foreground outline-none focus:border-[color:var(--brown-medium)]"
                   autoComplete="name"
                 />
                 <input
@@ -340,7 +340,7 @@ export function CartDrawer() {
                   placeholder="شماره موبایل (مثال: 09121234567)"
                   value={form.phone}
                   onChange={updateField("phone")}
-                  className="w-full rounded-lg border border-border/70 bg-background px-3 py-2 text-sm text-foreground outline-none focus:border-[color:var(--brown-medium)]"
+                  className="w-full rounded-xl border border-border/70 bg-background px-3 py-2.5 text-sm text-foreground outline-none focus:border-[color:var(--brown-medium)]"
                   autoComplete="tel"
                   dir="ltr"
                 />
@@ -349,7 +349,7 @@ export function CartDrawer() {
                   value={form.address}
                   onChange={updateField("address")}
                   rows={2}
-                  className="w-full resize-none rounded-lg border border-border/70 bg-background px-3 py-2 text-sm text-foreground outline-none focus:border-[color:var(--brown-medium)]"
+                  className="w-full resize-none rounded-xl border border-border/70 bg-background px-3 py-2.5 text-sm text-foreground outline-none focus:border-[color:var(--brown-medium)]"
                   autoComplete="street-address"
                 />
                 <input
@@ -358,7 +358,7 @@ export function CartDrawer() {
                   placeholder="کدپستی (۱۰ رقمی، اختیاری)"
                   value={form.postal_code}
                   onChange={updateField("postal_code")}
-                  className="w-full rounded-lg border border-border/70 bg-background px-3 py-2 text-sm text-foreground outline-none focus:border-[color:var(--brown-medium)]"
+                  className="w-full rounded-xl border border-border/70 bg-background px-3 py-2.5 text-sm text-foreground outline-none focus:border-[color:var(--brown-medium)]"
                   autoComplete="postal-code"
                   dir="ltr"
                 />
