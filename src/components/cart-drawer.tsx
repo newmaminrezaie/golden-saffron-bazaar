@@ -437,7 +437,7 @@ export function CartDrawer() {
               <button
                 type="button"
                 onClick={close}
-                className="mt-2 inline-flex w-full items-center justify-center gap-1.5 text-xs text-muted-foreground transition hover:text-foreground"
+                className="mt-3 inline-flex w-full items-center justify-center gap-1.5 text-[13px] text-muted-foreground transition hover:text-foreground"
               >
                 <X className="size-3.5" />
                 ادامه خرید
