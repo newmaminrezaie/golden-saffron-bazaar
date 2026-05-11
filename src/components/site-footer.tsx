@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import khajaviEmblem from "@/assets/khajavi-emblem.png";
 import samandehiSeal from "@/assets/samandehi.png";
+import emallsSeal from "@/assets/emalls.png";
 import storefront from "@/assets/storefront.jpg";
 import { EnamadSeal } from "@/components/enamad-seal";
 
@@ -98,8 +99,7 @@ export function SiteFooter() {
               className="bg-white/95 rounded-xl border border-white/10 p-2 w-full aspect-square flex items-center justify-center shadow-sm hover:bg-white transition"
             >
               <img
-                referrerPolicy="origin"
-                src="https://service.emalls.ir/neshan?id=77208"
+                src={emallsSeal}
                 alt="نشان اعتباری ایمالز"
                 style={{ maxWidth: "100%", maxHeight: "100%" }}
               />
