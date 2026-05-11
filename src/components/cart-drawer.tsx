@@ -323,9 +323,9 @@ export function CartDrawer() {
               ))}
             </ul>
 
-            <div className="border-t border-border/60 bg-secondary/40 px-5 py-4">
+            <div className="border-t border-border/60 bg-secondary/40 px-6 py-5">
               {/* Customer form */}
-              <div className="mb-3 grid gap-2">
+              <div className="mb-4 grid gap-3">
                 <input
                   type="text"
                   placeholder="نام و نام خانوادگی"
