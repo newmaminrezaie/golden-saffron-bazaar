@@ -5,7 +5,7 @@ export function AboutTeaser() {
   return (
     <section className="px-4 py-16 md:py-24">
       <div className="mx-auto grid max-w-6xl gap-10 md:grid-cols-2 md:items-center">
-        <div className="relative overflow-hidden rounded-3xl shadow-xl aspect-[4/5] md:aspect-[5/6]">
+        <div className="relative overflow-hidden rounded-3xl shadow-xl aspect-[4/3] md:aspect-[4/3]">
           <img
             src={saffronField}
             alt="مزرعه گل‌های زعفران در قائنات"
