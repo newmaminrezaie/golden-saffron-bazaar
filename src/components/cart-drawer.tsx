@@ -247,14 +247,14 @@ export function CartDrawer() {
           </div>
         ) : (
           <>
-            <ul className="flex-1 divide-y divide-border/60 overflow-y-auto px-6">
+            <ul className="min-h-[42vh] divide-y divide-border/60 px-6 sm:min-h-0 sm:flex-1 sm:overflow-y-auto">
               {items.map((it) => (
-                <li key={it.lineId} className="flex gap-4 py-5">
+                <li key={it.lineId} className="flex gap-4 py-6 sm:py-5">
                   <Link
                     to="/shop/$slug"
                     params={{ slug: it.slug }}
                     onClick={close}
-                    className="size-20 shrink-0 overflow-hidden rounded-xl bg-secondary sm:size-24"
+                    className="size-24 shrink-0 overflow-hidden rounded-xl bg-secondary"
                   >
                     {it.image && (
                       <img
