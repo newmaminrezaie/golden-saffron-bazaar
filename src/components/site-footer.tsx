@@ -141,6 +141,7 @@ export function SiteFooter() {
       </div>
 
       <div className="border-t border-white/10">
+        <div className="mx-auto max-w-7xl px-6 md:px-10 py-5 text-center text-xs text-white/60">
           © {new Date().getFullYear()} زعفران خواجوی — تمامی حقوق محفوظ است.
         </div>
       </div>
