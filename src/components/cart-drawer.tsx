@@ -365,8 +365,8 @@ export function CartDrawer() {
               </div>
 
               {/* Payment method */}
-              <div className="mb-3">
-                <div className="mb-1.5 text-[11px] font-bold text-muted-foreground">
+              <div className="mb-4">
+                <div className="mb-2 text-[11px] font-bold text-muted-foreground">
                   روش پرداخت
                 </div>
                 <div className="grid grid-cols-2 gap-2">
