@@ -247,14 +247,14 @@ export function CartDrawer() {
           </div>
         ) : (
           <>
-            <ul className="flex-1 divide-y divide-border/60 overflow-y-auto px-5">
+            <ul className="flex-1 divide-y divide-border/60 overflow-y-auto px-6">
               {items.map((it) => (
-                <li key={it.lineId} className="flex gap-3 py-4">
+                <li key={it.lineId} className="flex gap-4 py-5">
                   <Link
                     to="/shop/$slug"
                     params={{ slug: it.slug }}
                     onClick={close}
-                    className="size-20 shrink-0 overflow-hidden rounded-xl bg-secondary"
+                    className="size-20 shrink-0 overflow-hidden rounded-xl bg-secondary sm:size-24"
                   >
                     {it.image && (
                       <img
@@ -287,29 +287,29 @@ export function CartDrawer() {
                     </div>
 
                     {(it.variantLabel || it.weight) && (
-                      <p className="mt-0.5 text-[11px] text-muted-foreground">
+                      <p className="mt-1 text-xs text-muted-foreground">
                         {it.variantLabel || it.weight}
                       </p>
                     )}
 
-                    <div className="mt-auto flex items-end justify-between gap-2 pt-2">
+                    <div className="mt-auto flex items-end justify-between gap-2 pt-3">
                       <div className="inline-flex items-center rounded-full border border-border/70 bg-background">
                         <button
                           type="button"
                           onClick={() => setQty(it.lineId, it.qty - 1)}
                           aria-label="کاهش"
-                          className="grid size-8 place-items-center text-foreground/70 transition hover:text-foreground"
+                          className="grid size-9 place-items-center text-foreground/70 transition hover:text-foreground"
                         >
                           <Minus className="size-3.5" />
                         </button>
-                        <span className="min-w-7 text-center text-sm font-bold tabular-nums">
+                        <span className="min-w-8 text-center text-sm font-bold tabular-nums">
                           {toFa(it.qty)}
                         </span>
                         <button
                           type="button"
                           onClick={() => setQty(it.lineId, it.qty + 1)}
                           aria-label="افزایش"
-                          className="grid size-8 place-items-center text-foreground/70 transition hover:text-foreground"
+                          className="grid size-9 place-items-center text-foreground/70 transition hover:text-foreground"
                         >
                           <Plus className="size-3.5" />
                         </button>
