@@ -208,10 +208,10 @@ export function CartDrawer() {
     <Sheet open={isOpen} onOpenChange={(o) => !o && close()}>
       <SheetContent
         side="left"
-        className="flex w-full flex-col gap-0 p-0 sm:max-w-lg"
+        className="flex w-full flex-col gap-0 overflow-y-auto p-0 sm:max-w-lg sm:overflow-hidden"
         dir="rtl"
       >
-        <SheetHeader className="border-b border-border/60 px-6 py-5 text-right">
+        <SheetHeader className="sticky top-0 z-10 border-b border-border/60 bg-background px-6 py-5 text-right sm:static">
           <SheetTitle className="flex items-center gap-2 text-lg font-extrabold">
             <ShoppingBag className="size-5 text-[color:var(--brown-medium)]" />
             سبد خرید
@@ -247,14 +247,14 @@ export function CartDrawer() {
           </div>
         ) : (
           <>
-            <ul className="flex-1 divide-y divide-border/60 overflow-y-auto px-6">
+            <ul className="min-h-[42vh] divide-y divide-border/60 px-6 sm:min-h-0 sm:flex-1 sm:overflow-y-auto">
               {items.map((it) => (
-                <li key={it.lineId} className="flex gap-4 py-5">
+                <li key={it.lineId} className="flex gap-4 py-6 sm:py-5">
                   <Link
                     to="/shop/$slug"
                     params={{ slug: it.slug }}
                     onClick={close}
-                    className="size-20 shrink-0 overflow-hidden rounded-xl bg-secondary sm:size-24"
+                    className="size-24 shrink-0 overflow-hidden rounded-xl bg-secondary"
                   >
                     {it.image && (
                       <img
@@ -272,7 +272,7 @@ export function CartDrawer() {
                         to="/shop/$slug"
                         params={{ slug: it.slug }}
                         onClick={close}
-                        className="text-sm font-bold text-foreground line-clamp-2 hover:text-accent"
+                        className="text-[15px] font-bold text-foreground line-clamp-2 hover:text-accent sm:text-sm"
                       >
                         {it.name}
                       </Link>
