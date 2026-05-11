@@ -394,7 +394,7 @@ export function CartDrawer() {
                   <dt>هزینه پست و بسته‌بندی</dt>
                   <dd className="font-bold">{formatToman(SHIPPING_FEE)}</dd>
                 </div>
-                <div className="mt-2 flex justify-between border-t border-border/60 pt-2 text-base">
+                <div className="mt-3 flex justify-between border-t border-border/60 pt-3 text-base">
                   <dt className="font-extrabold">مبلغ قابل پرداخت</dt>
                   <dd className="font-extrabold text-[color:var(--brown-deep)]">
                     {formatToman(total)}
