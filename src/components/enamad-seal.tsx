@@ -3,8 +3,15 @@
  * the non-standard `code="..."` attribute on <img> (required by Enamad's
  * scanner) is preserved exactly as provided. Do NOT modify any attribute.
  */
-const ENAMAD_HTML =
-  "<a referrerpolicy='origin' target='_blank' href='https://trustseal.enamad.ir/?id=720710&Code=wRYn3reyeBtj2jZJ2oZYzZfyeKkh6don'><img referrerpolicy='origin' src='https://trustseal.enamad.ir/logo.aspx?id=720710&Code=wRYn3reyeBtj2jZJ2oZYzZfyeKkh6don' alt='' style='cursor:pointer' code='wRYn3reyeBtj2jZJ2oZYzZfyeKkh6don'/></a>";
+export const ENAMAD_ID = "720710";
+export const ENAMAD_CODE = "wRYn3reyeBtj2jZJ2oZYzZfyeKkh6don";
+export const ENAMAD_HREF = `https://trustseal.enamad.ir/?id=${ENAMAD_ID}&Code=${ENAMAD_CODE}`;
+export const ENAMAD_IMG_SRC = `https://trustseal.enamad.ir/logo.aspx?id=${ENAMAD_ID}&Code=${ENAMAD_CODE}`;
+export const ENAMAD_REFERRER_POLICY = "origin" as const;
+export const ENAMAD_TARGET = "_blank" as const;
+
+export const ENAMAD_HTML =
+  `<a referrerpolicy='${ENAMAD_REFERRER_POLICY}' target='${ENAMAD_TARGET}' href='${ENAMAD_HREF}'><img referrerpolicy='${ENAMAD_REFERRER_POLICY}' src='${ENAMAD_IMG_SRC}' alt='' style='cursor:pointer' code='${ENAMAD_CODE}'/></a>`;
 
 export function EnamadSeal({ className = "" }: { className?: string }) {
   return (
