@@ -7,6 +7,8 @@ const cors = require("cors");
 
 const ordersRoutes = require("./routes/orders");
 const callbackRoutes = require("./routes/callback");
+const pushRoutes = require("./routes/push");
+const { configure: configurePush } = require("./push");
 
 const app = express();
 
@@ -32,7 +34,14 @@ app.get("/healthz", (_req, res) => {
 });
 
 app.use("/api", ordersRoutes);
+app.use("/api/admin/push", pushRoutes);
 app.use("/payment", callbackRoutes);
+
+if (configurePush()) {
+  console.log("[khajavi-pay] web-push VAPID configured");
+} else {
+  console.warn("[khajavi-pay] VAPID keys missing — push notifications disabled");
+}
 
 // 404
 app.use((req, res) => {
