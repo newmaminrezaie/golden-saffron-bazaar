@@ -4,6 +4,7 @@ const express = require("express");
 const { getOrder, updateOrder } = require("../db");
 const { tomanToRial } = require("../utils");
 const { notifyOrder } = require("../telegram");
+const { notifyOrderPush } = require("../push");
 
 const router = express.Router();
 
@@ -54,6 +55,7 @@ router.get("/callback", async (req, res) => {
         raw_callback: JSON.stringify(data),
       });
       notifyOrder(updated, "paid").catch(() => {});
+      notifyOrderPush(updated, "paid").catch(() => {});
       return redirectSuccess(res, order.id);
     }
 
@@ -115,6 +117,7 @@ async function handleSepCallback(req, res) {
         raw_callback: JSON.stringify({ callback: src, verify: data }),
       });
       notifyOrder(updated, "paid").catch(() => {});
+      notifyOrderPush(updated, "paid").catch(() => {});
       return redirectSuccess(res, order.id);
     }
 
