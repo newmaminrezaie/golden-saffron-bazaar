@@ -85,6 +85,7 @@ export const Route = createRootRoute({
       { rel: "shortcut icon", href: "/favicon.ico" },
       { rel: "apple-touch-icon", href: "/favicon.png" },
       { rel: "canonical", href: "https://khajavisaffron.ir/" },
+      { rel: "manifest", href: "/manifest.webmanifest" },
     ],
     scripts: [
       {
