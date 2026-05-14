@@ -79,6 +79,10 @@ function siteUrl() {
   return (process.env.SITE_URL || "https://khajavisaffron.ir").replace(/\/$/, "");
 }
 
+function paymentCallbackUrl(path) {
+  return `${siteUrl()}/api/payment/${path}`;
+}
+
 // ---------- Zibal (به پرداخت ملت) ----------
 
 router.post("/order", async (req, res) => {
@@ -105,7 +109,7 @@ router.post("/order", async (req, res) => {
       body: JSON.stringify({
         merchant: process.env.ZIBAL_MERCHANT_ID || "69f20f536bb5e9f6dbf68c25",
         amount: tomanToRial(order.total),
-        callbackUrl: `${siteUrl()}/payment/callback`,
+        callbackUrl: paymentCallbackUrl("callback"),
         orderId: order.id,
         description: `سفارش زعفران خواجوی - ${order.id}`,
         mobile: order.phone,
@@ -171,7 +175,7 @@ router.post("/order-sep", async (req, res) => {
           TerminalId: process.env.SEP_TERMINAL_ID || "0",
           Amount: tomanToRial(order.total),
           ResNum: order.id,
-          RedirectUrl: `${siteUrl()}/payment/callback-sep`,
+          RedirectUrl: paymentCallbackUrl("callback-sep"),
           CellNumber: order.phone,
         }),
       }

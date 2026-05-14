@@ -32,6 +32,7 @@ app.get("/healthz", (_req, res) => {
 });
 
 app.use("/api", ordersRoutes);
+app.use("/api/payment", callbackRoutes);
 app.use("/payment", callbackRoutes);
 
 // 404
