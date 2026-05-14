@@ -16,6 +16,7 @@ const {
 } = require("../utils");
 const { notifyOrder } = require("../telegram");
 const { notifyOrderPush } = require("../push");
+const { notifyOrderRubika } = require("../rubika");
 
 const router = express.Router();
 
