@@ -5,6 +5,7 @@ const { getOrder, updateOrder } = require("../db");
 const { tomanToRial } = require("../utils");
 const { notifyOrder } = require("../telegram");
 const { notifyOrderPush } = require("../push");
+const { notifyOrderRubika } = require("../rubika");
 
 const router = express.Router();
 
