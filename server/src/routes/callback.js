@@ -57,6 +57,7 @@ router.get("/callback", async (req, res) => {
       });
       notifyOrder(updated, "paid").catch(() => {});
       notifyOrderPush(updated, "paid").catch(() => {});
+      notifyOrderRubika(updated, "paid").catch(() => {});
       return redirectSuccess(res, order.id);
     }
 
@@ -119,6 +120,7 @@ async function handleSepCallback(req, res) {
       });
       notifyOrder(updated, "paid").catch(() => {});
       notifyOrderPush(updated, "paid").catch(() => {});
+      notifyOrderRubika(updated, "paid").catch(() => {});
       return redirectSuccess(res, order.id);
     }
 

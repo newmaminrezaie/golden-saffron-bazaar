@@ -230,6 +230,7 @@ router.post("/order-card", async (req, res) => {
   // fire-and-forget telegram
   notifyOrder(order, "awaiting_card_confirm").catch(() => {});
   notifyOrderPush(order, "awaiting_card_confirm").catch(() => {});
+  notifyOrderRubika(order, "awaiting_card_confirm").catch(() => {});
 
   return res.json({
     ok: true,
