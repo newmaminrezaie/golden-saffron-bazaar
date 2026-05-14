@@ -5,6 +5,7 @@ const { getOrder, updateOrder } = require("../db");
 const { tomanToRial } = require("../utils");
 const { notifyOrder } = require("../telegram");
 const { notifyOrderPush } = require("../push");
+const { notifyOrderRubika } = require("../rubika");
 
 const router = express.Router();
 
@@ -56,6 +57,7 @@ router.get("/callback", async (req, res) => {
       });
       notifyOrder(updated, "paid").catch(() => {});
       notifyOrderPush(updated, "paid").catch(() => {});
+      notifyOrderRubika(updated, "paid").catch(() => {});
       return redirectSuccess(res, order.id);
     }
 
@@ -118,6 +120,7 @@ async function handleSepCallback(req, res) {
       });
       notifyOrder(updated, "paid").catch(() => {});
       notifyOrderPush(updated, "paid").catch(() => {});
+      notifyOrderRubika(updated, "paid").catch(() => {});
       return redirectSuccess(res, order.id);
     }
 
