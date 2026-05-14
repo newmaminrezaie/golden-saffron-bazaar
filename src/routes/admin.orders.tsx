@@ -187,7 +187,7 @@ function AdminOrdersPage() {
             </p>
           </div>
           <div className="flex flex-wrap items-center gap-2">
-            <EnableNotificationsButton adminToken={token} />
+            
             <button
               onClick={fetchOrders}
               disabled={loading}
