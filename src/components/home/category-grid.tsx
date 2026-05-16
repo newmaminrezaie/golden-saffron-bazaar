@@ -5,7 +5,8 @@ import saffronPushal from "@/assets/saffron-pushal.jpg";
 import saffronPowder from "@/assets/saffron-powder.jpeg";
 import wholesale from "@/assets/wholesale.png";
 import driedFruits from "@/assets/dried-fruits.webp";
-import { CATEGORIES, PRODUCTS } from "@/data/products";
+import { CATEGORIES } from "@/data/products";
+import { useProducts } from "@/lib/products-client";
 
 type Category = (typeof CATEGORIES)[number];
 
@@ -21,10 +22,6 @@ type Cat = {
 
 // Persian digit formatter
 const toFa = (n: number) => n.toLocaleString("fa-IR");
-const countFor = (cat: string) => {
-  const n = PRODUCTS.filter((p) => p.category === cat).length;
-  return cat === "عمده‌فروشی" && n === 0 ? "تماس بگیرید" : `${toFa(n)} محصول`;
-};
 
 const CATS: Cat[] = [
   {
@@ -75,6 +72,11 @@ const CATS: Cat[] = [
 ];
 
 export function CategoryGrid() {
+  const { products } = useProducts();
+  const countFor = (cat: string) => {
+    const n = products.filter((p) => p.category === cat).length;
+    return cat === "عمده‌فروشی" && n === 0 ? "تماس بگیرید" : `${toFa(n)} محصول`;
+  };
   return (
     <section style={{ padding: "3.5rem 1rem", background: "#f5ede0" }}>
       <div style={{ maxWidth: "1200px", margin: "0 auto" }}>

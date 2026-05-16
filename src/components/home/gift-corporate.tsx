@@ -1,13 +1,14 @@
 import { useEffect, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { ProductCard } from "@/components/product-card";
-import { PRODUCTS } from "@/data/products";
+import { useProducts } from "@/lib/products-client";
 import ornament from "@/assets/ornament-crimson.jpg";
 
 const GIFT_KEYWORDS = ["ظرف چوبی", "ظرف گرد", "جعبه مخمل", "ظرف خاتم"];
 
 export function GiftCorporate() {
-  const giftProducts = PRODUCTS.filter(
+  const { products } = useProducts();
+  const giftProducts = products.filter(
     (p) =>
       p.category === "زعفران نگین" &&
       GIFT_KEYWORDS.some((kw) => p.name.includes(kw)),
