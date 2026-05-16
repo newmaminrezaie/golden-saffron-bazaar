@@ -7,6 +7,9 @@ const cors = require("cors");
 
 const ordersRoutes = require("./routes/orders");
 const callbackRoutes = require("./routes/callback");
+const productsRoutes = require("./routes/products");
+const { router: uploadsRoutes, UPLOADS_DIR } = require("./routes/uploads");
+const { seedFromJsonIfEmpty } = require("./productsDb");
 
 const app = express();
 
@@ -32,8 +35,14 @@ app.get("/healthz", (_req, res) => {
 });
 
 app.use("/api", ordersRoutes);
+app.use("/api", productsRoutes);
+app.use("/api", uploadsRoutes);
+app.use("/uploads", express.static(UPLOADS_DIR, { maxAge: "30d", fallthrough: true }));
 app.use("/api/payment", callbackRoutes);
 app.use("/payment", callbackRoutes);
+
+// Seed products from bundled JSON on first boot (no-op if table is populated)
+try { seedFromJsonIfEmpty(); } catch (e) { console.error("[seed] failed:", e.message); }
 
 // 404
 app.use((req, res) => {
