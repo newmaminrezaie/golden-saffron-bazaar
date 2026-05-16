@@ -20,6 +20,7 @@ import { Route as PaymentSuccessRouteImport } from './routes/payment.success'
 import { Route as PaymentFailedRouteImport } from './routes/payment.failed'
 import { Route as PaymentCardRouteImport } from './routes/payment.card'
 import { Route as BlogSlugRouteImport } from './routes/blog_.$slug'
+import { Route as AdminProductsRouteImport } from './routes/admin.products'
 import { Route as AdminOrdersRouteImport } from './routes/admin.orders'
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
@@ -77,6 +78,11 @@ const BlogSlugRoute = BlogSlugRouteImport.update({
   path: '/blog/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminProductsRoute = AdminProductsRouteImport.update({
+  id: '/admin/products',
+  path: '/admin/products',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminOrdersRoute = AdminOrdersRouteImport.update({
   id: '/admin/orders',
   path: '/admin/orders',
@@ -91,6 +97,7 @@ export interface FileRoutesByFullPath {
   '/shop': typeof ShopRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/admin/orders': typeof AdminOrdersRoute
+  '/admin/products': typeof AdminProductsRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/payment/card': typeof PaymentCardRoute
   '/payment/failed': typeof PaymentFailedRoute
@@ -105,6 +112,7 @@ export interface FileRoutesByTo {
   '/shop': typeof ShopRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/admin/orders': typeof AdminOrdersRoute
+  '/admin/products': typeof AdminProductsRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/payment/card': typeof PaymentCardRoute
   '/payment/failed': typeof PaymentFailedRoute
@@ -120,6 +128,7 @@ export interface FileRoutesById {
   '/shop': typeof ShopRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/admin/orders': typeof AdminOrdersRoute
+  '/admin/products': typeof AdminProductsRoute
   '/blog_/$slug': typeof BlogSlugRoute
   '/payment/card': typeof PaymentCardRoute
   '/payment/failed': typeof PaymentFailedRoute
@@ -136,6 +145,7 @@ export interface FileRouteTypes {
     | '/shop'
     | '/sitemap.xml'
     | '/admin/orders'
+    | '/admin/products'
     | '/blog/$slug'
     | '/payment/card'
     | '/payment/failed'
@@ -150,6 +160,7 @@ export interface FileRouteTypes {
     | '/shop'
     | '/sitemap.xml'
     | '/admin/orders'
+    | '/admin/products'
     | '/blog/$slug'
     | '/payment/card'
     | '/payment/failed'
@@ -164,6 +175,7 @@ export interface FileRouteTypes {
     | '/shop'
     | '/sitemap.xml'
     | '/admin/orders'
+    | '/admin/products'
     | '/blog_/$slug'
     | '/payment/card'
     | '/payment/failed'
@@ -179,6 +191,7 @@ export interface RootRouteChildren {
   ShopRoute: typeof ShopRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   AdminOrdersRoute: typeof AdminOrdersRoute
+  AdminProductsRoute: typeof AdminProductsRoute
   BlogSlugRoute: typeof BlogSlugRoute
   PaymentCardRoute: typeof PaymentCardRoute
   PaymentFailedRoute: typeof PaymentFailedRoute
@@ -265,6 +278,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BlogSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/products': {
+      id: '/admin/products'
+      path: '/admin/products'
+      fullPath: '/admin/products'
+      preLoaderRoute: typeof AdminProductsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/orders': {
       id: '/admin/orders'
       path: '/admin/orders'
@@ -283,6 +303,7 @@ const rootRouteChildren: RootRouteChildren = {
   ShopRoute: ShopRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   AdminOrdersRoute: AdminOrdersRoute,
+  AdminProductsRoute: AdminProductsRoute,
   BlogSlugRoute: BlogSlugRoute,
   PaymentCardRoute: PaymentCardRoute,
   PaymentFailedRoute: PaymentFailedRoute,
