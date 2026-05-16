@@ -36,8 +36,12 @@ export const Route = createFileRoute("/shop_/$slug")({
         { name: "description", content: desc },
         { property: "og:title", content: product.name },
         { property: "og:description", content: desc },
-        { property: "og:image", content: product.images[0] },
-        { property: "twitter:image", content: product.images[0] },
+        ...(product.images[0]
+          ? [
+              { property: "og:image", content: product.images[0] },
+              { property: "twitter:image", content: product.images[0] },
+            ]
+          : []),
       ],
     };
   },
@@ -78,10 +82,49 @@ export const Route = createFileRoute("/shop_/$slug")({
 });
 
 function ProductPage() {
-  const { product } = Route.useLoaderData();
+  const { slug } = Route.useLoaderData();
+  const { product, loading } = useProduct(slug);
+  const { products } = useProducts();
   const [activeImg, setActiveImg] = useState(0);
   const [tierIdx, setTierIdx] = useState(0);
   const { add } = useCart();
+
+  // Dev-only invariant check
+  useEffect(() => {
+    if (!product) return;
+    const tiers = product.priceTiers;
+    if (import.meta.env.DEV && tiers && tiers.length > 0 && tiers[0].price !== product.price) {
+      console.warn(
+        `[products] "${product.slug}": priceTiers[0].price (${tiers[0].price}) does not match product.price (${product.price}). They MUST be equal.`,
+      );
+    }
+  }, [product]);
+
+  if (!product) {
+    if (loading) {
+      return (
+        <div className="mx-auto max-w-xl px-4 py-20 text-center text-sm text-muted-foreground">
+          در حال بارگذاری…
+        </div>
+      );
+    }
+    return (
+      <div className="mx-auto max-w-xl px-4 py-20 text-center">
+        <h1 className="text-2xl font-extrabold text-foreground">محصول پیدا نشد</h1>
+        <p className="mt-3 text-sm text-muted-foreground">
+          محصولی با این آدرس در فروشگاه موجود نیست.
+        </p>
+        <Link
+          to="/shop"
+          search={{ category: "همه" }}
+          className="mt-6 inline-block rounded-full bg-[color:var(--brown-deep)] px-5 py-2 text-sm font-bold text-[color:var(--parchment)]"
+        >
+          بازگشت به فروشگاه
+        </Link>
+      </div>
+    );
+  }
+
   const tiers = product.priceTiers;
   const hasTiers = !!tiers && tiers.length > 0;
   const selectedTier = hasTiers ? tiers![tierIdx] ?? tiers![0] : null;
@@ -93,16 +136,7 @@ function ProductPage() {
       : 0;
   const displayPrice = selectedTier ? selectedTier.price : product.price;
 
-  // Dev-only invariant check
-  useEffect(() => {
-    if (import.meta.env.DEV && hasTiers && tiers![0].price !== product.price) {
-      console.warn(
-        `[products] "${product.slug}": priceTiers[0].price (${tiers![0].price}) does not match product.price (${product.price}). They MUST be equal.`,
-      );
-    }
-  }, [product.slug, product.price, tiers, hasTiers]);
-
-  const related = PRODUCTS.filter(
+  const related = products.filter(
     (p) => p.category === product.category && p.slug !== product.slug,
   ).slice(0, 4);
 
