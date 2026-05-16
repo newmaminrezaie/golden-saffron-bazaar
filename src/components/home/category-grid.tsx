@@ -5,7 +5,8 @@ import saffronPushal from "@/assets/saffron-pushal.jpg";
 import saffronPowder from "@/assets/saffron-powder.jpeg";
 import wholesale from "@/assets/wholesale.png";
 import driedFruits from "@/assets/dried-fruits.webp";
-import { CATEGORIES, PRODUCTS } from "@/data/products";
+import { CATEGORIES } from "@/data/products";
+import { useProducts } from "@/lib/products-client";
 
 type Category = (typeof CATEGORIES)[number];
 
