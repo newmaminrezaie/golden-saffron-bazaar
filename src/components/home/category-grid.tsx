@@ -22,10 +22,6 @@ type Cat = {
 
 // Persian digit formatter
 const toFa = (n: number) => n.toLocaleString("fa-IR");
-const countFor = (cat: string) => {
-  const n = PRODUCTS.filter((p) => p.category === cat).length;
-  return cat === "عمده‌فروشی" && n === 0 ? "تماس بگیرید" : `${toFa(n)} محصول`;
-};
 
 const CATS: Cat[] = [
   {
