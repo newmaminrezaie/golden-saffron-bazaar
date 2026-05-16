@@ -1,9 +1,10 @@
 import { Link } from "@tanstack/react-router";
 import { ProductCard } from "@/components/product-card";
-import { PRODUCTS } from "@/data/products";
+import { useProducts } from "@/lib/products-client";
 
 export function FeaturedProducts() {
-  const featured = PRODUCTS.slice(0, 4);
+  const { products } = useProducts();
+  const featured = products.slice(0, 4);
   return (
     <section className="px-4 py-14 md:py-20">
       <div className="mx-auto max-w-7xl">

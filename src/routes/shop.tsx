@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ProductCard } from "@/components/product-card";
-import { CATEGORIES, PRODUCTS } from "@/data/products";
+import { CATEGORIES } from "@/data/products";
+import { useProducts } from "@/lib/products-client";
 import { cn } from "@/lib/utils";
 
 type Category = (typeof CATEGORIES)[number];
@@ -71,7 +72,8 @@ const SHOP_META: Record<Category, { title: string; description: string }> = {
 
 function ShopPage() {
   const { category: active } = Route.useSearch();
-  const items = active === "همه" ? PRODUCTS : PRODUCTS.filter((p) => p.category === active);
+  const { products } = useProducts();
+  const items = active === "همه" ? products : products.filter((p) => p.category === active);
 
   return (
     <div className="px-4 py-10 md:py-14">
