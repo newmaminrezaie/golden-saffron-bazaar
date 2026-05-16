@@ -137,7 +137,7 @@ function ProductPage() {
   const displayPrice = selectedTier ? selectedTier.price : product.price;
 
   const related = products.filter(
-    (p) => p.category === product.category && p.slug !== product.slug,
+    (p: Product) => p.category === product.category && p.slug !== product.slug,
   ).slice(0, 4);
 
   return (
@@ -325,7 +325,7 @@ function ProductPage() {
               محصولات مشابه
             </h2>
             <div className="grid grid-cols-2 gap-4 md:grid-cols-4 md:gap-6">
-              {related.map((p) => (
+              {related.map((p: Product) => (
                 <Link
                   key={p.id}
                   to="/shop/$slug"
