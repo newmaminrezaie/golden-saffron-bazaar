@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
-import { createFileRoute, Link, notFound, useRouter } from "@tanstack/react-router";
+import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
 import { ShoppingBag, ChevronRight } from "lucide-react";
 import { toast } from "sonner";
-import { formatToman, getProductBySlug, PRODUCTS } from "@/data/products";
+import { formatToman, type Product } from "@/data/products";
+import { useProduct, useProducts, getProductBySlugSync } from "@/lib/products-client";
 import { useCart } from "@/lib/cart";
 import { cn } from "@/lib/utils";
 
@@ -13,9 +14,8 @@ function toFa(n: number): string {
 
 export const Route = createFileRoute("/shop_/$slug")({
   loader: ({ params }) => {
-    const product = getProductBySlug(params.slug);
-    if (!product) throw notFound();
-    return { product };
+    const product = getProductBySlugSync(params.slug);
+    return { product, slug: params.slug };
   },
   head: ({ loaderData }) => {
     const product = loaderData?.product;
