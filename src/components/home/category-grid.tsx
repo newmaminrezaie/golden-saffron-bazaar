@@ -72,6 +72,11 @@ const CATS: Cat[] = [
 ];
 
 export function CategoryGrid() {
+  const { products } = useProducts();
+  const countFor = (cat: string) => {
+    const n = products.filter((p) => p.category === cat).length;
+    return cat === "عمده‌فروشی" && n === 0 ? "تماس بگیرید" : `${toFa(n)} محصول`;
+  };
   return (
     <section style={{ padding: "3.5rem 1rem", background: "#f5ede0" }}>
       <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
