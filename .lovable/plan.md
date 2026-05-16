@@ -1,100 +1,106 @@
-# Web Push Notifications for New Orders
+# Internal Product Admin Panel — Plan
 
-Goal: when a new paid (or card-to-card) order arrives, your phone/desktop gets a real OS notification with sound — even if the browser is closed — by subscribing the `/admin/orders` page as a PWA to Web Push.
+A new admin section to manage products lives **inside the existing Express backend** (port 3002, same SQLite file) and a new React route at `/admin/products`, guarded by the existing `ADMIN_TOKEN`. Zero changes to the payment routes (`/api/order*`, `/api/payment/*`), to the orders table, or to gandomakshop (which runs as its own service on the VPS).
 
-## How it will work
+## What you get
+
+- **Hidden URL**: `https://khajavisaffron.ir/admin/products` (noindex, token-gated, same login as `/admin/orders`).
+- **Full CRUD**: list, search by name/category, create, edit, duplicate, delete, toggle in-stock, reorder.
+- All product fields supported: name, slug, category, weight, price, oldPrice, badge, shortDescription, description, highlights, images, priceTiers, inStock.
+- **Drag-and-drop image upload** → stored on the VPS under `server/uploads/products/`, served at `/uploads/products/<file>.webp`.
+- **Live**: storefront fetches `/api/products` at runtime — saves appear instantly, no rebuild/redeploy.
+- **Safe seeding**: on first run the backend imports the current 477-line `src/data/products.ts` so nothing disappears day one.
+
+## Isolation guarantees
+
+- **Payment server**: only new files added (`routes/products.js`, `routes/uploads.js`, `productsDb.js`). `routes/orders.js`, `routes/callback.js`, `db.js`, Telegram/Rubika notifiers are not edited.
+- **Database**: new tables (`products`, `product_images`) in the same `orders.db` — orders table & indexes untouched. (Same-file is safer than two SQLite files because better-sqlite3 already owns the handle in WAL mode.)
+- **gandomakshop**: lives in its own pm2 process / Nginx vhost. Nothing in this plan touches its files, Nginx config, or port. Only thing shared is the VPS itself.
+- **Uploads path**: served at `/uploads/...`, a brand-new path. Existing `/images/...` (served from the built site's `public/images`) keeps working untouched.
+
+---
+
+## Implementation steps
+
+### 1. Backend — products module (`server/`)
+
+New files only:
+
+- `server/src/productsDb.js` — new tables in existing `orders.db`:
+  ```
+  products(id TEXT PK, slug TEXT UNIQUE, name, category, weight, price INT,
+           old_price INT, badge, short_description, description, highlights_json,
+           images_json, price_tiers_json, in_stock INT DEFAULT 1,
+           sort_order INT, created_at, updated_at)
+  ```
+- `server/src/routes/products.js`:
+  - `GET  /api/products` — public, returns active products for the storefront (cached 30s).
+  - `GET  /api/admin/products` — token-gated, returns everything incl. drafts.
+  - `POST /api/admin/products` — create (Zod-validated, slug uniqueness check).
+  - `PUT  /api/admin/products/:id` — update.
+  - `DELETE /api/admin/products/:id` — delete.
+  - `POST /api/admin/products/reorder` — bulk sort_order update.
+- `server/src/routes/uploads.js`:
+  - `POST /api/admin/uploads` (multipart, token-gated) — accepts JPG/PNG/WEBP up to 2 MB, converts/optimizes (or stores as-is initially), returns `{ url: "/uploads/products/xxx.webp" }`.
+  - Static mount: `app.use("/uploads", express.static(uploadsDir, { maxAge: "30d" }))`.
+- `server/src/seedProducts.js` — one-shot: if `products` table is empty, parse the current TS catalog and insert.
+- `server/src/index.js` — three small additions (mount the new routers + uploads static). Payment routes line untouched.
+
+Validation reuses the existing Zod patterns. Admin endpoints share the existing `x-admin-token` check (extracted into a tiny middleware to avoid duplication).
+
+New deps in `server/package.json`: `multer` (uploads), optionally `sharp` (image optimization — skip if you'd rather keep it minimal).
+
+### 2. Nginx
+
+One new location block in your existing khajavisaffron vhost:
+```
+location /uploads/ { proxy_pass http://127.0.0.1:3002; }
+```
+Same proxy you already use for `/api/`. gandomakshop's vhost is not touched.
+
+### 3. Frontend — runtime catalog
+
+- `src/lib/products-client.ts` — new module that fetches `/api/products` once, caches in memory, exposes `useProducts()`, `useProduct(slug)`, `formatToman`, `CATEGORIES`. Mirrors the current `Product` type exactly.
+- `src/data/products.ts` — kept as a **fallback seed** (used only if the API call fails, so the site never breaks). Eventually deletable.
+- Update three consumers to use the hook instead of importing `PRODUCTS`:
+  - `src/routes/shop.tsx`
+  - `src/routes/shop_.$slug.tsx`
+  - `src/components/home/featured-products.tsx`
+- Loading state: render existing static catalog instantly via React Query's `placeholderData`, then swap in fresh API data — no blank screen.
+
+### 4. Frontend — admin UI
+
+New route `src/routes/admin.products.tsx` (noindex), styled to match `/admin/orders`:
+
+- Token login (reads same `khajavi_admin_token` from localStorage — single sign-in for both panels).
+- Table view: thumbnail, name, category, price, stock toggle, drag handle, edit, duplicate, delete.
+- Search + category filter.
+- Drawer/dialog editor with all fields, repeatable rows for `highlights` and `priceTiers`, drag-drop image uploader (multi-file, preview, reorder, first image = cover). Live preview card on the right.
+- Optimistic save + toast feedback, slug auto-generated from name (editable), client-side validation matching the server schema.
+- A "نمایش در سایت" link opens `/shop/<slug>` in a new tab.
+
+### 5. Deploy steps (for you, on the VPS)
 
 ```text
-[Customer pays] → Express server marks order paid
-                       │
-                       ├─► Telegram (already works)
-                       └─► Web Push: POST to every saved subscription
-                                       │
-                                       ▼
-                          Service Worker on your phone
-                                       │
-                                       ▼
-                       OS notification + sound + tap → /admin/orders
-```
-
-You open `khajavisaffron.ir/admin/orders` once on each device, log in, click "Enable notifications", approve the browser prompt — that device is now subscribed forever (until you revoke).
-
-## Pieces to build
-
-### 1. Frontend (React / TanStack Start)
-- `public/sw.js` — minimal service worker that handles `push` and `notificationclick` events. Plays the default OS notification sound; on tap, focuses or opens `/admin/orders`.
-- `public/manifest.webmanifest` + icons (192, 512) — makes the site installable as a PWA on Android (Add to Home Screen) and desktop Chrome.
-- Manifest/SW link tags in `__root.tsx` head.
-- New component `EnableNotificationsButton` shown on `/admin/orders` only:
-  - Registers the SW.
-  - Calls `Notification.requestPermission()`.
-  - Subscribes via `pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: VAPID_PUBLIC })`.
-  - POSTs the subscription JSON + admin token to `/api/admin/push/subscribe`.
-  - Shows current state: Not supported / Blocked / Enabled / Disable.
-- Guard SW registration so it does NOT register inside Lovable preview iframes (per Lovable PWA rules).
-
-### 2. Express backend (`/var/www/khajavi-pay`)
-- `npm i web-push`
-- One-time: generate VAPID key pair (`npx web-push generate-vapid-keys`), store in `.env`:
-  - `VAPID_PUBLIC_KEY`
-  - `VAPID_PRIVATE_KEY`
-  - `VAPID_SUBJECT=mailto:you@khajavisaffron.ir`
-- New SQLite table `push_subscriptions(endpoint TEXT PRIMARY KEY, p256dh, auth, created_at)`.
-- New routes (admin-token protected, mounted under `/api/admin/push`):
-  - `GET  /api/admin/push/public-key` → returns VAPID public key (so the frontend doesn't need to bundle it).
-  - `POST /api/admin/push/subscribe` → upsert subscription row.
-  - `POST /api/admin/push/unsubscribe` → delete by endpoint.
-  - `POST /api/admin/push/test` → sends a test push to all saved subs (handy after setup).
-- New helper `notifyOrderPush(order)` (mirrors `notifyOrder` Telegram helper). Iterates subscriptions, calls `webpush.sendNotification(...)` with payload `{ title, body, orderId, total, url: "/admin/orders" }`. On `410 Gone` / `404`, deletes the dead subscription.
-- Hook `notifyOrderPush` into the same places `notifyOrder` is already called: Zibal verify success, Sep verify success, card-to-card create.
-
-### 3. Nginx
-Already proxies `/api/*` → 3002, so the new `/api/admin/push/*` routes work with no config change. `/sw.js` and `/manifest.webmanifest` are served as static files from `dist/client` — no change needed.
-
-## What you'll do once after deploy
-
-1. Visit `https://khajavisaffron.ir/admin/orders` on your Android phone in Chrome.
-2. Log in with the admin token.
-3. Tap **Enable notifications** → Allow.
-4. (Optional) Chrome menu → **Add to Home Screen** to install as a PWA.
-5. Tap **Send test notification** to confirm sound + popup work.
-6. Repeat on desktop Chrome / any device you want alerts on.
-
-After that, every new order pushes a notification to all subscribed devices, with sound, even if the browser is fully closed. Tapping it opens the orders page.
-
-## Notes / limits
-
-- **iPhone**: Web Push only works if the user installs the site to the Home Screen first (iOS 16.4+). Android/desktop Chrome works without install.
-- **Custom sound**: browsers play the OS default notification sound; custom audio files in push notifications are not supported on Android Chrome. Sound on/off is controlled by your phone's notification settings for the site.
-- **The "every 6 hours" polling** you mentioned isn't needed with Web Push — push is event-driven and instant. I'll skip the polling entirely. If you'd like a 6-hour "still alive" heartbeat ping anyway, say so and I'll add it.
-- Telegram notifications stay on as a backup — both fire together.
-
-## Files to add / change
-
-**Frontend**
-- add `public/sw.js`
-- add `public/manifest.webmanifest`
-- add `public/icons/icon-192.png`, `public/icons/icon-512.png` (generate)
-- edit `src/routes/__root.tsx` — manifest + theme-color link tags
-- add `src/components/admin/enable-notifications-button.tsx`
-- edit `src/routes/admin.orders.tsx` — render the button
-
-**Backend (`server/`)**
-- `npm i web-push`
-- edit `server/.env.example` — add VAPID + subject
-- edit `server/src/db.js` — create `push_subscriptions` table
-- add `server/src/push.js` — webpush client + `notifyOrderPush(order)` + sub CRUD
-- add `server/src/routes/push.js` — admin-protected push routes
-- edit `server/src/index.js` — mount push router
-- edit `server/src/routes/orders.js` and `server/src/routes/callback.js` — call `notifyOrderPush` next to existing `notifyOrder` calls
-
-## VPS steps after I push the code
-
-```bash
-cd /var/www/khajavi-pay
+cd /var/www/khajavisaffron
 git pull
-npm i
-npx web-push generate-vapid-keys     # paste into .env
-nano .env                             # add VAPID_PUBLIC_KEY, VAPID_PRIVATE_KEY, VAPID_SUBJECT
-pm2 restart khajavi-pay
+cd server && npm install     # picks up multer
+mkdir -p uploads/products
+pm2 restart khajavi-backend --update-env
+# add the /uploads/ nginx block, then:
+nginx -t && systemctl reload nginx
+cd ..
+npm run build && # upload dist as usual
 ```
+
+First request to `/api/products` triggers the one-time seed from the bundled catalog.
+
+---
+
+## Out of scope (ask if you want any of these)
+
+- Multi-user admin accounts / per-user permissions.
+- Image cropping/CDN/CloudFlare R2 — uploads stay on VPS disk.
+- Inventory tracking, audit log, soft-delete/trash.
+- Article/blog admin (separate scope).
+- Touching gandomakshop in any way.
