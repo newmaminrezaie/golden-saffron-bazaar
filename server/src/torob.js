@@ -15,19 +15,23 @@ function absoluteUrl(origin, url) {
   return origin + (url.startsWith("/") ? url : "/" + url);
 }
 
+function err(res, status, message) {
+  return res.status(status).json({ error: message });
+}
+
 function verifyJwt(req) {
   const key = (process.env.TOROB_PUBLIC_KEY || "").trim();
   const enforce = process.env.TOROB_ENFORCE_JWT === "1";
   if (!key && !enforce) return { ok: true };
-  if (!key && enforce) return { ok: false, error: "server_misconfigured: TOROB_PUBLIC_KEY missing" };
+  if (!key && enforce) return { ok: false, error: "server misconfigured: TOROB_PUBLIC_KEY missing" };
 
   const token = req.headers["x-torob-token"];
-  if (!token || typeof token !== "string") return { ok: false, error: "missing_token" };
+  if (!token || typeof token !== "string") return { ok: false, error: "missing X-Torob-Token header" };
   try {
     jwt.verify(token, key, { algorithms: ["RS256", "ES256"] });
     return { ok: true };
   } catch (e) {
-    return { ok: false, error: "invalid_token: " + e.message };
+    return { ok: false, error: "invalid X-Torob-Token: " + e.message };
   }
 }
 
@@ -55,8 +59,8 @@ function mapRow(r, origin) {
     product_group_id: null,
     title: r.name,
     subtitle: r.weight || null,
-    current_price: Number(r.price) || 0,
-    old_price: r.old_price && r.old_price > 0 ? Number(r.old_price) : null,
+    current_price: Math.max(0, Math.trunc(Number(r.price) || 0)),
+    old_price: r.old_price && r.old_price > 0 ? Math.trunc(Number(r.old_price)) : null,
     availability: r.in_stock === 1,
     category_name: r.category || null,
     image_links: images,
@@ -76,31 +80,36 @@ function slugFromUrl(url) {
 
 module.exports = function torobHandler(req, res) {
   const auth = verifyJwt(req);
-  if (!auth.ok) {
-    return res.status(401).json({ error: "unauthorized", message: auth.error });
-  }
+  if (!auth.ok) return err(res, 401, auth.error);
 
   const body = req.body || {};
-  const modes = ["page", "page_urls", "page_uniques"].filter((k) => body[k] !== undefined);
-  if (modes.length !== 1) {
-    return res.status(400).json({ error: "invalid_request", message: "exactly one of page, page_urls, page_uniques is required" });
+  const hasPage = body.page !== undefined || body.sort !== undefined;
+  const hasUrls = body.page_urls !== undefined;
+  const hasUniques = body.page_uniques !== undefined;
+  const modeCount = [hasPage, hasUrls, hasUniques].filter(Boolean).length;
+  if (modeCount === 0) {
+    return err(res, 400, "request body must contain one of: (page + sort), page_urls, page_uniques");
+  }
+  if (modeCount > 1) {
+    return err(res, 400, "request must contain exactly one of: (page + sort), page_urls, page_uniques");
   }
 
   const origin = getSiteOrigin();
-  const mode = modes[0];
 
   try {
-    if (mode === "page") {
+    if (hasPage) {
+      if (body.page === undefined) return err(res, 400, "page parameter is not provided");
+      if (body.sort === undefined) return err(res, 400, "sort parameter is not provided");
       const page = Number(body.page);
       if (!Number.isInteger(page) || page < 1) {
-        return res.status(400).json({ error: "invalid_request", message: "page must be a positive integer" });
+        return err(res, 400, "page must be a positive integer starting from 1");
       }
-      const sort = body.sort === "date_updated_desc" ? "updated_at" : "created_at";
-      if (body.sort && body.sort !== "date_added_desc" && body.sort !== "date_updated_desc") {
-        return res.status(400).json({ error: "invalid_request", message: "invalid sort" });
+      if (body.sort !== "date_added_desc" && body.sort !== "date_updated_desc") {
+        return err(res, 400, "sort must be one of: date_added_desc, date_updated_desc");
       }
-      const total = db.prepare("SELECT COUNT(*) AS n FROM products WHERE price > 0").get().n;
-      const rows = db.prepare(`SELECT * FROM products WHERE price > 0 ORDER BY ${sort} DESC LIMIT ? OFFSET ?`)
+      const orderCol = body.sort === "date_updated_desc" ? "updated_at" : "created_at";
+      const total = db.prepare("SELECT COUNT(*) AS n FROM products").get().n;
+      const rows = db.prepare(`SELECT * FROM products ORDER BY ${orderCol} DESC, id ASC LIMIT ? OFFSET ?`)
         .all(PAGE_SIZE, (page - 1) * PAGE_SIZE);
       const products = rows.map((r) => mapRow(r, origin));
       return res.json({
@@ -112,9 +121,11 @@ module.exports = function torobHandler(req, res) {
       });
     }
 
-    if (mode === "page_urls") {
-      const urls = Array.isArray(body.page_urls) ? body.page_urls : [];
-      const slugs = urls.map(slugFromUrl).filter(Boolean);
+    if (hasUrls) {
+      if (!Array.isArray(body.page_urls) || body.page_urls.length === 0) {
+        return err(res, 400, "page_urls must be a non-empty array of product URLs");
+      }
+      const slugs = body.page_urls.map(slugFromUrl).filter(Boolean);
       let products = [];
       if (slugs.length) {
         const placeholders = slugs.map(() => "?").join(",");
@@ -131,13 +142,13 @@ module.exports = function torobHandler(req, res) {
     }
 
     // page_uniques
-    const ids = Array.isArray(body.page_uniques) ? body.page_uniques.map(String) : [];
-    let products = [];
-    if (ids.length) {
-      const placeholders = ids.map(() => "?").join(",");
-      const rows = db.prepare(`SELECT * FROM products WHERE id IN (${placeholders})`).all(...ids);
-      products = rows.map((r) => mapRow(r, origin));
+    if (!Array.isArray(body.page_uniques) || body.page_uniques.length === 0) {
+      return err(res, 400, "page_uniques must be a non-empty array of product ids");
     }
+    const ids = body.page_uniques.map(String);
+    const placeholders = ids.map(() => "?").join(",");
+    const rows = db.prepare(`SELECT * FROM products WHERE id IN (${placeholders})`).all(...ids);
+    const products = rows.map((r) => mapRow(r, origin));
     return res.json({
       api_version: "torob_api_v3",
       current_page: 1,
@@ -145,8 +156,8 @@ module.exports = function torobHandler(req, res) {
       max_pages: 1,
       products,
     });
-  } catch (err) {
-    console.error("[torob] error:", err);
-    return res.status(500).json({ error: "internal_error", message: err.message });
+  } catch (e) {
+    console.error("[torob] error:", e);
+    return err(res, 500, "internal server error: " + e.message);
   }
 };
