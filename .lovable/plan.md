@@ -1,106 +1,76 @@
-# Internal Product Admin Panel — Plan
+# Torob API v3 Product Feed
 
-A new admin section to manage products lives **inside the existing Express backend** (port 3002, same SQLite file) and a new React route at `/admin/products`, guarded by the existing `ADMIN_TOKEN`. Zero changes to the payment routes (`/api/order*`, `/api/payment/*`), to the orders table, or to gandomakshop (which runs as its own service on the VPS).
+Expose `POST /torob_api/v3/products` from the existing Express service (port 3002) so Torob's non-JS crawler can index the catalog directly from SQLite. Nginx proxies `/torob_api/*` to Node, same as `/api/*`.
 
-## What you get
+## Files
 
-- **Hidden URL**: `https://khajavisaffron.ir/admin/products` (noindex, token-gated, same login as `/admin/orders`).
-- **Full CRUD**: list, search by name/category, create, edit, duplicate, delete, toggle in-stock, reorder.
-- All product fields supported: name, slug, category, weight, price, oldPrice, badge, shortDescription, description, highlights, images, priceTiers, inStock.
-- **Drag-and-drop image upload** → stored on the VPS under `server/uploads/products/`, served at `/uploads/products/<file>.webp`.
-- **Live**: storefront fetches `/api/products` at runtime — saves appear instantly, no rebuild/redeploy.
-- **Safe seeding**: on first run the backend imports the current 477-line `src/data/products.ts` so nothing disappears day one.
+### 1. `server/src/torob.js` (new)
+Self-contained module that exports an Express handler.
 
-## Isolation guarantees
+- **DB access:** read rows directly via `require("./db").db` so the Torob mapper is independent of `productsDb.js`'s camelCase transform (we need raw `created_at`, `updated_at`, `images_json`, etc.). Always include hidden products too (Torob wants the full catalog; `availability` reflects `in_stock`).
+- **Row → Torob mapper:**
+  - `page_unique` = `id`
+  - `page_url` = `${SITE_ORIGIN}/product/${slug}` (absolute)
+  - `title` = `name`; `subtitle` = `weight || null`
+  - `current_price` = `price`; `old_price` = `old_price || null`
+  - `availability` = `in_stock === 1`
+  - `category_name` = `category`
+  - `image_links`: parse `images_json`, map each entry — if it starts with `http(s)://` keep as-is, else prepend `SITE_ORIGIN` (handles `/uploads/...` and bare paths)
+  - `short_desc` = `short_description || null`
+  - `spec`: build from non-empty `{ weight, badge }` plus parsed `highlights_json` entries (string array → `{ "ویژگی ۱": "...", ... }`); empty object if none
+  - `guarantee` = `null`
+  - `date_added` / `date_updated` = `new Date(ms).toISOString()` (UTC `Z`)
+  - `product_group_id` = `null`
+  - Skip rows where `price <= 0`
+- **Three modes (exactly one required):**
+  - `page` + `sort`: validate `page` is positive int; `sort` in `{date_added_desc, date_updated_desc}`; ORDER BY `created_at DESC` or `updated_at DESC`; LIMIT 100 OFFSET `(page-1)*100`; compute `total` and `max_pages = ceil(total/100)`.
+  - `page_urls`: array of strings; parse trailing `/product/<slug>` segment from each; SELECT by slug list; `current_page=1, max_pages=1, total=products.length`.
+  - `page_uniques`: array of strings (our ids); SELECT by id list; `current_page=1, max_pages=1`.
+  - Reject with HTTP 400 `{error:"invalid_request"}` if zero or multiple modes are present.
+- **JWT verify helper:**
+  - Read `TOROB_PUBLIC_KEY` and `TOROB_ENFORCE_JWT` from env at request time.
+  - If key empty AND enforce !== "1" → skip.
+  - Otherwise require `x-torob-token` header; verify with `jsonwebtoken.verify(token, key, { algorithms: ["RS256","ES256"] })`; 401 on missing/invalid.
+- **Response envelope:** `{ api_version: "torob_api_v3", current_page, total, max_pages, products }`.
 
-- **Payment server**: only new files added (`routes/products.js`, `routes/uploads.js`, `productsDb.js`). `routes/orders.js`, `routes/callback.js`, `db.js`, Telegram/Rubika notifiers are not edited.
-- **Database**: new tables (`products`, `product_images`) in the same `orders.db` — orders table & indexes untouched. (Same-file is safer than two SQLite files because better-sqlite3 already owns the handle in WAL mode.)
-- **gandomakshop**: lives in its own pm2 process / Nginx vhost. Nothing in this plan touches its files, Nginx config, or port. Only thing shared is the VPS itself.
-- **Uploads path**: served at `/uploads/...`, a brand-new path. Existing `/images/...` (served from the built site's `public/images`) keeps working untouched.
+### 2. `server/src/index.js` (edit)
+- `const torobHandler = require("./torob");`
+- Mount BEFORE the 404 handler: `app.post("/torob_api/v3/products", torobHandler);`
+- Also accept it under `/api/torob_api/...`? No — spec calls for `/torob_api/v3/products` only.
 
----
+### 3. `server/.env.example` (edit)
+Append:
+```
+# --- Torob feed ---
+SITE_ORIGIN=https://khajavisaffron.ir
+TOROB_PUBLIC_KEY=
+TOROB_ENFORCE_JWT=0
+```
+`SITE_ORIGIN` falls back to `SITE_URL` in code if unset.
 
-## Implementation steps
+### 4. `server/package.json` (edit)
+Add `"jsonwebtoken": "^9.0.2"` to `dependencies`. (Run `npm i jsonwebtoken` on the VPS during deploy.)
 
-### 1. Backend — products module (`server/`)
-
-New files only:
-
-- `server/src/productsDb.js` — new tables in existing `orders.db`:
+### 5. `DEPLOY.md` (new at repo root)
+Document:
+- Env vars to set in `server/.env` on the VPS.
+- `cd server && npm install` after pulling.
+- Nginx snippet inside the existing `server { ... }` block for `khajavisaffron.ir`:
+  ```nginx
+  location /torob_api/ {
+      proxy_pass http://127.0.0.1:3002;
+      proxy_http_version 1.1;
+      proxy_set_header Host $host;
+      proxy_set_header X-Real-IP $remote_addr;
+      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+      proxy_set_header X-Forwarded-Proto $scheme;
+  }
   ```
-  products(id TEXT PK, slug TEXT UNIQUE, name, category, weight, price INT,
-           old_price INT, badge, short_description, description, highlights_json,
-           images_json, price_tiers_json, in_stock INT DEFAULT 1,
-           sort_order INT, created_at, updated_at)
-  ```
-- `server/src/routes/products.js`:
-  - `GET  /api/products` — public, returns active products for the storefront (cached 30s).
-  - `GET  /api/admin/products` — token-gated, returns everything incl. drafts.
-  - `POST /api/admin/products` — create (Zod-validated, slug uniqueness check).
-  - `PUT  /api/admin/products/:id` — update.
-  - `DELETE /api/admin/products/:id` — delete.
-  - `POST /api/admin/products/reorder` — bulk sort_order update.
-- `server/src/routes/uploads.js`:
-  - `POST /api/admin/uploads` (multipart, token-gated) — accepts JPG/PNG/WEBP up to 2 MB, converts/optimizes (or stores as-is initially), returns `{ url: "/uploads/products/xxx.webp" }`.
-  - Static mount: `app.use("/uploads", express.static(uploadsDir, { maxAge: "30d" }))`.
-- `server/src/seedProducts.js` — one-shot: if `products` table is empty, parse the current TS catalog and insert.
-- `server/src/index.js` — three small additions (mount the new routers + uploads static). Payment routes line untouched.
+- Reload: `nginx -t && systemctl reload nginx` + `systemctl restart khajavi-pay` (or whatever pm2/systemd unit is in use).
+- Final URL to give Torob: `https://khajavisaffron.ir/torob_api/v3/products`.
+- Smoke tests (the three curl commands from Acceptance).
 
-Validation reuses the existing Zod patterns. Admin endpoints share the existing `x-admin-token` check (extracted into a tiny middleware to avoid duplication).
-
-New deps in `server/package.json`: `multer` (uploads), optionally `sharp` (image optimization — skip if you'd rather keep it minimal).
-
-### 2. Nginx
-
-One new location block in your existing khajavisaffron vhost:
-```
-location /uploads/ { proxy_pass http://127.0.0.1:3002; }
-```
-Same proxy you already use for `/api/`. gandomakshop's vhost is not touched.
-
-### 3. Frontend — runtime catalog
-
-- `src/lib/products-client.ts` — new module that fetches `/api/products` once, caches in memory, exposes `useProducts()`, `useProduct(slug)`, `formatToman`, `CATEGORIES`. Mirrors the current `Product` type exactly.
-- `src/data/products.ts` — kept as a **fallback seed** (used only if the API call fails, so the site never breaks). Eventually deletable.
-- Update three consumers to use the hook instead of importing `PRODUCTS`:
-  - `src/routes/shop.tsx`
-  - `src/routes/shop_.$slug.tsx`
-  - `src/components/home/featured-products.tsx`
-- Loading state: render existing static catalog instantly via React Query's `placeholderData`, then swap in fresh API data — no blank screen.
-
-### 4. Frontend — admin UI
-
-New route `src/routes/admin.products.tsx` (noindex), styled to match `/admin/orders`:
-
-- Token login (reads same `khajavi_admin_token` from localStorage — single sign-in for both panels).
-- Table view: thumbnail, name, category, price, stock toggle, drag handle, edit, duplicate, delete.
-- Search + category filter.
-- Drawer/dialog editor with all fields, repeatable rows for `highlights` and `priceTiers`, drag-drop image uploader (multi-file, preview, reorder, first image = cover). Live preview card on the right.
-- Optimistic save + toast feedback, slug auto-generated from name (editable), client-side validation matching the server schema.
-- A "نمایش در سایت" link opens `/shop/<slug>` in a new tab.
-
-### 5. Deploy steps (for you, on the VPS)
-
-```text
-cd /var/www/khajavisaffron
-git pull
-cd server && npm install     # picks up multer
-mkdir -p uploads/products
-pm2 restart khajavi-backend --update-env
-# add the /uploads/ nginx block, then:
-nginx -t && systemctl reload nginx
-cd ..
-npm run build && # upload dist as usual
-```
-
-First request to `/api/products` triggers the one-time seed from the bundled catalog.
-
----
-
-## Out of scope (ask if you want any of these)
-
-- Multi-user admin accounts / per-user permissions.
-- Image cropping/CDN/CloudFlare R2 — uploads stay on VPS disk.
-- Inventory tracking, audit log, soft-delete/trash.
-- Article/blog admin (separate scope).
-- Touching gandomakshop in any way.
+## Out of scope
+- No changes to the TanStack frontend, admin panel, or `productsDb.js`.
+- No caching — reads SQLite live so admin edits show on next call.
+- `product_group_id` / `guarantee` left `null` until product schema grows those fields.

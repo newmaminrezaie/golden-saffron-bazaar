@@ -9,6 +9,7 @@ const ordersRoutes = require("./routes/orders");
 const callbackRoutes = require("./routes/callback");
 const productsRoutes = require("./routes/products");
 const { router: uploadsRoutes, UPLOADS_DIR } = require("./routes/uploads");
+const torobHandler = require("./torob");
 const { seedFromJsonIfEmpty } = require("./productsDb");
 
 const app = express();
@@ -40,6 +41,9 @@ app.use("/api", uploadsRoutes);
 app.use("/uploads", express.static(UPLOADS_DIR, { maxAge: "30d", fallthrough: true }));
 app.use("/api/payment", callbackRoutes);
 app.use("/payment", callbackRoutes);
+
+// Torob v3 product feed (crawler reads from SQLite directly)
+app.post("/torob_api/v3/products", torobHandler);
 
 // Seed products from bundled JSON on first boot (no-op if table is populated)
 try { seedFromJsonIfEmpty(); } catch (e) { console.error("[seed] failed:", e.message); }
