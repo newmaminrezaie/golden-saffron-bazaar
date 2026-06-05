@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { formatToman, type Product } from "@/data/products";
 import { useProduct, useProducts, getProductBySlugSync } from "@/lib/products-client";
 import { useCart } from "@/lib/cart";
+import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 
 const FA_DIGITS = ["۰", "۱", "۲", "۳", "۴", "۵", "۶", "۷", "۸", "۹"];
@@ -103,8 +104,21 @@ function ProductPage() {
   if (!product) {
     if (loading) {
       return (
-        <div className="mx-auto max-w-xl px-4 py-20 text-center text-sm text-muted-foreground">
-          در حال بارگذاری…
+        <div className="mx-auto max-w-6xl px-4 py-10 md:py-14">
+          <div className="grid gap-8 md:grid-cols-2 md:gap-12">
+            <Skeleton className="aspect-square w-full rounded-2xl" />
+            <div className="space-y-4">
+              <Skeleton className="h-4 w-24" />
+              <Skeleton className="h-8 w-3/4" />
+              <Skeleton className="h-4 w-32" />
+              <Skeleton className="h-20 w-full" />
+              <Skeleton className="h-10 w-40" />
+              <Skeleton className="h-12 w-full md:w-60" />
+            </div>
+          </div>
+          <p className="mt-8 text-center text-sm text-muted-foreground">
+            در حال بارگذاری محصول…
+          </p>
         </div>
       );
     }

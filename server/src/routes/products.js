@@ -45,11 +45,15 @@ router.get("/products", (_req, res) => {
   res.json({ ok: true, products });
 });
 
-router.get("/products/by-slug/:slug", (req, res) => {
+const handleBySlug = (req, res) => {
   const p = getProductBySlug(req.params.slug);
   if (!p || !p.inStock) return res.status(404).json({ ok: false, error: "not_found" });
   res.json({ ok: true, product: p });
-});
+};
+router.get("/products/by-slug/:slug", handleBySlug);
+// Alias so external callers / older clients can hit /api/products/:slug too.
+// Placed AFTER the literal "by-slug" route so it doesn't shadow it.
+router.get("/products/:slug", handleBySlug);
 
 // ADMIN
 router.get("/admin/products", requireAdmin, (_req, res) => {
