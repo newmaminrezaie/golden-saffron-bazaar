@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { formatToman, type Product } from "@/data/products";
 import { useProduct, useProducts, getProductBySlugSync } from "@/lib/products-client";
 import { useCart } from "@/lib/cart";
+import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 
 const FA_DIGITS = ["۰", "۱", "۲", "۳", "۴", "۵", "۶", "۷", "۸", "۹"];
