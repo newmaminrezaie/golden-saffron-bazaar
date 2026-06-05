@@ -143,7 +143,7 @@ function writeSeoFiles() {
 }
 
 export default defineConfig({
-  cloudflare: false,
+  cloudflare: false as any,
   tanstackStart: {
     target: "static",
     prerender: {
