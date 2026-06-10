@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import heroSaffron1 from "@/assets/hero-saffron-1.jpg";
-import heroSaffron2 from "@/assets/hero-saffron-2.jpg";
+import mulberryBanner from "@/assets/mulberry-banner.webp.asset.json";
 
 const SLIDES = [
   {
@@ -9,9 +9,9 @@ const SLIDES = [
     alt: "گل زعفران بنفش در مزرعه",
   },
   {
-    src: heroSaffron2,
-    pos: "center 55%",
-    alt: "غروب آفتاب بر مزرعه گل‌های بنفش",
+    src: mulberryBanner.url,
+    pos: "center 50%",
+    alt: "توت خشک طبیعی و خوش طعم",
   },
 ];
 
