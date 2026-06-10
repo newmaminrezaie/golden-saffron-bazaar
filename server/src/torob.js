@@ -48,8 +48,33 @@ function mapRow(r, origin) {
     if (Array.isArray(parsed)) highlights = parsed.filter((x) => typeof x === "string" && x.trim());
   } catch (_) {}
 
+  // Pick the lowest tier price so Torob indexes the cheapest weight option.
+  let tiers = [];
+  try {
+    const parsed = r.price_tiers_json ? JSON.parse(r.price_tiers_json) : [];
+    if (Array.isArray(parsed)) {
+      tiers = parsed
+        .map((t) => ({
+          quantity: Number(t && t.quantity) || 0,
+          price: Math.max(0, Math.trunc(Number(t && t.price) || 0)),
+          label: typeof (t && t.label) === "string" ? t.label : null,
+        }))
+        .filter((t) => t.price > 0);
+    }
+  } catch (_) {}
+
+  const basePrice = Math.max(0, Math.trunc(Number(r.price) || 0));
+  const lowestTier = tiers.length
+    ? tiers.reduce((min, t) => (t.price < min.price ? t : min), tiers[0])
+    : null;
+  const currentPrice = lowestTier ? lowestTier.price : basePrice;
+  const subtitle =
+    (lowestTier && (lowestTier.label || (lowestTier.quantity ? `${lowestTier.quantity} گرم` : null))) ||
+    r.weight ||
+    null;
+
   const spec = {};
-  if (r.weight) spec["وزن"] = r.weight;
+  if (subtitle) spec["وزن"] = subtitle;
   if (r.badge) spec["برچسب"] = r.badge;
   highlights.forEach((h, i) => { spec[`ویژگی ${i + 1}`] = h; });
 
@@ -58,8 +83,8 @@ function mapRow(r, origin) {
     page_url: `${origin}/product/${r.slug}`,
     product_group_id: null,
     title: r.name,
-    subtitle: r.weight || null,
-    current_price: Math.max(0, Math.trunc(Number(r.price) || 0)),
+    subtitle,
+    current_price: currentPrice,
     old_price: r.old_price && r.old_price > 0 ? Math.trunc(Number(r.old_price)) : null,
     availability: r.in_stock === 1,
     category_name: r.category || null,
