@@ -92,19 +92,21 @@ export function Hero() {
           padding: "0 1.25rem calc(env(safe-area-inset-bottom, 0px) + 3rem)",
         }}
       >
-        <p
-          className="hero-rise-delay"
-          style={{
-            marginTop: "1rem",
-            color: "#2a1a0a",
-            fontSize: "clamp(0.95rem, 2.2vw, 1.15rem)",
-            maxWidth: "38rem",
-            lineHeight: 1.9,
-            opacity: 0.85,
-          }}
-        >
-          سفری به دل مزارع قائنات؛ زعفران اصیل ایرانی با عطر، رنگ و طعمی بی‌مانند.
-        </p>
+        {active === 0 && (
+          <p
+            className="hero-rise-delay"
+            style={{
+              marginTop: "1rem",
+              color: "#2a1a0a",
+              fontSize: "clamp(0.95rem, 2.2vw, 1.15rem)",
+              maxWidth: "38rem",
+              lineHeight: 1.9,
+              opacity: 0.85,
+            }}
+          >
+            سفری به دل مزارع قائنات؛ زعفران اصیل ایرانی با عطر، رنگ و طعمی بی‌مانند.
+          </p>
+        )}
       </div>
     </section>
   );
