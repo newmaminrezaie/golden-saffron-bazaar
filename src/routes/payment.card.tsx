@@ -57,6 +57,8 @@ function PaymentCardPage() {
     }
   }, [order]);
 
+  if (typeof window === "undefined") return null;
+
   if (missing) {
     return (
       <section className="mx-auto max-w-xl px-4 py-16 text-center" dir="rtl">
