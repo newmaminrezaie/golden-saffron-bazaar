@@ -7,6 +7,7 @@ import { useProduct, useProducts, getProductBySlugSync } from "@/lib/products-cl
 import { useCart } from "@/lib/cart";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
+import { ProductImageGallery } from "@/components/ProductImageGallery";
 
 const FA_DIGITS = ["۰", "۱", "۲", "۳", "۴", "۵", "۶", "۷", "۸", "۹"];
 function toFa(n: number): string {
@@ -86,7 +87,6 @@ function ProductPage() {
   const { slug } = Route.useLoaderData();
   const { product, loading } = useProduct(slug);
   const { products } = useProducts();
-  const [activeImg, setActiveImg] = useState(0);
   const [tierIdx, setTierIdx] = useState(0);
   const { add } = useCart();
 
@@ -172,39 +172,11 @@ function ProductPage() {
 
         <div className="grid gap-8 md:grid-cols-2 md:gap-12">
           {/* Gallery */}
-          <div>
-            <div className="relative aspect-square overflow-hidden rounded-2xl border border-border/60 bg-secondary">
-              <img
-                src={product.images[activeImg]}
-                alt={product.name}
-                className="h-full w-full object-cover"
-              />
-              {product.badge && (
-                <span className="absolute top-4 right-4 rounded-full bg-accent px-3 py-1 text-xs font-bold text-accent-foreground shadow">
-                  {product.badge}
-                </span>
-              )}
-            </div>
-            {product.images.length > 1 && (
-              <div className="mt-3 flex gap-2 overflow-x-auto">
-                {product.images.map((src: string, i: number) => (
-                  <button
-                    key={i}
-                    onClick={() => setActiveImg(i)}
-                    className={cn(
-                      "relative h-20 w-20 shrink-0 overflow-hidden rounded-lg border-2 transition",
-                      i === activeImg
-                        ? "border-[color:var(--brown-deep)]"
-                        : "border-transparent opacity-70 hover:opacity-100",
-                    )}
-                    aria-label={`تصویر ${i + 1}`}
-                  >
-                    <img src={src} alt="" className="h-full w-full object-cover" />
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
+          <ProductImageGallery
+            images={product.images}
+            alt={product.name}
+            badge={product.badge}
+          />
 
           {/* Info */}
           <div className="flex flex-col">
