@@ -9,7 +9,7 @@ const SLIDES = [
     alt: "گل زعفران بنفش در مزرعه",
   },
   {
-    src: mulberryBanner.url,
+    src: mulberryBanner,
     pos: "center 50%",
     alt: "توت خشک طبیعی و خوش طعم",
   },
