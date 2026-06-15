@@ -26,8 +26,23 @@ export function Hero() {
   }, []);
 
   return (
-    <section
-      className="hero-carousel"
+    <>
+      <style>{`
+        .hero-carousel {
+          height: 56vh;
+          max-height: 600px;
+          min-height: 380px;
+        }
+        @media (max-width: 640px) {
+          .hero-carousel {
+            height: 32vh;
+            min-height: 220px;
+            max-height: 380px;
+          }
+        }
+      `}</style>
+      <section
+        className="hero-carousel"
       style={{
         position: "relative",
         width: "100%",
