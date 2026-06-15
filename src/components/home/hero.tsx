@@ -26,13 +26,26 @@ export function Hero() {
   }, []);
 
   return (
-    <section
+    <>
+      <style>{`
+        .hero-carousel {
+          height: 56vh;
+          max-height: 600px;
+          min-height: 380px;
+        }
+        @media (max-width: 640px) {
+          .hero-carousel {
+            height: 32vh;
+            min-height: 220px;
+            max-height: 380px;
+          }
+        }
+      `}</style>
+      <section
+        className="hero-carousel"
       style={{
         position: "relative",
         width: "100%",
-        height: "56vh",
-        maxHeight: "600px",
-        minHeight: "380px",
         overflow: "hidden",
         backgroundColor: "hsl(37, 54%, 95%)",
       }}
@@ -109,5 +122,6 @@ export function Hero() {
         )}
       </div>
     </section>
+    </>
   );
 }
