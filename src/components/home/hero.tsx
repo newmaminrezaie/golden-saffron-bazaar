@@ -27,12 +27,10 @@ export function Hero() {
 
   return (
     <section
+      className="hero-carousel"
       style={{
         position: "relative",
         width: "100%",
-        height: "56vh",
-        maxHeight: "600px",
-        minHeight: "380px",
         overflow: "hidden",
         backgroundColor: "hsl(37, 54%, 95%)",
       }}
