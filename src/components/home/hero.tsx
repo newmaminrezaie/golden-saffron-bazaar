@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import heroSaffron1 from "@/assets/hero-saffron-1.jpg";
-import mulberryBanner from "@/assets/mulberry-banner.webp.asset.json";
+import mulberryBanner from "@/assets/mulberry-banner.webp";
 
 const SLIDES = [
   {
@@ -9,7 +9,7 @@ const SLIDES = [
     alt: "گل زعفران بنفش در مزرعه",
   },
   {
-    src: mulberryBanner.url,
+    src: mulberryBanner,
     pos: "center 50%",
     alt: "توت خشک طبیعی و خوش طعم",
   },
