@@ -69,6 +69,9 @@ export function Hero() {
             src={s.src}
             alt={s.alt}
             loading={i === 0 ? "eager" : "lazy"}
+            decoding={i === 0 ? "sync" : "async"}
+            // @ts-expect-error: valid HTML attr, not yet in React types
+            fetchpriority={i === 0 ? "high" : "low"}
             style={{
               width: `${100 / SLIDES.length}%`,
               height: "100%",
