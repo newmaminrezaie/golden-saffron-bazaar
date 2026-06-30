@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { ProductCard } from "@/components/product-card";
 import { useProducts } from "@/lib/products-client";
-import ornament from "@/assets/ornament-crimson.jpg";
+import ornament from "@/assets/ornament-crimson.png";
 
 const GIFT_KEYWORDS = ["ظرف چوبی", "ظرف گرد", "جعبه مخمل", "ظرف خاتم"];
 
