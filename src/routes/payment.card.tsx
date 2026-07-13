@@ -6,7 +6,7 @@ import { CopyButton } from "@/components/copy-button";
 import { formatToman } from "@/data/products";
 
 const searchSchema = z.object({
-  order: z.string().trim().min(1).max(64),
+  order: z.string().trim().min(1).max(64).optional().default(""),
 });
 
 export const CARD_ORDER_STORAGE_PREFIX = "khajavi.cardOrder.";
