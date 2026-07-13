@@ -153,6 +153,8 @@ export default defineConfig({
     prerender: {
       enabled: true,
       crawlLinks: false,
+      autoStaticPathsDiscovery: false,
+      failOnError: false,
       routes: [
         "/",
         "/about",
