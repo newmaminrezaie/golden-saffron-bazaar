@@ -143,20 +143,27 @@ function writeSeoFiles() {
 }
 
 export default defineConfig({
+  // Disable Nitro entirely — this is a pure static build served by Nginx.
+  // Without this, the wrapper auto-loads Nitro with the Cloudflare Worker
+  // preset and writes .output/ + wrangler.json + dist/server/, which breaks
+  // TanStack Start's prerender step.
+  nitro: false,
   tanstackStart: {
     target: "static",
+    pages: [
+      "/",
+      "/about",
+      "/contact",
+      "/shop",
+      "/blog",
+      ...PRODUCT_SLUGS.map((slug) => `/shop/${slug}`),
+      ...ARTICLE_SLUGS.map((slug) => `/blog/${slug}`),
+    ].map((path) => ({ path })),
     prerender: {
       enabled: true,
-      crawlLinks: true,
-      routes: [
-        "/",
-        "/about",
-        "/contact",
-        "/shop",
-        "/blog",
-        ...PRODUCT_SLUGS.map((slug) => `/shop/${slug}`),
-        ...ARTICLE_SLUGS.map((slug) => `/blog/${slug}`),
-      ],
+      crawlLinks: false,
+      autoStaticPathsDiscovery: false,
+      failOnError: false,
     },
   },
 
