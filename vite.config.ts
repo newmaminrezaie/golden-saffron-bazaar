@@ -150,20 +150,20 @@ export default defineConfig({
   nitro: false,
   tanstackStart: {
     target: "static",
+    pages: [
+      "/",
+      "/about",
+      "/contact",
+      "/shop",
+      "/blog",
+      ...PRODUCT_SLUGS.map((slug) => `/shop/${slug}`),
+      ...ARTICLE_SLUGS.map((slug) => `/blog/${slug}`),
+    ].map((path) => ({ path })),
     prerender: {
       enabled: true,
       crawlLinks: false,
       autoStaticPathsDiscovery: false,
       failOnError: false,
-      routes: [
-        "/",
-        "/about",
-        "/contact",
-        "/shop",
-        "/blog",
-        ...PRODUCT_SLUGS.map((slug) => `/shop/${slug}`),
-        ...ARTICLE_SLUGS.map((slug) => `/blog/${slug}`),
-      ],
     },
   },
 
