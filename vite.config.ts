@@ -152,7 +152,7 @@ export default defineConfig({
     target: "static",
     prerender: {
       enabled: true,
-      crawlLinks: true,
+      crawlLinks: false,
       routes: [
         "/",
         "/about",
