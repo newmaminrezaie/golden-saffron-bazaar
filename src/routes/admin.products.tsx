@@ -505,9 +505,16 @@ function ProductEditor({
               <input
                 value={p.slug}
                 onChange={(e) => patch("slug", slugify(e.target.value))}
+                onBlur={(e) => patch("slug", slugify(e.target.value))}
                 className="input font-mono text-xs"
                 dir="ltr"
+                placeholder="my-product-name"
               />
+              {p.slug && !isValidSlug(p.slug) && (
+                <span className="mt-1 block text-xs text-red-600">
+                  اسلاگ نامعتبر است. فقط حروف کوچک انگلیسی، عدد و خط تیره مجاز است.
+                </span>
+              )}
             </Field>
             <Field label="دسته">
               <select
@@ -737,7 +744,18 @@ function ProductEditor({
               انصراف
             </button>
             <button
-              onClick={() => onSaved(p)}
+              onClick={() => {
+                const cleaned = slugify(p.slug || p.name);
+                if (!isValidSlug(cleaned)) {
+                  toast.error("اسلاگ نامعتبر است.");
+                  return;
+                }
+                if (!p.name.trim()) {
+                  toast.error("نام محصول الزامی است.");
+                  return;
+                }
+                onSaved({ ...p, slug: cleaned });
+              }}
               className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:opacity-90"
             >
               ذخیره
