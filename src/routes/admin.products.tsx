@@ -37,14 +37,21 @@ function emptyProduct(): AdminProduct {
   };
 }
 
+// URL-safe slug: lowercase, hyphen-separated, no leading/trailing/double hyphens.
 function slugify(s: string) {
   return s
     .toLowerCase()
     .trim()
-    .replace(/[^a-z0-9\s-]/g, "")
-    .replace(/\s+/g, "-")
+    .replace(/[_\s]+/g, "-")
+    .replace(/[^a-z0-9-]/g, "")
     .replace(/-+/g, "-")
+    .replace(/^-+|-+$/g, "")
     .slice(0, 100);
+}
+
+const SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+function isValidSlug(s: string) {
+  return SLUG_RE.test(s) && s.length <= 100;
 }
 
 function fa(n: number) {
