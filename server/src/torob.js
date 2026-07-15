@@ -80,7 +80,7 @@ function mapRow(r, origin) {
 
   return {
     page_unique: String(r.id),
-    page_url: `${origin}/product/${r.slug}`,
+    page_url: `${origin}/shop/${r.slug}`,
     product_group_id: null,
     title: r.name,
     subtitle,
@@ -99,7 +99,8 @@ function mapRow(r, origin) {
 
 function slugFromUrl(url) {
   if (typeof url !== "string") return null;
-  const m = url.match(/\/product\/([^/?#]+)/);
+  // Primary route is /shop/:slug; keep /product/ as a legacy fallback.
+  const m = url.match(/\/(?:shop|product)\/([^/?#]+)/);
   return m ? decodeURIComponent(m[1]) : null;
 }
 

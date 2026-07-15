@@ -22,7 +22,8 @@ const tierSchema = z.object({
 });
 
 const productSchema = z.object({
-  slug: z.string().min(1).max(120).regex(/^[a-z0-9-]+$/i, "اسلاگ نامعتبر"),
+  // lowercase, digits, single hyphens between segments — no leading/trailing/double hyphens.
+  slug: z.string().min(1).max(120).regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "اسلاگ نامعتبر"),
   name: z.string().min(1).max(200),
   category: z.string().min(1).max(80),
   weight: z.string().max(80).optional().default(""),

@@ -37,14 +37,21 @@ function emptyProduct(): AdminProduct {
   };
 }
 
+// URL-safe slug: lowercase, hyphen-separated, no leading/trailing/double hyphens.
 function slugify(s: string) {
   return s
     .toLowerCase()
     .trim()
-    .replace(/[^a-z0-9\s-]/g, "")
-    .replace(/\s+/g, "-")
+    .replace(/[_\s]+/g, "-")
+    .replace(/[^a-z0-9-]/g, "")
     .replace(/-+/g, "-")
+    .replace(/^-+|-+$/g, "")
     .slice(0, 100);
+}
+
+const SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+function isValidSlug(s: string) {
+  return SLUG_RE.test(s) && s.length <= 100;
 }
 
 function fa(n: number) {
@@ -498,9 +505,16 @@ function ProductEditor({
               <input
                 value={p.slug}
                 onChange={(e) => patch("slug", slugify(e.target.value))}
+                onBlur={(e) => patch("slug", slugify(e.target.value))}
                 className="input font-mono text-xs"
                 dir="ltr"
+                placeholder="my-product-name"
               />
+              {p.slug && !isValidSlug(p.slug) && (
+                <span className="mt-1 block text-xs text-red-600">
+                  اسلاگ نامعتبر است. فقط حروف کوچک انگلیسی، عدد و خط تیره مجاز است.
+                </span>
+              )}
             </Field>
             <Field label="دسته">
               <select
@@ -730,7 +744,18 @@ function ProductEditor({
               انصراف
             </button>
             <button
-              onClick={() => onSaved(p)}
+              onClick={() => {
+                const cleaned = slugify(p.slug || p.name);
+                if (!isValidSlug(cleaned)) {
+                  toast.error("اسلاگ نامعتبر است.");
+                  return;
+                }
+                if (!p.name.trim()) {
+                  toast.error("نام محصول الزامی است.");
+                  return;
+                }
+                onSaved({ ...p, slug: cleaned });
+              }}
               className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:opacity-90"
             >
               ذخیره
