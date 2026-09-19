@@ -49,7 +49,12 @@ export function ProductCard({ p }: { p: Product }) {
             key={i}
             src={src}
             alt={p.name}
+            // Square box: the aspect-square wrapper reserves the space, these
+            // match it so the browser never reflows the grid.
+            width={800}
+            height={800}
             loading="lazy"
+            decoding="async"
             className={cn(
               "absolute inset-0 h-full w-full object-cover transition-opacity duration-500 group-hover:scale-105",
               i === index ? "opacity-100" : "opacity-0",
