@@ -62,6 +62,13 @@ export function ProductImageGallery({ images, alt, badge }: Props) {
         <img
           src={images[active]}
           alt={alt}
+          // Square frame — main product shot, above the fold on /shop/:slug.
+          width={800}
+          height={800}
+          loading="eager"
+          decoding="sync"
+          // @ts-expect-error: valid HTML attr, not yet in React types
+          fetchpriority="high"
           className="h-full w-full object-cover transition-transform duration-150 ease-out"
           style={
             zoom
@@ -94,7 +101,15 @@ export function ProductImageGallery({ images, alt, badge }: Props) {
               )}
               aria-label={`تصویر ${i + 1}`}
             >
-              <img src={src} alt="" className="h-full w-full object-cover" />
+              <img
+                src={src}
+                alt=""
+                width={80}
+                height={80}
+                loading="lazy"
+                decoding="async"
+                className="h-full w-full object-cover"
+              />
             </button>
           ))}
         </div>
