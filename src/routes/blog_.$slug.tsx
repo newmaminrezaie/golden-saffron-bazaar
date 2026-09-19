@@ -127,6 +127,12 @@ function ArticlePage() {
             <img
               src={article.coverImage}
               alt={article.title}
+              width={1600}
+              height={900}
+              loading="eager"
+              decoding="sync"
+              // @ts-expect-error: valid HTML attr, not yet in React types
+              fetchpriority="high"
               className="h-full w-full object-cover"
             />
           </div>
