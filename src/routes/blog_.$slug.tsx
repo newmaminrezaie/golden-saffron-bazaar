@@ -3,6 +3,7 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { ChevronRight } from "lucide-react";
 import { getArticleBySlug, formatPersianDate } from "@/lib/articles";
+import { pageHead, absoluteImage, absoluteUrl, breadcrumbLd } from "@/lib/seo";
 
 export const Route = createFileRoute("/blog_/$slug")({
   loader: ({ params }) => {
@@ -10,34 +11,36 @@ export const Route = createFileRoute("/blog_/$slug")({
     if (!article) throw notFound();
     return { article };
   },
-  head: ({ loaderData }) => {
+  head: ({ params, loaderData }) => {
+    const path = `/blog/${params.slug}`;
     const article = loaderData?.article;
+
     if (!article) {
-      return {
-        meta: [
-          { title: "مقاله یافت نشد | زعفران خواجوی" },
-          { name: "description", content: "این مقاله موجود نیست." },
-        ],
-      };
+      return pageHead({
+        path,
+        title: "مقاله یافت نشد | زعفران خواجوی",
+        description: "این مقاله موجود نیست.",
+        noindex: true,
+      });
     }
-    const meta = [
-      { title: `${article.title} | مقالات زعفران خواجوی` },
-      { name: "description", content: article.excerpt },
-      { name: "author", content: article.author },
-      { property: "og:title", content: article.title },
-      { property: "og:description", content: article.excerpt },
-      { property: "og:type", content: "article" },
-      { property: "article:published_time", content: article.publishedAt },
-      { property: "article:author", content: article.author },
-    ];
-    if (article.coverImage) {
-      meta.push(
-        { property: "og:image", content: article.coverImage },
-        { name: "twitter:image", content: article.coverImage },
-      );
-    }
+
+    const image = absoluteImage(article.coverImage);
+    const head = pageHead({
+      path,
+      title: `${article.title} | مقالات زعفران خواجوی`,
+      description: article.excerpt,
+      type: "article",
+      image,
+    });
+
     return {
-      meta,
+      ...head,
+      meta: [
+        ...head.meta,
+        { name: "author", content: article.author },
+        { property: "article:published_time", content: article.publishedAt },
+        { property: "article:author", content: article.author },
+      ],
       scripts: [
         {
           type: "application/ld+json",
@@ -46,15 +49,26 @@ export const Route = createFileRoute("/blog_/$slug")({
             "@type": "Article",
             headline: article.title,
             description: article.excerpt,
-            image: article.coverImage ? [article.coverImage] : undefined,
+            image: image ? [image] : undefined,
             datePublished: article.publishedAt,
+            mainEntityOfPage: { "@type": "WebPage", "@id": absoluteUrl(path) },
             author: { "@type": "Person", name: article.author },
             publisher: {
               "@type": "Organization",
               name: "زعفران خواجوی",
-              logo: { "@type": "ImageObject", url: "/favicon.png" },
+              logo: { "@type": "ImageObject", url: absoluteUrl("/favicon.png") },
             },
           }),
+        },
+        {
+          type: "application/ld+json",
+          children: JSON.stringify(
+            breadcrumbLd([
+              { name: "خانه", path: "/" },
+              { name: "مقالات", path: "/blog" },
+              { name: article.title, path },
+            ]),
+          ),
         },
       ],
     };
@@ -113,6 +127,12 @@ function ArticlePage() {
             <img
               src={article.coverImage}
               alt={article.title}
+              width={1600}
+              height={900}
+              loading="eager"
+              decoding="sync"
+              // @ts-expect-error: valid HTML attr, not yet in React types
+              fetchpriority="high"
               className="h-full w-full object-cover"
             />
           </div>
@@ -184,8 +204,17 @@ function ArticlePage() {
                   {...p}
                 />
               ),
+              // In-article images are always below the fold.
               img: ({ ...p }) => (
-                <img className="my-6 rounded-xl border border-border/60" {...p} />
+                <img
+                  loading="lazy"
+                  decoding="async"
+                  width={1200}
+                  height={800}
+                  className="my-6 rounded-xl border border-border/60"
+                  style={{ height: "auto", maxWidth: "100%" }}
+                  {...p}
+                />
               ),
             }}
           >

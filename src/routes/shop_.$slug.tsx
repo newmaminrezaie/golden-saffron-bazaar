@@ -8,6 +8,7 @@ import { useCart } from "@/lib/cart";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { ProductImageGallery } from "@/components/ProductImageGallery";
+import { pageHead, absoluteImage, absoluteUrl, breadcrumbLd } from "@/lib/seo";
 
 const FA_DIGITS = ["۰", "۱", "۲", "۳", "۴", "۵", "۶", "۷", "۸", "۹"];
 function toFa(n: number): string {
@@ -19,31 +20,70 @@ export const Route = createFileRoute("/shop_/$slug")({
     const product = getProductBySlugSync(params.slug);
     return { product, slug: params.slug };
   },
-  head: ({ loaderData }) => {
+  head: ({ params, loaderData }) => {
+    const path = `/shop/${params.slug}`;
     const product = loaderData?.product;
+
     if (!product) {
-      return {
-        meta: [
-          { title: "محصول یافت نشد | زعفران خواجوی" },
-          { name: "description", content: "این محصول در فروشگاه موجود نیست." },
-        ],
-      };
+      return pageHead({
+        path,
+        title: "محصول یافت نشد | زعفران خواجوی",
+        description: "این محصول در فروشگاه موجود نیست.",
+        noindex: true,
+      });
     }
+
     const desc =
       product.shortDescription ??
       `${product.name} — ${product.weight} — ${formatToman(product.price)}`;
+    const image = absoluteImage(product.images[0]);
+
+    const head = pageHead({
+      path,
+      title: `${product.name} | زعفران خواجوی`,
+      description: desc,
+      type: "product",
+      image,
+    });
+
     return {
-      meta: [
-        { title: `${product.name} | زعفران خواجوی` },
-        { name: "description", content: desc },
-        { property: "og:title", content: product.name },
-        { property: "og:description", content: desc },
-        ...(product.images[0]
-          ? [
-              { property: "og:image", content: product.images[0] },
-              { property: "twitter:image", content: product.images[0] },
-            ]
-          : []),
+      ...head,
+      scripts: [
+        {
+          type: "application/ld+json",
+          children: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Product",
+            name: product.name,
+            description: product.description ?? desc,
+            image: product.images.map((src) => absoluteImage(src)).filter(Boolean),
+            sku: product.id,
+            category: product.category,
+            weight: product.weight,
+            brand: { "@type": "Brand", name: "زعفران خواجوی" },
+            offers: {
+              "@type": "Offer",
+              url: absoluteUrl(path),
+              price: product.price,
+              priceCurrency: "IRR",
+              availability:
+                product.inStock === false
+                  ? "https://schema.org/OutOfStock"
+                  : "https://schema.org/InStock",
+              seller: { "@type": "Organization", name: "زعفران خواجوی" },
+            },
+          }),
+        },
+        {
+          type: "application/ld+json",
+          children: JSON.stringify(
+            breadcrumbLd([
+              { name: "خانه", path: "/" },
+              { name: "فروشگاه", path: "/shop" },
+              { name: product.name, path },
+            ]),
+          ),
+        },
       ],
     };
   },
@@ -322,7 +362,10 @@ function ProductPage() {
                     <img
                       src={p.images[0]}
                       alt={p.name}
+                      width={800}
+                      height={800}
                       loading="lazy"
+                      decoding="async"
                       className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                     />
                   </div>

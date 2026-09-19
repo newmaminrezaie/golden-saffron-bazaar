@@ -306,6 +306,10 @@ function AdminProductsPage() {
                       <img
                         src={p.images[0]}
                         alt=""
+                        width={48}
+                        height={48}
+                        loading="lazy"
+                        decoding="async"
                         className="h-12 w-12 rounded-md object-cover"
                       />
                     ) : (
@@ -689,7 +693,15 @@ function ProductEditor({
               <div className="grid grid-cols-3 gap-2">
                 {(p.images || []).map((src, i) => (
                   <div key={i} className="relative rounded-md border overflow-hidden bg-muted">
-                    <img src={src} alt="" className="h-24 w-full object-cover" />
+                    <img
+                      src={src}
+                      alt=""
+                      width={200}
+                      height={96}
+                      loading="lazy"
+                      decoding="async"
+                      className="h-24 w-full object-cover"
+                    />
                     <div className="absolute inset-x-0 bottom-0 flex justify-between bg-black/60 p-1 text-[10px] text-white">
                       <button type="button" onClick={() => moveImage(i, i - 1)}>
                         →

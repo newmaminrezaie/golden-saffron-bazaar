@@ -5,23 +5,17 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
+import { pageHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/contact")({
-  head: () => ({
-    meta: [
-      { title: "تماس با ما | زعفران خواجوی" },
-      {
-        name: "description",
-        content:
-          "راه‌های ارتباطی با زعفران خواجوی؛ آدرس، شماره تماس، ایمیل و فرم تماس برای پاسخگویی به سوالات و درخواست‌های شما.",
-      },
-      { property: "og:title", content: "تماس با زعفران خواجوی" },
-      {
-        property: "og:description",
-        content: "ما همیشه آماده پاسخگویی به شما هستیم.",
-      },
-    ],
-  }),
+  head: () =>
+    pageHead({
+      path: "/contact",
+      title: "تماس با ما | زعفران خواجوی",
+      description:
+        "راه‌های ارتباطی با زعفران خواجوی؛ آدرس، شماره تماس، ایمیل و فرم تماس برای پاسخگویی به سوالات و درخواست‌های شما.",
+      type: "website",
+    }),
   component: ContactPage,
 });
 

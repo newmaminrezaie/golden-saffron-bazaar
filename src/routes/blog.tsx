@@ -1,24 +1,17 @@
 import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
 import { getArticles, formatPersianDate, type Article } from "@/lib/articles";
+import { pageHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/blog")({
   loader: () => getArticles(),
-  head: () => ({
-    meta: [
-      { title: "مقالات | زعفران خواجوی" },
-      {
-        name: "description",
-        content:
-          "مقالات آموزشی درباره خواص زعفران، روش تشخیص زعفران اصل، طرز استفاده و نکات نگهداری — به قلم خانواده خواجوی.",
-      },
-      { property: "og:title", content: "مقالات زعفران خواجوی" },
-      {
-        property: "og:description",
-        content: "مجموعه مقالات تخصصی درباره زعفران اصل قائنات.",
-      },
-      { property: "og:type", content: "website" },
-    ],
-  }),
+  head: () =>
+    pageHead({
+      path: "/blog",
+      title: "مقالات | زعفران خواجوی",
+      description:
+        "مقالات آموزشی درباره خواص زعفران، روش تشخیص زعفران اصل، طرز استفاده و نکات نگهداری — به قلم خانواده خواجوی.",
+      type: "website",
+    }),
   component: BlogIndex,
   errorComponent: ({ error, reset }) => {
     const router = useRouter();
@@ -76,7 +69,10 @@ function BlogIndex() {
                     <img
                       src={a.coverImage}
                       alt={a.title}
+                      width={1600}
+                      height={900}
                       loading="lazy"
+                      decoding="async"
                       className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                     />
                   </div>

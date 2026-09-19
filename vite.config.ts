@@ -41,10 +41,10 @@ const ARTICLE_SLUGS = ARTICLES.map((a) => a.slug);
 // Runs after the prerender step so we know all output files are in place.
 // Writes into `dist/client/` (Nginx web root per DEPLOYMENT.md).
 // ---------------------------------------------------------------------------
-const SITE_URL = (process.env.VITE_SITE_URL || "https://yourdomain.com").replace(
-  /\/$/,
-  "",
-);
+// Canonical origin — must match SITE_URL in src/lib/seo.ts.
+// Hardcoded on purpose: a missing env var must never emit a placeholder domain
+// into the published sitemap. No www; ArvanCloud redirects www at the edge.
+const SITE_URL = "https://khajavisaffron.ir";
 const TODAY = new Date().toISOString().slice(0, 10);
 
 type SitemapEntry = {

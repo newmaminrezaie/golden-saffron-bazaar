@@ -61,22 +61,11 @@ export const Route = createRootRoute({
       { httpEquiv: "Content-Language", content: "fa-IR" },
       { property: "og:locale", content: "fa_IR" },
       { property: "og:site_name", content: "زعفران خواجوی" },
-      { property: "og:title", content: "زعفران خواجوی" },
-      {
-        property: "og:description",
-        content: "زعفران ممتاز و اصل قائنات با ضمانت کیفیت.",
-      },
-      { property: "og:type", content: "website" },
-      { property: "og:url", content: "https://khajavisaffron.ir/" },
-      { property: "og:image", content: "https://khajavisaffron.ir/og-image.png" },
-      { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "زعفران خواجوی" },
-      {
-        name: "twitter:description",
-        content: "زعفران ممتاز و اصل قائنات با ضمانت کیفیت.",
-      },
-      { name: "twitter:image", content: "https://khajavisaffron.ir/og-image.png" },
       { name: "theme-color", content: "#5a3e2e" },
+      // Per-page title/description/canonical/og:url/og:image/twitter tags are
+      // emitted by each leaf route through `pageHead()` in src/lib/seo.ts.
+      // Never add canonical or og:image here: the root head concatenates into
+      // every match and would override (or duplicate) every page's own tags.
     ],
     links: [
       { rel: "preload", href: appCss, as: "style" },
@@ -84,8 +73,6 @@ export const Route = createRootRoute({
       { rel: "icon", type: "image/png", href: "/favicon.png" },
       { rel: "shortcut icon", href: "/favicon.ico" },
       { rel: "apple-touch-icon", href: "/favicon.png" },
-      { rel: "canonical", href: "https://khajavisaffron.ir/" },
-      
     ],
     scripts: [
       {
