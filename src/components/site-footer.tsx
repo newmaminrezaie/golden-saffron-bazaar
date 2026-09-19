@@ -105,7 +105,11 @@ export function SiteFooter() {
               <img
                 src={emallsSeal}
                 alt="نشان اعتباری ایمالز"
-                style={{ maxWidth: "100%", maxHeight: "100%" }}
+                width={234}
+                height={318}
+                loading="lazy"
+                decoding="async"
+                style={{ maxWidth: "100%", maxHeight: "100%", height: "auto" }}
               />
             </a>
             <a
@@ -118,7 +122,11 @@ export function SiteFooter() {
               <img
                 src={samandehiSeal}
                 alt="نماد ساماندهی"
-                style={{ maxWidth: "100%", maxHeight: "100%" }}
+                width={336}
+                height={336}
+                loading="lazy"
+                decoding="async"
+                style={{ maxWidth: "100%", maxHeight: "100%", height: "auto" }}
               />
             </a>
           </div>
@@ -131,8 +139,11 @@ export function SiteFooter() {
             <img
               src={storefront}
               alt="ویترین فروشگاه زعفران خواجوی"
+              width={1225}
+              height={1043}
               className="h-full w-full object-cover"
               loading="lazy"
+              decoding="async"
             />
           </div>
           <div>
