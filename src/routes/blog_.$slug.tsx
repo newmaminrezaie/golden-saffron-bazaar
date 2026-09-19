@@ -204,8 +204,17 @@ function ArticlePage() {
                   {...p}
                 />
               ),
+              // In-article images are always below the fold.
               img: ({ ...p }) => (
-                <img className="my-6 rounded-xl border border-border/60" {...p} />
+                <img
+                  loading="lazy"
+                  decoding="async"
+                  width={1200}
+                  height={800}
+                  className="my-6 rounded-xl border border-border/60"
+                  style={{ height: "auto", maxWidth: "100%" }}
+                  {...p}
+                />
               ),
             }}
           >
