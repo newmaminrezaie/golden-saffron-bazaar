@@ -7,11 +7,15 @@ const SLIDES = [
     src: heroSaffron1,
     pos: "center 50%",
     alt: "گل زعفران بنفش در مزرعه",
+    width: 1620,
+    height: 907,
   },
   {
     src: mulberryBanner,
     pos: "center 50%",
     alt: "توت خشک طبیعی و خوش طعم",
+    width: 1693,
+    height: 929,
   },
 ];
 
@@ -68,6 +72,8 @@ export function Hero() {
             key={s.src}
             src={s.src}
             alt={s.alt}
+            width={s.width}
+            height={s.height}
             loading={i === 0 ? "eager" : "lazy"}
             decoding={i === 0 ? "sync" : "async"}
             // @ts-expect-error: valid HTML attr, not yet in React types
