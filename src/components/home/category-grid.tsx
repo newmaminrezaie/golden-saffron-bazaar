@@ -20,6 +20,16 @@ type Cat = {
   labelStyle: CSSProperties;
 };
 
+// Intrinsic pixel size of each category image — declared on the <img> so the
+// browser reserves the right box and the grid doesn't shift while loading.
+const IMG_DIMS: Record<string, { w: number; h: number }> = {
+  [saffronNegin]: { w: 600, h: 600 },
+  [saffronPushal]: { w: 1920, h: 1080 },
+  [saffronPowder]: { w: 600, h: 600 },
+  [wholesale]: { w: 900, h: 657 },
+  [driedFruits]: { w: 667, h: 634 },
+};
+
 // Persian digit formatter
 const toFa = (n: number) => n.toLocaleString("fa-IR");
 

@@ -9,8 +9,11 @@ export function AboutTeaser() {
           <img
             src={saffronField}
             alt="مزرعه گل‌های زعفران در قائنات"
+            width={1820}
+            height={1213}
             className="h-full w-full object-cover"
             loading="lazy"
+            decoding="async"
           />
         </div>
         <div>

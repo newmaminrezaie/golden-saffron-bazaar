@@ -33,9 +33,12 @@ export function FounderTeaser() {
           <img
             src={ownerWorking}
             alt="مجید خواجوی در حال بسته‌بندی زعفران اصل قائنات"
+            width={750}
+            height={1000}
             className="h-full w-full object-cover"
             style={{ objectPosition: "center 35%" }}
             loading="lazy"
+            decoding="async"
           />
         </div>
       </div>

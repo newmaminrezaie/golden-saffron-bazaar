@@ -28,6 +28,12 @@ function AboutPage() {
         <img
           src={storefrontWide}
           alt="ویترین فروشگاه زعفران خواجوی در قائن"
+          width={1920}
+          height={1080}
+          loading="eager"
+          decoding="sync"
+          // @ts-expect-error: valid HTML attr, not yet in React types
+          fetchpriority="high"
           className="absolute inset-0 h-full w-full object-cover"
           style={{ objectPosition: "35% 45%" }}
         />
@@ -76,9 +82,12 @@ function AboutPage() {
             <img
               src={ownerPortrait}
               alt="مجید خواجوی، بنیان‌گذار زعفران خواجوی"
+              width={750}
+              height={1000}
               className="h-full w-full object-cover"
               style={{ objectPosition: "center 25%" }}
               loading="lazy"
+              decoding="async"
             />
           </div>
           <div>

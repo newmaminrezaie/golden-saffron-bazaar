@@ -69,7 +69,10 @@ function BlogIndex() {
                     <img
                       src={a.coverImage}
                       alt={a.title}
+                      width={1600}
+                      height={900}
                       loading="lazy"
+                      decoding="async"
                       className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                     />
                   </div>
