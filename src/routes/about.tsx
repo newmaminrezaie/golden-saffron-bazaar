@@ -3,23 +3,17 @@ import { Sprout, Hand, Sparkles } from "lucide-react";
 import ownerPortrait from "@/assets/owner-portrait.jpg";
 import ownerWorking from "@/assets/owner-working.jpg";
 import storefrontWide from "@/assets/storefront-wide.jpg";
+import { pageHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/about")({
-  head: () => ({
-    meta: [
-      { title: "درباره ما | زعفران خواجوی" },
-      {
-        name: "description",
-        content:
-          "آشنایی با خانواده خواجوی، تولیدکننده زعفران اصل قائنات با بیش از سه نسل تجربه در پرورش طلای سرخ ایران.",
-      },
-      { property: "og:title", content: "درباره زعفران خواجوی" },
-      {
-        property: "og:description",
-        content: "سه نسل تجربه در پرورش زعفران اصل قائنات.",
-      },
-    ],
-  }),
+  head: () =>
+    pageHead({
+      path: "/about",
+      title: "درباره ما | زعفران خواجوی",
+      description:
+        "آشنایی با خانواده خواجوی، تولیدکننده زعفران اصل قائنات با بیش از سه نسل تجربه در پرورش طلای سرخ ایران.",
+      type: "website",
+    }),
   component: AboutPage,
 });
 

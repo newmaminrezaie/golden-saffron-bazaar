@@ -3,6 +3,7 @@ import { ProductCard } from "@/components/product-card";
 import { CATEGORIES } from "@/data/products";
 import { useProducts } from "@/lib/products-client";
 import { cn } from "@/lib/utils";
+import { pageHead } from "@/lib/seo";
 
 type Category = (typeof CATEGORIES)[number];
 
@@ -15,14 +16,14 @@ export const Route = createFileRoute("/shop")({
   head: ({ match }) => {
     const category = (match.search as { category: Category }).category;
     const m = SHOP_META[category] ?? SHOP_META["همه"];
-    return {
-      meta: [
-        { title: m.title },
-        { name: "description", content: m.description },
-        { property: "og:title", content: m.title },
-        { property: "og:description", content: m.description },
-      ],
-    };
+    // Canonical always points at the unfiltered /shop so category views don't
+    // split indexing signals across near-duplicate pages.
+    return pageHead({
+      path: "/shop",
+      title: m.title,
+      description: m.description,
+      type: "website",
+    });
   },
   component: ShopPage,
 });
