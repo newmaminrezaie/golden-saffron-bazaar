@@ -123,7 +123,10 @@ export function CategoryGrid() {
               <img
                 src={c.img}
                 alt={c.name}
+                width={IMG_DIMS[c.img]?.w}
+                height={IMG_DIMS[c.img]?.h}
                 loading="lazy"
+                decoding="async"
                 style={{
                   position: "absolute",
                   inset: 0,

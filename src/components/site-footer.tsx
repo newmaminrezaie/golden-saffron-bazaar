@@ -18,6 +18,10 @@ export function SiteFooter() {
       <img
         src={khajaviEmblem}
         alt="زعفران خواجوی"
+        width={423}
+        height={231}
+        loading="lazy"
+        decoding="async"
         className="absolute left-1/2 top-0 -translate-x-1/2 -translate-y-[35%] h-24 md:h-28 w-auto z-10 drop-shadow-[0_8px_24px_rgba(0,0,0,0.45)]"
         style={{
           WebkitMaskImage:
