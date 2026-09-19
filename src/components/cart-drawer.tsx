@@ -260,7 +260,10 @@ export function CartDrawer() {
                       <img
                         src={it.image}
                         alt={it.name}
+                        width={96}
+                        height={96}
                         loading="lazy"
+                        decoding="async"
                         className="h-full w-full object-cover"
                       />
                     )}

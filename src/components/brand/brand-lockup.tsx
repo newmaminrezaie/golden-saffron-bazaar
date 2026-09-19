@@ -16,17 +16,27 @@ export function BrandLockup({ variant = "header", className }: BrandLockupProps)
         <img
           src={brandLogo}
           alt="زعفران خواجوی"
+          width={1003}
+          height={249}
           className="h-20 w-auto"
           loading="lazy"
+          decoding="async"
         />
       </div>
     );
   }
 
+  // Header logo — above the fold on every page, so it loads eagerly.
   return (
     <img
       src={brandLogo}
       alt="زعفران خواجوی"
+      width={1003}
+      height={249}
+      loading="eager"
+      decoding="sync"
+      // @ts-expect-error: valid HTML attr, not yet in React types
+      fetchpriority="high"
       className={`h-10 md:h-12 w-auto ${className ?? ""}`}
     />
   );
