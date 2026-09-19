@@ -162,8 +162,12 @@ export function ProductImageGallery({ images, alt, badge }: Props) {
           <img
             src={images[active]}
             alt={alt}
+            width={1200}
+            height={1200}
+            decoding="async"
             onClick={(e) => e.stopPropagation()}
             className="max-h-[90vh] max-w-[90vw] object-contain"
+            style={{ height: "auto" }}
           />
         </div>
       )}
