@@ -13,9 +13,36 @@ const productsSrc = readFileSync(
   fileURLToPath(new URL("./src/data/products.ts", import.meta.url)),
   "utf-8",
 );
-const PRODUCT_SLUGS = Array.from(
+const SOURCE_SLUGS = Array.from(
   productsSrc.matchAll(/^\s{4}slug:\s*"([^"]+)"/gm),
   (m) => m[1],
+);
+
+// Products added in the admin panel live in the backend DB, not the source
+// file. Pull them at build time so every product gets a prerendered page and a
+// sitemap entry. Falls back silently to the source list (offline-safe).
+const PRODUCTS_API_URL =
+  process.env.PRODUCTS_API_URL || "http://127.0.0.1:3002/api/products";
+async function fetchBackendSlugs(): Promise<string[]> {
+  try {
+    const ctrl = new AbortController();
+    const t = setTimeout(() => ctrl.abort(), 3000);
+    const res = await fetch(PRODUCTS_API_URL, { signal: ctrl.signal });
+    clearTimeout(t);
+    if (!res.ok) return [];
+    const json = (await res.json()) as { products?: { slug?: string }[] };
+    return (json.products ?? [])
+      .map((p) => p.slug)
+      .filter((s): s is string => !!s && /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(s));
+  } catch {
+    return [];
+  }
+}
+const BACKEND_SLUGS = await fetchBackendSlugs();
+const PRODUCT_SLUGS = Array.from(new Set([...SOURCE_SLUGS, ...BACKEND_SLUGS]));
+// eslint-disable-next-line no-console
+console.log(
+  `[seo] products: ${SOURCE_SLUGS.length} from source, ${BACKEND_SLUGS.length} from backend, ${PRODUCT_SLUGS.length} total`,
 );
 
 // Read article slugs from the hosted articles.json so each blog post gets a

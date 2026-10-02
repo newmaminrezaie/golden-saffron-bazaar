@@ -135,3 +135,31 @@ After the first deploy, submit `https://yourdomain.com/sitemap.xml` in
 [Google Search Console](https://search.google.com/search-console) so Google
 discovers all pages quickly. Re-submission isn't needed on every build —
 Google re-crawls the sitemap on its own schedule.
+
+## SEO: Nginx rules (no trailing slash, no 5xx on pages)
+
+Inside the `server { ... }` block for khajavisaffron.ir (do NOT touch gandomakshop):
+
+```nginx
+absolute_redirect off;
+
+# Old product URLs -> current ones
+rewrite ^/product/(.*)$ /shop/$1 permanent;
+
+# One URL style: strip trailing slash (except root)
+location ~ ^(.+)/$ { return 301 $1; }
+
+location / {
+    root /var/www/khajavisaffron/dist/client;
+    # Serve prerendered page without redirecting /shop -> /shop/
+    try_files $uri $uri.html $uri/index.html /index.html;
+}
+# keep your existing /api/ and /uploads/ blocks unchanged
+```
+
+Then `sudo nginx -t && sudo systemctl reload nginx`.
+
+Build on a machine where the backend is reachable (or set `PRODUCTS_API_URL=https://khajavisaffron.ir/api/products`)
+so admin-added products are prerendered and added to the sitemap.
+
+After uploading: Search Console -> Sitemaps -> resubmit `sitemap.xml`, then Pages -> open each reason -> "Validate fix".
