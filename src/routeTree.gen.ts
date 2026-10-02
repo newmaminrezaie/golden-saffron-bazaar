@@ -9,32 +9,22 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as IndexRouteImport } from './routes/index'
-import { Route as AboutRouteImport } from './routes/about'
-import { Route as BlogRouteImport } from './routes/blog'
-import { Route as ContactRouteImport } from './routes/contact'
 import { Route as ShopRouteImport } from './routes/shop'
-import { Route as AdminOrdersRouteImport } from './routes/admin.orders'
-import { Route as AdminProductsRouteImport } from './routes/admin.products'
-import { Route as BlogSlugRouteImport } from './routes/blog_.$slug'
-import { Route as PaymentCardRouteImport } from './routes/payment.card'
-import { Route as PaymentFailedRouteImport } from './routes/payment.failed'
-import { Route as PaymentSuccessRouteImport } from './routes/payment.success'
+import { Route as ContactRouteImport } from './routes/contact'
+import { Route as BlogRouteImport } from './routes/blog'
+import { Route as AboutRouteImport } from './routes/about'
+import { Route as IndexRouteImport } from './routes/index'
 import { Route as ShopSlugRouteImport } from './routes/shop_.$slug'
+import { Route as PaymentSuccessRouteImport } from './routes/payment.success'
+import { Route as PaymentFailedRouteImport } from './routes/payment.failed'
+import { Route as PaymentCardRouteImport } from './routes/payment.card'
+import { Route as BlogSlugRouteImport } from './routes/blog_.$slug'
+import { Route as AdminProductsRouteImport } from './routes/admin.products'
+import { Route as AdminOrdersRouteImport } from './routes/admin.orders'
 
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AboutRoute = AboutRouteImport.update({
-  id: '/about',
-  path: '/about',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const BlogRoute = BlogRouteImport.update({
-  id: '/blog',
-  path: '/blog',
+const ShopRoute = ShopRouteImport.update({
+  id: '/shop',
+  path: '/shop',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ContactRoute = ContactRouteImport.update({
@@ -42,34 +32,24 @@ const ContactRoute = ContactRouteImport.update({
   path: '/contact',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ShopRoute = ShopRouteImport.update({
-  id: '/shop',
-  path: '/shop',
+const BlogRoute = BlogRouteImport.update({
+  id: '/blog',
+  path: '/blog',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AdminOrdersRoute = AdminOrdersRouteImport.update({
-  id: '/admin/orders',
-  path: '/admin/orders',
+const AboutRoute = AboutRouteImport.update({
+  id: '/about',
+  path: '/about',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AdminProductsRoute = AdminProductsRouteImport.update({
-  id: '/admin/products',
-  path: '/admin/products',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const BlogSlugRoute = BlogSlugRouteImport.update({
-  id: '/blog_/$slug',
-  path: '/blog/$slug',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PaymentCardRoute = PaymentCardRouteImport.update({
-  id: '/payment/card',
-  path: '/payment/card',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PaymentFailedRoute = PaymentFailedRouteImport.update({
-  id: '/payment/failed',
-  path: '/payment/failed',
+const ShopSlugRoute = ShopSlugRouteImport.update({
+  id: '/shop_/$slug',
+  path: '/shop/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PaymentSuccessRoute = PaymentSuccessRouteImport.update({
@@ -77,9 +57,29 @@ const PaymentSuccessRoute = PaymentSuccessRouteImport.update({
   path: '/payment/success',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ShopSlugRoute = ShopSlugRouteImport.update({
-  id: '/shop_/$slug',
-  path: '/shop/$slug',
+const PaymentFailedRoute = PaymentFailedRouteImport.update({
+  id: '/payment/failed',
+  path: '/payment/failed',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PaymentCardRoute = PaymentCardRouteImport.update({
+  id: '/payment/card',
+  path: '/payment/card',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BlogSlugRoute = BlogSlugRouteImport.update({
+  id: '/blog_/$slug',
+  path: '/blog/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminProductsRoute = AdminProductsRouteImport.update({
+  id: '/admin/products',
+  path: '/admin/products',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminOrdersRoute = AdminOrdersRouteImport.update({
+  id: '/admin/orders',
+  path: '/admin/orders',
   getParentRoute: () => rootRouteImport,
 } as any)
 
@@ -188,25 +188,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/about': {
-      id: '/about'
-      path: '/about'
-      fullPath: '/about'
-      preLoaderRoute: typeof AboutRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/blog': {
-      id: '/blog'
-      path: '/blog'
-      fullPath: '/blog'
-      preLoaderRoute: typeof BlogRouteImport
+    '/shop': {
+      id: '/shop'
+      path: '/shop'
+      fullPath: '/shop'
+      preLoaderRoute: typeof ShopRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/contact': {
@@ -216,46 +202,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ContactRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/shop': {
-      id: '/shop'
-      path: '/shop'
-      fullPath: '/shop'
-      preLoaderRoute: typeof ShopRouteImport
+    '/blog': {
+      id: '/blog'
+      path: '/blog'
+      fullPath: '/blog'
+      preLoaderRoute: typeof BlogRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/admin/orders': {
-      id: '/admin/orders'
-      path: '/admin/orders'
-      fullPath: '/admin/orders'
-      preLoaderRoute: typeof AdminOrdersRouteImport
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/admin/products': {
-      id: '/admin/products'
-      path: '/admin/products'
-      fullPath: '/admin/products'
-      preLoaderRoute: typeof AdminProductsRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/blog_/$slug': {
-      id: '/blog_/$slug'
-      path: '/blog/$slug'
-      fullPath: '/blog/$slug'
-      preLoaderRoute: typeof BlogSlugRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/payment/card': {
-      id: '/payment/card'
-      path: '/payment/card'
-      fullPath: '/payment/card'
-      preLoaderRoute: typeof PaymentCardRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/payment/failed': {
-      id: '/payment/failed'
-      path: '/payment/failed'
-      fullPath: '/payment/failed'
-      preLoaderRoute: typeof PaymentFailedRouteImport
+    '/shop_/$slug': {
+      id: '/shop_/$slug'
+      path: '/shop/$slug'
+      fullPath: '/shop/$slug'
+      preLoaderRoute: typeof ShopSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/payment/success': {
@@ -265,11 +237,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PaymentSuccessRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/shop_/$slug': {
-      id: '/shop_/$slug'
-      path: '/shop/$slug'
-      fullPath: '/shop/$slug'
-      preLoaderRoute: typeof ShopSlugRouteImport
+    '/payment/failed': {
+      id: '/payment/failed'
+      path: '/payment/failed'
+      fullPath: '/payment/failed'
+      preLoaderRoute: typeof PaymentFailedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/payment/card': {
+      id: '/payment/card'
+      path: '/payment/card'
+      fullPath: '/payment/card'
+      preLoaderRoute: typeof PaymentCardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/blog_/$slug': {
+      id: '/blog_/$slug'
+      path: '/blog/$slug'
+      fullPath: '/blog/$slug'
+      preLoaderRoute: typeof BlogSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/products': {
+      id: '/admin/products'
+      path: '/admin/products'
+      fullPath: '/admin/products'
+      preLoaderRoute: typeof AdminProductsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/orders': {
+      id: '/admin/orders'
+      path: '/admin/orders'
+      fullPath: '/admin/orders'
+      preLoaderRoute: typeof AdminOrdersRouteImport
       parentRoute: typeof rootRouteImport
     }
   }

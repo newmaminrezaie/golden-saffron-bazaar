@@ -13,7 +13,7 @@ export const Route = createFileRoute("/blog")({
       type: "website",
     }),
   component: BlogIndex,
-  errorComponent: ({ error, reset }: { error: Error; reset: () => void }) => {
+  errorComponent: ({ error, reset }) => {
     const router = useRouter();
     return (
       <div className="mx-auto max-w-xl px-4 py-20 text-center">
