@@ -14,8 +14,8 @@ PORT="9011"
 REMOTE_DIR="/var/www/khajavisaffron"
 PM2_APP="khajavi-backend"
 
+# Uses only ssh + tar (no rsync) so it works on Windows Git Bash too.
 SSH="ssh -p ${PORT}"
-RSYNC="rsync -az --delete -e ssh -p ${PORT}"
 
 # --- safety checks ---------------------------------------------------------
 if [ ! -s dist/client/index.html ]; then
@@ -26,22 +26,27 @@ fi
 echo "==> Checking server is reachable..."
 ${SSH} -o ConnectTimeout=10 ${SERVER} "test -d ${REMOTE_DIR} && echo remote-ok"
 
-# --- 1) frontend (static files) -------------------------------------------
+# --- 1) frontend (static files) --------------------------------------------
+# Upload to a staging folder, then swap it in one step so the site is never
+# half-updated. Old version is kept as client.old (previous one is removed).
 echo "==> Uploading frontend to ${REMOTE_DIR}/dist/client ..."
-${RSYNC} dist/client/ ${SERVER}:${REMOTE_DIR}/dist/client/
+${SSH} ${SERVER} "rm -rf ${REMOTE_DIR}/dist/client.new ${REMOTE_DIR}/dist/client.old"
+tar -czf - -C dist client | ${SSH} ${SERVER} \
+  "mkdir -p ${REMOTE_DIR}/dist/client.new && tar -xzf - -C ${REMOTE_DIR}/dist/client.new --strip-components=1"
+${SSH} ${SERVER} "mv ${REMOTE_DIR}/dist/client ${REMOTE_DIR}/dist/client.old && mv ${REMOTE_DIR}/dist/client.new ${REMOTE_DIR}/dist/client"
 
 # --- 2) backend code -------------------------------------------------------
 # Uploads only server source code. Excludes everything that must stay on the
 # server untouched: .env (secrets), node_modules, uploads/ (product images),
 # and any SQLite data files (products/orders/settings live there).
 echo "==> Uploading backend code to ${REMOTE_DIR}/server ..."
-rsync -az -e "ssh -p ${PORT}" \
-  --exclude '.env' \
-  --exclude 'node_modules' \
-  --exclude 'uploads' \
-  --exclude '*.db' --exclude '*.sqlite' --exclude '*.sqlite3' \
-  --exclude 'data' \
-  server/ ${SERVER}:${REMOTE_DIR}/server/
+tar -czf - -C server \
+  --exclude='.env' \
+  --exclude='node_modules' \
+  --exclude='uploads' \
+  --exclude='*.db' --exclude='*.sqlite' --exclude='*.sqlite3' \
+  --exclude='data' \
+  . | ${SSH} ${SERVER} "tar -xzf - -C ${REMOTE_DIR}/server"
 
 # --- 3) install deps + restart ONLY khajavi-backend ------------------------
 echo "==> Installing backend dependencies and restarting ${PM2_APP} ..."
