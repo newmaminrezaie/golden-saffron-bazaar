@@ -13,8 +13,20 @@ export const SITE_URL = "https://khajavisaffron.ir";
 
 /** Locale codes that have a URL prefix. The default locale has no prefix. */
 export const DEFAULT_LOCALE = "fa" as const;
+/**
+ * Locales that actually have translated content. Only these emit hreflang
+ * alternates, so Google is never pointed at empty pages. When a translation
+ * ships, add its code here (e.g. ["fa", "en"]) — nothing else needs to change.
+ */
 export const LOCALES = ["fa"] as const;
 export type Locale = (typeof LOCALES)[number];
+/** Every locale planned for the site. */
+export const PLANNED_LOCALES = ["fa", "en", "tr", "ar"] as const;
+const RTL = new Set(["fa", "ar"]);
+/** `<html lang dir>` values for a locale. */
+export function htmlAttrs(locale: string = DEFAULT_LOCALE) {
+  return { lang: locale, dir: RTL.has(locale) ? "rtl" : "ltr" } as const;
+}
 
 /** Human-readable BCP-47 tags used in og:locale / hreflang. */
 export const LOCALE_TAGS: Record<string, string> = {
