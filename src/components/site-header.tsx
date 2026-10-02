@@ -50,6 +50,9 @@ export function SiteHeader() {
           <button aria-label="جستجو" className="p-2 rounded-full hover:bg-secondary transition">
             <Search className="size-5" />
           </button>
+          <button aria-label="حساب کاربری" className="p-2 rounded-full hover:bg-secondary transition hidden sm:inline-flex">
+            <User className="size-5" />
+          </button>
           <button
             type="button"
             onClick={openCart}
