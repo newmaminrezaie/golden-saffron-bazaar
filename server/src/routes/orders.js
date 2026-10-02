@@ -246,6 +246,8 @@ router.post("/order-card", async (req, res) => {
     total: order.total,
     subtotal: order.subtotal,
     shipping: order.shipping,
+    packaging: order.packaging || 0,
+    gift_box: order.gift_box || 0,
     card: {
       number: process.env.CARD_NUMBER || "6037 9974 6126 4344",
       holder: process.env.CARD_HOLDER || "مجید خواجوی",
