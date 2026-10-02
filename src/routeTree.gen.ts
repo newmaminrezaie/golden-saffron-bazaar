@@ -23,6 +23,7 @@ import { Route as PaymentCardRouteImport } from './routes/payment.card'
 import { Route as BlogSlugRouteImport } from './routes/blog_.$slug'
 import { Route as AdminProductsRouteImport } from './routes/admin.products'
 import { Route as AdminOrdersRouteImport } from './routes/admin.orders'
+import { Route as AdminFeesRouteImport } from './routes/admin.fees'
 import { Route as LangContactRouteImport } from './routes/$lang.contact'
 import { Route as LangAboutRouteImport } from './routes/$lang.about'
 import { Route as LangShopIndexRouteImport } from './routes/$lang.shop.index'
@@ -100,6 +101,11 @@ const AdminOrdersRoute = AdminOrdersRouteImport.update({
   path: '/admin/orders',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminFeesRoute = AdminFeesRouteImport.update({
+  id: '/admin/fees',
+  path: '/admin/fees',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LangContactRoute = LangContactRouteImport.update({
   id: '/contact',
   path: '/contact',
@@ -140,6 +146,7 @@ export interface FileRoutesByFullPath {
   '/shop': typeof ShopRoute
   '/$lang/about': typeof LangAboutRoute
   '/$lang/contact': typeof LangContactRoute
+  '/admin/fees': typeof AdminFeesRoute
   '/admin/orders': typeof AdminOrdersRoute
   '/admin/products': typeof AdminProductsRoute
   '/blog/$slug': typeof BlogSlugRoute
@@ -161,6 +168,7 @@ export interface FileRoutesByTo {
   '/shop': typeof ShopRoute
   '/$lang/about': typeof LangAboutRoute
   '/$lang/contact': typeof LangContactRoute
+  '/admin/fees': typeof AdminFeesRoute
   '/admin/orders': typeof AdminOrdersRoute
   '/admin/products': typeof AdminProductsRoute
   '/blog/$slug': typeof BlogSlugRoute
@@ -184,6 +192,7 @@ export interface FileRoutesById {
   '/shop': typeof ShopRoute
   '/$lang/about': typeof LangAboutRoute
   '/$lang/contact': typeof LangContactRoute
+  '/admin/fees': typeof AdminFeesRoute
   '/admin/orders': typeof AdminOrdersRoute
   '/admin/products': typeof AdminProductsRoute
   '/blog_/$slug': typeof BlogSlugRoute
@@ -208,6 +217,7 @@ export interface FileRouteTypes {
     | '/shop'
     | '/$lang/about'
     | '/$lang/contact'
+    | '/admin/fees'
     | '/admin/orders'
     | '/admin/products'
     | '/blog/$slug'
@@ -229,6 +239,7 @@ export interface FileRouteTypes {
     | '/shop'
     | '/$lang/about'
     | '/$lang/contact'
+    | '/admin/fees'
     | '/admin/orders'
     | '/admin/products'
     | '/blog/$slug'
@@ -251,6 +262,7 @@ export interface FileRouteTypes {
     | '/shop'
     | '/$lang/about'
     | '/$lang/contact'
+    | '/admin/fees'
     | '/admin/orders'
     | '/admin/products'
     | '/blog_/$slug'
@@ -272,6 +284,7 @@ export interface RootRouteChildren {
   BlogRoute: typeof BlogRoute
   ContactRoute: typeof ContactRoute
   ShopRoute: typeof ShopRoute
+  AdminFeesRoute: typeof AdminFeesRoute
   AdminOrdersRoute: typeof AdminOrdersRoute
   AdminProductsRoute: typeof AdminProductsRoute
   BlogSlugRoute: typeof BlogSlugRoute
@@ -381,6 +394,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminOrdersRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/fees': {
+      id: '/admin/fees'
+      path: '/admin/fees'
+      fullPath: '/admin/fees'
+      preLoaderRoute: typeof AdminFeesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/$lang/contact': {
       id: '/$lang/contact'
       path: '/contact'
@@ -455,6 +475,7 @@ const rootRouteChildren: RootRouteChildren = {
   BlogRoute: BlogRoute,
   ContactRoute: ContactRoute,
   ShopRoute: ShopRoute,
+  AdminFeesRoute: AdminFeesRoute,
   AdminOrdersRoute: AdminOrdersRoute,
   AdminProductsRoute: AdminProductsRoute,
   BlogSlugRoute: BlogSlugRoute,

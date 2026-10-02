@@ -1,3 +1,4 @@
+import { FeeNote } from "@/components/fee-note";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { MessageCircle } from "lucide-react";
 import { useProduct, getProductBySlugSync } from "@/lib/products-client";
@@ -100,6 +101,7 @@ function LocaleProduct() {
             {t.product.weight}: {l.weight}
           </p>
           <p className="mt-4 text-2xl font-extrabold text-[color:var(--brown-deep)]">{formatPrice(product.price, lang)}</p>
+          <FeeNote price={product.price} lang={lang} />
           {product.inStock === false && <p className="mt-2 text-sm font-bold text-destructive">{t.product.outOfStock}</p>}
           {l.short && <p className="mt-6 leading-8 text-foreground/80">{l.short}</p>}
           <a

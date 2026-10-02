@@ -22,11 +22,11 @@ import {
   CARD_ORDER_STORAGE_PREFIX,
   type CardOrderPayload,
 } from "@/routes/payment.card";
+import { useFees, computeFees } from "@/lib/fees-client";
 
 const FA = ["۰", "۱", "۲", "۳", "۴", "۵", "۶", "۷", "۸", "۹"];
 const toFa = (n: number) => String(n).replace(/\d/g, (d) => FA[Number(d)]);
 
-const SHIPPING_FEE = 30000;
 const API_BASE =
   (import.meta.env.VITE_API_BASE as string | undefined)?.replace(/\/$/, "") ?? "";
 const FORM_STORAGE_KEY = "khajavi.checkoutForm.v1";
@@ -74,7 +74,9 @@ function validate(form: CustomerForm): string | null {
 export function CartDrawer() {
   const { items, isOpen, close, remove, setQty, subtotal, count, clear } = useCart();
   const navigate = useNavigate();
-  const total = subtotal + (items.length > 0 ? SHIPPING_FEE : 0);
+  const fees = useFees();
+  const [giftBox, setGiftBox] = useState(false);
+  const { lines: feeLines, total } = computeFees(fees, subtotal, count, giftBox && fees.giftBox.enabled);
 
   const [form, setForm] = useState<CustomerForm>(EMPTY_FORM);
   const [method, setMethod] = useState<PaymentMethod>("zibal");
@@ -116,6 +118,7 @@ export function CartDrawer() {
       price: it.unitPrice,
     })),
     subtotal,
+    gift_box: giftBox && fees.giftBox.enabled,
   });
 
   const handleCheckout = async () => {
@@ -393,10 +396,21 @@ export function CartDrawer() {
                   <dt>جمع کالاها</dt>
                   <dd className="font-bold">{formatToman(subtotal)}</dd>
                 </div>
-                <div className="flex justify-between text-foreground/80">
-                  <dt>هزینه پست و بسته‌بندی</dt>
-                  <dd className="font-bold">{formatToman(SHIPPING_FEE)}</dd>
-                </div>
+                {feeLines.map((l) => (
+                  <div key={l.key} className="flex justify-between text-foreground/80">
+                    <dt>{l.label}</dt>
+                    <dd className="font-bold">{l.free ? "رایگان" : formatToman(l.amount)}</dd>
+                  </div>
+                ))}
+                {fees.giftBox.enabled && (
+                  <label className="flex cursor-pointer items-center justify-between gap-2 text-foreground/80">
+                    <span className="flex items-center gap-2">
+                      <input type="checkbox" checked={giftBox} onChange={(e) => setGiftBox(e.target.checked)} />
+                      {fees.giftBox.label}
+                    </span>
+                    <span className="font-bold">{formatToman(fees.giftBox.amount)}</span>
+                  </label>
+                )}
                 <div className="mt-3 flex justify-between border-t border-border/60 pt-3 text-base">
                   <dt className="font-extrabold">مبلغ قابل پرداخت</dt>
                   <dd className="font-extrabold text-[color:var(--brown-deep)]">

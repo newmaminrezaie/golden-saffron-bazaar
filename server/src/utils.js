@@ -1,8 +1,6 @@
 "use strict";
 
-// Packaging / postal fee. Waived for orders at/above the free-shipping threshold.
-const SHIPPING_FEE_TOMAN = 30000;
-const FREE_SHIPPING_THRESHOLD_TOMAN = 2000000;
+const { getFees } = require("./settingsDb");
 
 function generateOrderId() {
   const ts = Math.floor(Date.now() / 1000);
@@ -14,22 +12,30 @@ function tomanToRial(toman) {
   return Math.round(Number(toman) * 10);
 }
 
-function computeTotals(items) {
+/**
+ * Server-authoritative totals using the fee settings.
+ * Returns a breakdown plus display lines (label + amount) for every charged fee.
+ */
+function computeTotals(items, { giftBox = false } = {}) {
+  const f = getFees();
   const subtotal = items.reduce((sum, it) => sum + it.price * it.qty, 0);
-  const shipping = subtotal >= FREE_SHIPPING_THRESHOLD_TOMAN ? 0 : SHIPPING_FEE_TOMAN;
-  const total = subtotal + shipping;
-  return { subtotal, shipping, total };
+  const qty = items.reduce((s, it) => s + it.qty, 0);
+
+  const packaging = f.packaging.enabled ? f.packaging.perOrder + f.packaging.perItem * qty : 0;
+  const free = f.freeShipping.enabled && subtotal >= f.freeShipping.threshold;
+  const shipping = f.shipping.enabled && !free ? f.shipping.amount : 0;
+  const gift = giftBox && f.giftBox.enabled ? f.giftBox.amount : 0;
+
+  const lines = [];
+  if (f.packaging.enabled && packaging > 0) lines.push({ key: "packaging", label: f.packaging.label, amount: packaging });
+  if (f.shipping.enabled) lines.push({ key: "shipping", label: f.shipping.label, amount: shipping, free });
+  if (gift > 0) lines.push({ key: "giftBox", label: f.giftBox.label, amount: gift });
+
+  return { subtotal, packaging, shipping, giftBox: gift, total: subtotal + packaging + shipping + gift, lines };
 }
 
 function formatToman(n) {
   return Number(n).toLocaleString("en-US") + " تومان";
 }
 
-module.exports = {
-  SHIPPING_FEE_TOMAN,
-  FREE_SHIPPING_THRESHOLD_TOMAN,
-  generateOrderId,
-  tomanToRial,
-  computeTotals,
-  formatToman,
-};
+module.exports = { generateOrderId, tomanToRial, computeTotals, formatToman };
