@@ -72,6 +72,16 @@ const ARTICLE_SLUGS = ARTICLES.map((a) => a.slug);
 // Hardcoded on purpose: a missing env var must never emit a placeholder domain
 // into the published sitemap. No www; ArvanCloud redirects www at the edge.
 const SITE_URL = "https://khajavisaffron.ir";
+const OTHER_LOCALES = ["en", "tr", "ar"];
+// Article slugs that have translations (keys of ARTICLE_I18N in src/i18n/articles.ts).
+const TRANSLATED_ARTICLES = new Set(
+  Array.from(
+    readFileSync(fileURLToPath(new URL("./src/i18n/articles.ts", import.meta.url)), "utf-8").matchAll(
+      /^  "([a-z0-9-]+)": \{/gm,
+    ),
+    (m) => m[1],
+  ),
+);
 const TODAY = new Date().toISOString().slice(0, 10);
 
 type SitemapEntry = {
@@ -101,7 +111,14 @@ function buildSitemapEntries(): SitemapEntry[] {
     changefreq: "monthly",
     priority: "0.7",
   }));
-  return [...staticPages, ...products, ...blog];
+  const fa = [...staticPages, ...products, ...blog];
+  // Same pages under /en, /tr, /ar (articles only where a translation exists).
+  const localized = OTHER_LOCALES.flatMap((l) =>
+    fa
+      .filter((e) => !e.loc.startsWith("/blog/") || TRANSLATED_ARTICLES.has(e.loc.slice(6)))
+      .map((e) => ({ ...e, loc: e.loc === "/" ? `/${l}` : `/${l}${e.loc}` })),
+  );
+  return [...fa, ...localized];
 }
 
 function renderSitemap(entries: SitemapEntry[]): string {
@@ -177,7 +194,8 @@ export default defineConfig({
   nitro: false,
   tanstackStart: {
     target: "static",
-    pages: [
+    pages: buildSitemapEntries().map((e) => e.loc).map((path) => ({ path })),
+    _unusedPages: [
       "/",
       "/about",
       "/contact",
