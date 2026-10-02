@@ -18,7 +18,7 @@ export const DEFAULT_LOCALE = "fa" as const;
  * alternates, so Google is never pointed at empty pages. When a translation
  * ships, add its code here (e.g. ["fa", "en"]) — nothing else needs to change.
  */
-export const LOCALES = ["fa"] as const;
+export const LOCALES = ["fa", "en", "tr", "ar"] as const;
 export type Locale = (typeof LOCALES)[number];
 /** Every locale planned for the site. */
 export const PLANNED_LOCALES = ["fa", "en", "tr", "ar"] as const;

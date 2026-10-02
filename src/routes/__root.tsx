@@ -8,6 +8,8 @@ import {
   useRouter,
 } from "@tanstack/react-router";
 import { useEffect } from "react";
+import { LocaleLayout } from "@/components/i18n/locale-shell";
+import { localeFromPath, localeDir, type OtherLocale } from "@/i18n/locales";
 
 import appCss from "../styles.css?url";
 import { SiteHeader } from "@/components/site-header";
@@ -58,7 +60,6 @@ export const Route = createRootRoute({
       },
       { name: "author", content: "Khajavi Saffron" },
       { name: "robots", content: "index, follow" },
-      { httpEquiv: "Content-Language", content: "fa-IR" },
       { property: "og:locale", content: "fa_IR" },
       { property: "og:site_name", content: "زعفران خواجوی" },
       { name: "theme-color", content: "#5a3e2e" },
@@ -100,8 +101,9 @@ export const Route = createRootRoute({
 });
 
 function RootShell({ children }: { children: React.ReactNode }) {
+  const lang = localeFromPath(useLocation().pathname);
   return (
-    <html lang="fa" dir="rtl">
+    <html lang={lang} dir={localeDir(lang)}>
       <head>
         <HeadContent />
       </head>
@@ -114,6 +116,15 @@ function RootShell({ children }: { children: React.ReactNode }) {
 }
 
 function RootComponent() {
+  const pathname = useLocation().pathname;
+  const lang = localeFromPath(pathname);
+  if (lang !== "fa") {
+    return (
+      <LocaleLayout lang={lang as OtherLocale} pathname={pathname}>
+        <Outlet />
+      </LocaleLayout>
+    );
+  }
   return (
     <CartProvider>
       <ReopenCartFromUrl />
