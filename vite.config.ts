@@ -195,15 +195,6 @@ export default defineConfig({
   tanstackStart: {
     target: "static",
     pages: buildSitemapEntries().map((e) => e.loc).map((path) => ({ path })),
-    _unusedPages: [
-      "/",
-      "/about",
-      "/contact",
-      "/shop",
-      "/blog",
-      ...PRODUCT_SLUGS.map((slug) => `/shop/${slug}`),
-      ...ARTICLE_SLUGS.map((slug) => `/blog/${slug}`),
-    ].map((path) => ({ path })),
     prerender: {
       enabled: true,
       crawlLinks: false,
