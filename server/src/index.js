@@ -38,6 +38,7 @@ app.get("/healthz", (_req, res) => {
 app.use("/api", ordersRoutes);
 app.use("/api", productsRoutes);
 app.use("/api", uploadsRoutes);
+app.use("/api", require("./routes/agent"));
 app.use("/uploads", express.static(UPLOADS_DIR, { maxAge: "30d", fallthrough: true }));
 app.use("/api/payment", callbackRoutes);
 app.use("/payment", callbackRoutes);
