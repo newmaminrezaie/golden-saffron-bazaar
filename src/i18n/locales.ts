@@ -10,6 +10,18 @@ export function localeDir(l: string): "rtl" | "ltr" {
   return l === "fa" || l === "ar" ? "rtl" : "ltr";
 }
 
+/** Sections translated into the other languages; anything else falls back to that language's home. */
+const LOCALIZED_SECTIONS = ["/shop", "/blog", "/about", "/contact"];
+
+/** Same page in another language, or that language's home if it has no equivalent. */
+export function pathInLocale(pathname: string, target: string): string {
+  const base = stripLocale(pathname);
+  const ok = base === "/" || LOCALIZED_SECTIONS.some((s) => base === s || base.startsWith(`${s}/`));
+  const p = ok ? base : "/";
+  if (target === "fa") return p;
+  return p === "/" ? `/${target}` : `/${target}${p}`;
+}
+
 /** Locale from the first path segment ("fa" when unprefixed). */
 export function localeFromPath(pathname: string): string {
   const seg = pathname.split("/")[1];

@@ -1,5 +1,5 @@
 import { Link, useLocation } from "@tanstack/react-router";
-import { LanguageSwitcher } from "./i18n/locale-shell";
+import { LanguageDropdown } from "@/components/language-dropdown";
 import { Search, ShoppingBag, User, Menu, X } from "lucide-react";
 import { useState } from "react";
 import { BrandLockup } from "./brand/brand-lockup";
@@ -46,9 +46,7 @@ export function SiteHeader() {
 
         {/* Left (end in RTL): icons */}
         <div className="flex items-center gap-1">
-          <div className="hidden lg:block">
-            <LanguageSwitcher pathname={pathname} current="fa" />
-          </div>
+          <LanguageDropdown pathname={pathname} current="fa" />
           <button aria-label="جستجو" className="p-2 rounded-full hover:bg-secondary transition">
             <Search className="size-5" />
           </button>
@@ -82,9 +80,6 @@ export function SiteHeader() {
       {open && (
         <nav className="md:hidden border-t border-border/60 bg-background">
           <ul className="flex flex-col px-4 py-3">
-            <li className="py-2">
-              <LanguageSwitcher pathname={pathname} current="fa" />
-            </li>
             {navItems.map((item) => (
               <li key={item.to}>
                 <Link
