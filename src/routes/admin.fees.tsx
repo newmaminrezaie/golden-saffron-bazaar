@@ -16,6 +16,14 @@ export const Route = createFileRoute("/admin/fees")({
 const API_BASE = (import.meta.env.VITE_API_BASE as string | undefined)?.replace(/\/$/, "") ?? "";
 const TOKEN_KEY = "khajavi_admin_token";
 
+const Row = ({ label, children }: { label: string; children: React.ReactNode }) => (
+    <div className="flex flex-wrap items-center justify-between gap-3 py-2"><span className="text-sm">{label}</span>{children}</div>
+  );
+const Card = ({ title, children }: { title: string; children: React.ReactNode }) => (
+    <section className="rounded-xl border border-border bg-card p-4"><h2 className="mb-2 font-extrabold">{title}</h2>{children}</section>
+  );
+
+
 function AdminFees() {
   const [token, setToken] = useState("");
   const [fees, setFees] = useState<Fees>(DEFAULT_FEES);
@@ -69,13 +77,6 @@ function AdminFees() {
   const sw = (v: boolean, on: (b: boolean) => void) => (
     <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={v} onChange={(e) => on(e.target.checked)} /> فعال</label>
   );
-  const Row = ({ label, children }: { label: string; children: React.ReactNode }) => (
-    <div className="flex flex-wrap items-center justify-between gap-3 py-2"><span className="text-sm">{label}</span>{children}</div>
-  );
-  const Card = ({ title, children }: { title: string; children: React.ReactNode }) => (
-    <section className="rounded-xl border border-border bg-card p-4"><h2 className="mb-2 font-extrabold">{title}</h2>{children}</section>
-  );
-
   return (
     <div dir="rtl" className="mx-auto max-w-2xl space-y-4 px-4 py-10">
       <div className="flex items-center justify-between">

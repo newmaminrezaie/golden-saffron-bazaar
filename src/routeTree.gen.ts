@@ -9,45 +9,31 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as ShopRouteImport } from './routes/shop'
-import { Route as ContactRouteImport } from './routes/contact'
-import { Route as BlogRouteImport } from './routes/blog'
-import { Route as AboutRouteImport } from './routes/about'
-import { Route as LangRouteImport } from './routes/$lang'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as LangRouteImport } from './routes/$lang'
+import { Route as AboutRouteImport } from './routes/about'
+import { Route as BlogRouteImport } from './routes/blog'
+import { Route as ContactRouteImport } from './routes/contact'
+import { Route as ShopRouteImport } from './routes/shop'
 import { Route as LangIndexRouteImport } from './routes/$lang.index'
-import { Route as ShopSlugRouteImport } from './routes/shop_.$slug'
-import { Route as PaymentSuccessRouteImport } from './routes/payment.success'
-import { Route as PaymentFailedRouteImport } from './routes/payment.failed'
-import { Route as PaymentCardRouteImport } from './routes/payment.card'
-import { Route as BlogSlugRouteImport } from './routes/blog_.$slug'
-import { Route as AdminProductsRouteImport } from './routes/admin.products'
-import { Route as AdminOrdersRouteImport } from './routes/admin.orders'
-import { Route as LangContactRouteImport } from './routes/$lang.contact'
 import { Route as LangAboutRouteImport } from './routes/$lang.about'
-import { Route as LangShopIndexRouteImport } from './routes/$lang.shop.index'
+import { Route as LangContactRouteImport } from './routes/$lang.contact'
+import { Route as AdminFeesRouteImport } from './routes/admin.fees'
+import { Route as AdminOrdersRouteImport } from './routes/admin.orders'
+import { Route as AdminProductsRouteImport } from './routes/admin.products'
+import { Route as BlogSlugRouteImport } from './routes/blog_.$slug'
+import { Route as PaymentCardRouteImport } from './routes/payment.card'
+import { Route as PaymentFailedRouteImport } from './routes/payment.failed'
+import { Route as PaymentSuccessRouteImport } from './routes/payment.success'
+import { Route as ShopSlugRouteImport } from './routes/shop_.$slug'
 import { Route as LangBlogIndexRouteImport } from './routes/$lang.blog.index'
-import { Route as LangShopSlugRouteImport } from './routes/$lang.shop.$slug'
 import { Route as LangBlogSlugRouteImport } from './routes/$lang.blog.$slug'
+import { Route as LangShopIndexRouteImport } from './routes/$lang.shop.index'
+import { Route as LangShopSlugRouteImport } from './routes/$lang.shop.$slug'
 
-const ShopRoute = ShopRouteImport.update({
-  id: '/shop',
-  path: '/shop',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ContactRoute = ContactRouteImport.update({
-  id: '/contact',
-  path: '/contact',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const BlogRoute = BlogRouteImport.update({
-  id: '/blog',
-  path: '/blog',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AboutRoute = AboutRouteImport.update({
-  id: '/about',
-  path: '/about',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LangRoute = LangRouteImport.update({
@@ -55,9 +41,24 @@ const LangRoute = LangRouteImport.update({
   path: '/$lang',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const AboutRoute = AboutRouteImport.update({
+  id: '/about',
+  path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BlogRoute = BlogRouteImport.update({
+  id: '/blog',
+  path: '/blog',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ShopRoute = ShopRouteImport.update({
+  id: '/shop',
+  path: '/shop',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LangIndexRoute = LangIndexRouteImport.update({
@@ -65,34 +66,19 @@ const LangIndexRoute = LangIndexRouteImport.update({
   path: '/',
   getParentRoute: () => LangRoute,
 } as any)
-const ShopSlugRoute = ShopSlugRouteImport.update({
-  id: '/shop_/$slug',
-  path: '/shop/$slug',
-  getParentRoute: () => rootRouteImport,
+const LangAboutRoute = LangAboutRouteImport.update({
+  id: '/about',
+  path: '/about',
+  getParentRoute: () => LangRoute,
 } as any)
-const PaymentSuccessRoute = PaymentSuccessRouteImport.update({
-  id: '/payment/success',
-  path: '/payment/success',
-  getParentRoute: () => rootRouteImport,
+const LangContactRoute = LangContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => LangRoute,
 } as any)
-const PaymentFailedRoute = PaymentFailedRouteImport.update({
-  id: '/payment/failed',
-  path: '/payment/failed',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PaymentCardRoute = PaymentCardRouteImport.update({
-  id: '/payment/card',
-  path: '/payment/card',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const BlogSlugRoute = BlogSlugRouteImport.update({
-  id: '/blog_/$slug',
-  path: '/blog/$slug',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AdminProductsRoute = AdminProductsRouteImport.update({
-  id: '/admin/products',
-  path: '/admin/products',
+const AdminFeesRoute = AdminFeesRouteImport.update({
+  id: '/admin/fees',
+  path: '/admin/fees',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminOrdersRoute = AdminOrdersRouteImport.update({
@@ -100,14 +86,44 @@ const AdminOrdersRoute = AdminOrdersRouteImport.update({
   path: '/admin/orders',
   getParentRoute: () => rootRouteImport,
 } as any)
-const LangContactRoute = LangContactRouteImport.update({
-  id: '/contact',
-  path: '/contact',
+const AdminProductsRoute = AdminProductsRouteImport.update({
+  id: '/admin/products',
+  path: '/admin/products',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BlogSlugRoute = BlogSlugRouteImport.update({
+  id: '/blog_/$slug',
+  path: '/blog/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PaymentCardRoute = PaymentCardRouteImport.update({
+  id: '/payment/card',
+  path: '/payment/card',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PaymentFailedRoute = PaymentFailedRouteImport.update({
+  id: '/payment/failed',
+  path: '/payment/failed',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PaymentSuccessRoute = PaymentSuccessRouteImport.update({
+  id: '/payment/success',
+  path: '/payment/success',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ShopSlugRoute = ShopSlugRouteImport.update({
+  id: '/shop_/$slug',
+  path: '/shop/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LangBlogIndexRoute = LangBlogIndexRouteImport.update({
+  id: '/blog/',
+  path: '/blog/',
   getParentRoute: () => LangRoute,
 } as any)
-const LangAboutRoute = LangAboutRouteImport.update({
-  id: '/about',
-  path: '/about',
+const LangBlogSlugRoute = LangBlogSlugRouteImport.update({
+  id: '/blog/$slug',
+  path: '/blog/$slug',
   getParentRoute: () => LangRoute,
 } as any)
 const LangShopIndexRoute = LangShopIndexRouteImport.update({
@@ -115,19 +131,9 @@ const LangShopIndexRoute = LangShopIndexRouteImport.update({
   path: '/shop/',
   getParentRoute: () => LangRoute,
 } as any)
-const LangBlogIndexRoute = LangBlogIndexRouteImport.update({
-  id: '/blog/',
-  path: '/blog/',
-  getParentRoute: () => LangRoute,
-} as any)
 const LangShopSlugRoute = LangShopSlugRouteImport.update({
   id: '/shop/$slug',
   path: '/shop/$slug',
-  getParentRoute: () => LangRoute,
-} as any)
-const LangBlogSlugRoute = LangBlogSlugRouteImport.update({
-  id: '/blog/$slug',
-  path: '/blog/$slug',
   getParentRoute: () => LangRoute,
 } as any)
 
@@ -140,6 +146,7 @@ export interface FileRoutesByFullPath {
   '/shop': typeof ShopRoute
   '/$lang/about': typeof LangAboutRoute
   '/$lang/contact': typeof LangContactRoute
+  '/admin/fees': typeof AdminFeesRoute
   '/admin/orders': typeof AdminOrdersRoute
   '/admin/products': typeof AdminProductsRoute
   '/blog/$slug': typeof BlogSlugRoute
@@ -161,6 +168,7 @@ export interface FileRoutesByTo {
   '/shop': typeof ShopRoute
   '/$lang/about': typeof LangAboutRoute
   '/$lang/contact': typeof LangContactRoute
+  '/admin/fees': typeof AdminFeesRoute
   '/admin/orders': typeof AdminOrdersRoute
   '/admin/products': typeof AdminProductsRoute
   '/blog/$slug': typeof BlogSlugRoute
@@ -184,6 +192,7 @@ export interface FileRoutesById {
   '/shop': typeof ShopRoute
   '/$lang/about': typeof LangAboutRoute
   '/$lang/contact': typeof LangContactRoute
+  '/admin/fees': typeof AdminFeesRoute
   '/admin/orders': typeof AdminOrdersRoute
   '/admin/products': typeof AdminProductsRoute
   '/blog_/$slug': typeof BlogSlugRoute
@@ -208,6 +217,7 @@ export interface FileRouteTypes {
     | '/shop'
     | '/$lang/about'
     | '/$lang/contact'
+    | '/admin/fees'
     | '/admin/orders'
     | '/admin/products'
     | '/blog/$slug'
@@ -229,6 +239,7 @@ export interface FileRouteTypes {
     | '/shop'
     | '/$lang/about'
     | '/$lang/contact'
+    | '/admin/fees'
     | '/admin/orders'
     | '/admin/products'
     | '/blog/$slug'
@@ -251,6 +262,7 @@ export interface FileRouteTypes {
     | '/shop'
     | '/$lang/about'
     | '/$lang/contact'
+    | '/admin/fees'
     | '/admin/orders'
     | '/admin/products'
     | '/blog_/$slug'
@@ -272,6 +284,7 @@ export interface RootRouteChildren {
   BlogRoute: typeof BlogRoute
   ContactRoute: typeof ContactRoute
   ShopRoute: typeof ShopRoute
+  AdminFeesRoute: typeof AdminFeesRoute
   AdminOrdersRoute: typeof AdminOrdersRoute
   AdminProductsRoute: typeof AdminProductsRoute
   BlogSlugRoute: typeof BlogSlugRoute
@@ -283,32 +296,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/shop': {
-      id: '/shop'
-      path: '/shop'
-      fullPath: '/shop'
-      preLoaderRoute: typeof ShopRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/contact': {
-      id: '/contact'
-      path: '/contact'
-      fullPath: '/contact'
-      preLoaderRoute: typeof ContactRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/blog': {
-      id: '/blog'
-      path: '/blog'
-      fullPath: '/blog'
-      preLoaderRoute: typeof BlogRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/about': {
-      id: '/about'
-      path: '/about'
-      fullPath: '/about'
-      preLoaderRoute: typeof AboutRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/$lang': {
@@ -318,11 +310,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LangRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/blog': {
+      id: '/blog'
+      path: '/blog'
+      fullPath: '/blog'
+      preLoaderRoute: typeof BlogRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/shop': {
+      id: '/shop'
+      path: '/shop'
+      fullPath: '/shop'
+      preLoaderRoute: typeof ShopRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/$lang/': {
@@ -332,46 +345,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LangIndexRouteImport
       parentRoute: typeof LangRoute
     }
-    '/shop_/$slug': {
-      id: '/shop_/$slug'
-      path: '/shop/$slug'
-      fullPath: '/shop/$slug'
-      preLoaderRoute: typeof ShopSlugRouteImport
-      parentRoute: typeof rootRouteImport
+    '/$lang/about': {
+      id: '/$lang/about'
+      path: '/about'
+      fullPath: '/$lang/about'
+      preLoaderRoute: typeof LangAboutRouteImport
+      parentRoute: typeof LangRoute
     }
-    '/payment/success': {
-      id: '/payment/success'
-      path: '/payment/success'
-      fullPath: '/payment/success'
-      preLoaderRoute: typeof PaymentSuccessRouteImport
-      parentRoute: typeof rootRouteImport
+    '/$lang/contact': {
+      id: '/$lang/contact'
+      path: '/contact'
+      fullPath: '/$lang/contact'
+      preLoaderRoute: typeof LangContactRouteImport
+      parentRoute: typeof LangRoute
     }
-    '/payment/failed': {
-      id: '/payment/failed'
-      path: '/payment/failed'
-      fullPath: '/payment/failed'
-      preLoaderRoute: typeof PaymentFailedRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/payment/card': {
-      id: '/payment/card'
-      path: '/payment/card'
-      fullPath: '/payment/card'
-      preLoaderRoute: typeof PaymentCardRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/blog_/$slug': {
-      id: '/blog_/$slug'
-      path: '/blog/$slug'
-      fullPath: '/blog/$slug'
-      preLoaderRoute: typeof BlogSlugRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/admin/products': {
-      id: '/admin/products'
-      path: '/admin/products'
-      fullPath: '/admin/products'
-      preLoaderRoute: typeof AdminProductsRouteImport
+    '/admin/fees': {
+      id: '/admin/fees'
+      path: '/admin/fees'
+      fullPath: '/admin/fees'
+      preLoaderRoute: typeof AdminFeesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin/orders': {
@@ -381,18 +373,60 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminOrdersRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/$lang/contact': {
-      id: '/$lang/contact'
-      path: '/contact'
-      fullPath: '/$lang/contact'
-      preLoaderRoute: typeof LangContactRouteImport
+    '/admin/products': {
+      id: '/admin/products'
+      path: '/admin/products'
+      fullPath: '/admin/products'
+      preLoaderRoute: typeof AdminProductsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/blog_/$slug': {
+      id: '/blog_/$slug'
+      path: '/blog/$slug'
+      fullPath: '/blog/$slug'
+      preLoaderRoute: typeof BlogSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/payment/card': {
+      id: '/payment/card'
+      path: '/payment/card'
+      fullPath: '/payment/card'
+      preLoaderRoute: typeof PaymentCardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/payment/failed': {
+      id: '/payment/failed'
+      path: '/payment/failed'
+      fullPath: '/payment/failed'
+      preLoaderRoute: typeof PaymentFailedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/payment/success': {
+      id: '/payment/success'
+      path: '/payment/success'
+      fullPath: '/payment/success'
+      preLoaderRoute: typeof PaymentSuccessRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/shop_/$slug': {
+      id: '/shop_/$slug'
+      path: '/shop/$slug'
+      fullPath: '/shop/$slug'
+      preLoaderRoute: typeof ShopSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/$lang/blog/': {
+      id: '/$lang/blog/'
+      path: '/blog'
+      fullPath: '/$lang/blog/'
+      preLoaderRoute: typeof LangBlogIndexRouteImport
       parentRoute: typeof LangRoute
     }
-    '/$lang/about': {
-      id: '/$lang/about'
-      path: '/about'
-      fullPath: '/$lang/about'
-      preLoaderRoute: typeof LangAboutRouteImport
+    '/$lang/blog/$slug': {
+      id: '/$lang/blog/$slug'
+      path: '/blog/$slug'
+      fullPath: '/$lang/blog/$slug'
+      preLoaderRoute: typeof LangBlogSlugRouteImport
       parentRoute: typeof LangRoute
     }
     '/$lang/shop/': {
@@ -402,25 +436,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LangShopIndexRouteImport
       parentRoute: typeof LangRoute
     }
-    '/$lang/blog/': {
-      id: '/$lang/blog/'
-      path: '/blog'
-      fullPath: '/$lang/blog/'
-      preLoaderRoute: typeof LangBlogIndexRouteImport
-      parentRoute: typeof LangRoute
-    }
     '/$lang/shop/$slug': {
       id: '/$lang/shop/$slug'
       path: '/shop/$slug'
       fullPath: '/$lang/shop/$slug'
       preLoaderRoute: typeof LangShopSlugRouteImport
-      parentRoute: typeof LangRoute
-    }
-    '/$lang/blog/$slug': {
-      id: '/$lang/blog/$slug'
-      path: '/blog/$slug'
-      fullPath: '/$lang/blog/$slug'
-      preLoaderRoute: typeof LangBlogSlugRouteImport
       parentRoute: typeof LangRoute
     }
   }
@@ -455,6 +475,7 @@ const rootRouteChildren: RootRouteChildren = {
   BlogRoute: BlogRoute,
   ContactRoute: ContactRoute,
   ShopRoute: ShopRoute,
+  AdminFeesRoute: AdminFeesRoute,
   AdminOrdersRoute: AdminOrdersRoute,
   AdminProductsRoute: AdminProductsRoute,
   BlogSlugRoute: BlogSlugRoute,
