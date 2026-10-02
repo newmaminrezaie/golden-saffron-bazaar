@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { Menu, X, MessageCircle } from "lucide-react";
 import { useState, type ReactNode } from "react";
+import { LanguageDropdown } from "@/components/language-dropdown";
 import type { Product } from "@/data/products";
 import { UI } from "@/i18n/ui";
 import { localizeProduct } from "@/i18n/products";
@@ -80,9 +81,7 @@ export function LocaleLayout({ lang, pathname, children }: { lang: OtherLocale; 
               </Link>
             ))}
           </nav>
-          <div className="hidden md:block">
-            <LanguageSwitcher pathname={pathname} current={lang} />
-          </div>
+          <LanguageDropdown pathname={pathname} current={lang} />
           <button aria-label="Menu" className="md:hidden p-2" onClick={() => setOpen((v) => !v)}>
             {open ? <X className="size-5" /> : <Menu className="size-5" />}
           </button>
@@ -94,9 +93,6 @@ export function LocaleLayout({ lang, pathname, children }: { lang: OtherLocale; 
                 {n.label}
               </Link>
             ))}
-            <div className="py-3">
-              <LanguageSwitcher pathname={pathname} current={lang} />
-            </div>
           </nav>
         )}
       </header>
