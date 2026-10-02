@@ -1,3 +1,4 @@
+import { FeeNote } from "@/components/fee-note";
 import { useEffect, useState } from "react";
 import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
 import { ShoppingBag, ChevronRight } from "lucide-react";
@@ -249,6 +250,7 @@ function ProductPage() {
                 </span>
               )}
             </div>
+            <FeeNote price={displayPrice} />
 
             {hasTiers && savingsPct > 0 && (
               <p className="mt-2 text-xs font-bold text-[color:var(--brown-medium)]">

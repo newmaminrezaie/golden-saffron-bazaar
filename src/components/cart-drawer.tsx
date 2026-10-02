@@ -118,6 +118,7 @@ export function CartDrawer() {
       price: it.unitPrice,
     })),
     subtotal,
+    gift_box: giftBox && fees.giftBox.enabled,
   });
 
   const handleCheckout = async () => {
