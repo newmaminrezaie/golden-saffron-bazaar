@@ -36,13 +36,17 @@ db.exec(`
   CREATE INDEX IF NOT EXISTS idx_orders_created_at ON orders(created_at DESC);
 `);
 
+for (const col of ["packaging INTEGER", "gift_box INTEGER"]) {
+  try { db.exec(`ALTER TABLE orders ADD COLUMN ${col}`); } catch { /* exists */ }
+}
+
 const insertOrderStmt = db.prepare(`
   INSERT INTO orders (
     id, created_at, customer_name, phone, address, postal_code, note,
-    items_json, subtotal, shipping, total, method, status
+    items_json, subtotal, shipping, packaging, gift_box, total, method, status
   ) VALUES (
     @id, @created_at, @customer_name, @phone, @address, @postal_code, @note,
-    @items_json, @subtotal, @shipping, @total, @method, @status
+    @items_json, @subtotal, @shipping, @packaging, @gift_box, @total, @method, @status
   )
 `);
 

@@ -9,6 +9,7 @@ const express = require("express");
 const { z } = require("zod");
 const P = require("../productsDb");
 const { getOrder, updateOrder, listOrders } = require("../db");
+const Fees = require("../settingsDb");
 
 const router = express.Router();
 
@@ -99,6 +100,12 @@ const actions = {
     if (!o) throw new Error("order_not_found");
     return shapeOrder(o);
   },
+  getFees() {
+    return Fees.getFees();
+  },
+  setFees(patch) {
+    return Fees.setFees(patch);
+  },
   setOrderStatus({ id, status }) {
     const o = getOrder(id);
     if (!o) throw new Error("order_not_found");
@@ -137,6 +144,7 @@ const S = {
   orderStatus: z.object({ id: z.string().min(1), status: z.enum(ORDER_STATUSES) }),
   products: z.object({ includeHidden: z.boolean().optional() }),
   empty: z.object({}).passthrough(),
+  fees: Fees.feesSchema.deepPartial(),
 };
 
 function run(res, fn) {
@@ -158,6 +166,8 @@ router.patch("/agent/products/:id", requireAgent, (q, res) => run(res, () => act
 router.patch("/agent/products/:id/price", requireAgent, (q, res) => run(res, () => actions.setPrice(S.price.parse({ ...q.body, id: q.params.id }))));
 router.patch("/agent/products/:id/stock", requireAgent, (q, res) => run(res, () => actions.setStock(S.stock.parse({ ...q.body, id: q.params.id }))));
 router.delete("/agent/products/:id", requireAgent, (q, res) => run(res, () => actions.deleteProduct({ id: q.params.id })));
+router.get("/agent/fees", requireAgent, (_q, res) => run(res, () => actions.getFees()));
+router.patch("/agent/fees", requireAgent, (q, res) => run(res, () => actions.setFees(S.fees.parse(q.body || {}))));
 router.get("/agent/orders", requireAgent, (q, res) =>
   run(res, () => actions.listOrders(S.orders.parse({ status: q.query.status || undefined, limit: q.query.limit ? Number(q.query.limit) : undefined }))));
 router.get("/agent/orders/:id", requireAgent, (q, res) => run(res, () => actions.getOrder({ id: q.params.id })));
@@ -176,7 +186,19 @@ const productJson = {
   },
 };
 const idProp = { id: { type: "string", description: "Product id or slug" } };
+const feesJson = {
+  type: "object",
+  description: "Partial update; only send what changes. Amounts in Toman. Fees are shown openly to customers on product pages and in the cart.",
+  properties: {
+    packaging: { type: "object", properties: { enabled: { type: "boolean" }, label: { type: "string" }, perOrder: { type: "integer" }, perItem: { type: "integer" } } },
+    shipping: { type: "object", properties: { enabled: { type: "boolean" }, label: { type: "string" }, amount: { type: "integer" } } },
+    freeShipping: { type: "object", properties: { enabled: { type: "boolean" }, threshold: { type: "integer", description: "Subtotal at/above which shipping is free" } } },
+    giftBox: { type: "object", properties: { enabled: { type: "boolean" }, label: { type: "string" }, amount: { type: "integer" } } },
+  },
+};
 const TOOLS = [
+  { name: "get_fees", title: "Get fees", description: "Read packaging, shipping, free-shipping threshold and gift-box fee settings.", schema: S.empty, run: () => actions.getFees(), inputSchema: { type: "object", properties: {} }, annotations: { readOnlyHint: true } },
+  { name: "set_fees", title: "Set fees", description: "Update packaging/shipping/gift-box fees and the free-shipping threshold (partial update).", schema: S.fees, run: (a) => actions.setFees(a), inputSchema: feesJson, annotations: { readOnlyHint: false, idempotentHint: true } },
   { name: "store_summary", title: "Store summary", description: "Counts of products and orders by status, plus paid revenue (Toman).", schema: S.empty, run: () => actions.summary(), inputSchema: { type: "object", properties: {} }, annotations: { readOnlyHint: true } },
   { name: "list_products", title: "List products", description: "List all products including out-of-stock ones.", schema: S.products, run: (a) => actions.listProducts(a), inputSchema: { type: "object", properties: { includeHidden: { type: "boolean" } } }, annotations: { readOnlyHint: true } },
   { name: "get_product", title: "Get product", description: "Get one product by id or slug.", schema: S.id, run: (a) => actions.getProduct(a), inputSchema: { type: "object", properties: idProp, required: ["id"] }, annotations: { readOnlyHint: true } },
@@ -247,13 +269,14 @@ router.get("/agent/openapi.json", (_q, res) => {
     openapi: "3.1.0",
     info: { title: "Khajavi Saffron Agent API", version: "1.0.0", description: "Control products and orders. Prices are in Toman." },
     servers: [{ url: "/api" }],
-    components: { securitySchemes: { bearer: { type: "http", scheme: "bearer" }, adminToken: { type: "apiKey", in: "header", name: "x-admin-token" } }, schemas: { ProductInput: productJson } },
+    components: { securitySchemes: { bearer: { type: "http", scheme: "bearer" }, adminToken: { type: "apiKey", in: "header", name: "x-admin-token" } }, schemas: { ProductInput: productJson, FeesInput: feesJson } },
     paths: {
       "/agent/summary": { get: op("Store summary") },
       "/agent/products": { get: op("List all products"), post: op("Create product", body({ $ref: "#/components/schemas/ProductInput" })) },
       "/agent/products/{id}": { get: op("Get product", { parameters: idParam }), patch: op("Update product fields", { parameters: idParam, ...body({ $ref: "#/components/schemas/ProductInput" }) }), delete: op("Delete product", { parameters: idParam }) },
       "/agent/products/{id}/price": { patch: op("Set price", { parameters: idParam, ...body({ type: "object", properties: { price: { type: "integer" }, oldPrice: { type: ["integer", "null"] } }, required: ["price"] }) }) },
       "/agent/products/{id}/stock": { patch: op("Set stock", { parameters: idParam, ...body({ type: "object", properties: { inStock: { type: "boolean" } }, required: ["inStock"] }) }) },
+      "/agent/fees": { get: op("Get fee settings"), patch: op("Update fee settings (partial)", body({ $ref: "#/components/schemas/FeesInput" })) },
       "/agent/orders": { get: op("List orders", { parameters: [{ name: "status", in: "query", schema: { type: "string", enum: ORDER_STATUSES } }, { name: "limit", in: "query", schema: { type: "integer" } }] }) },
       "/agent/orders/{id}": { get: op("Get order", { parameters: idParam }) },
       "/agent/orders/{id}/status": { patch: op("Set order status", { parameters: idParam, ...body({ type: "object", properties: { status: { type: "string", enum: ORDER_STATUSES } }, required: ["status"] }) }) },

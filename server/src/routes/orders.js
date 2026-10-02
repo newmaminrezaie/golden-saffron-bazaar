@@ -43,10 +43,13 @@ const orderBodySchema = z.object({
   customer: customerSchema,
   items: z.array(itemSchema).min(1).max(50),
   subtotal: z.number().int().min(0).optional(), // sanity-check only
+  gift_box: z.boolean().optional(),
 });
 
 function buildOrderRow(parsed, method, status) {
-  const { subtotal, shipping, total } = computeTotals(parsed.items);
+  const { subtotal, packaging, shipping, giftBox, total } = computeTotals(parsed.items, {
+    giftBox: parsed.gift_box === true,
+  });
 
   if (
     typeof parsed.subtotal === "number" &&
@@ -69,6 +72,8 @@ function buildOrderRow(parsed, method, status) {
     items_json: JSON.stringify(parsed.items),
     subtotal,
     shipping,
+    packaging,
+    gift_box: giftBox,
     total,
     method,
     status,
