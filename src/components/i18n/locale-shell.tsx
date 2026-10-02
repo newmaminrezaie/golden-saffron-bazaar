@@ -9,21 +9,13 @@ import {
   LANG_LABELS,
   OTHER_LOCALES,
   localeDir,
+  pathInLocale,
   stripLocale,
   whatsappLink,
   type OtherLocale,
 } from "@/i18n/locales";
 
-const LOCALIZED_SECTIONS = ["/shop", "/blog", "/about", "/contact"];
-
-/** Same page in another language, or that language's home if it has no equivalent. */
-export function pathInLocale(pathname: string, target: string): string {
-  const base = stripLocale(pathname);
-  const ok = base === "/" || LOCALIZED_SECTIONS.some((s) => base === s || base.startsWith(`${s}/`));
-  const p = ok ? base : "/";
-  if (target === "fa") return p;
-  return p === "/" ? `/${target}` : `/${target}${p}`;
-}
+export { pathInLocale };
 
 /** Language switcher — plain links so the page reloads with the right direction. */
 export function LanguageSwitcher({ pathname, current }: { pathname: string; current: string }) {
