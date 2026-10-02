@@ -1,0 +1,1 @@
+- Languages: Persian at root; en/tr/ar under the `$lang` route section with texts in `src/i18n/` (product/article translations keyed by slug, untranslated items fall back to Persian). Why: one place per language and SEO-correct hreflang via `src/lib/seo.ts` LOCALES.
