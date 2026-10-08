@@ -192,13 +192,13 @@ const feesJson = {
   properties: {
     packaging: { type: "object", properties: { enabled: { type: "boolean" }, label: { type: "string" }, perOrder: { type: "integer" }, perItem: { type: "integer" } } },
     shipping: { type: "object", properties: { enabled: { type: "boolean" }, label: { type: "string" }, amount: { type: "integer" } } },
-    freeShipping: { type: "object", properties: { enabled: { type: "boolean" }, threshold: { type: "integer", description: "Subtotal at/above which shipping is free" } } },
+    freeShipping: { type: "object", properties: { enabled: { type: "boolean" }, mode: { type: "string", enum: ["mithqal", "amount"], description: "\"mithqal\" = free by total mithqal of saffron in the order, \"amount\" = free by order subtotal in Toman" }, mithqal: { type: "number", description: "Mithqal of saffron at/above which shipping is free (when mode is \"mithqal\")" }, threshold: { type: "integer", description: "Subtotal at/above which shipping is free (when mode is \"amount\")" } } },
     giftBox: { type: "object", properties: { enabled: { type: "boolean" }, label: { type: "string" }, amount: { type: "integer" } } },
   },
 };
 const TOOLS = [
-  { name: "get_fees", title: "Get fees", description: "Read packaging, shipping, free-shipping threshold and gift-box fee settings.", schema: S.empty, run: () => actions.getFees(), inputSchema: { type: "object", properties: {} }, annotations: { readOnlyHint: true } },
-  { name: "set_fees", title: "Set fees", description: "Update packaging/shipping/gift-box fees and the free-shipping threshold (partial update).", schema: S.fees, run: (a) => actions.setFees(a), inputSchema: feesJson, annotations: { readOnlyHint: false, idempotentHint: true } },
+  { name: "get_fees", title: "Get fees", description: "Read packaging, shipping, free-shipping settings (mithqal-of-saffron rule or amount threshold) and gift-box fee settings.", schema: S.empty, run: () => actions.getFees(), inputSchema: { type: "object", properties: {} }, annotations: { readOnlyHint: true } },
+  { name: "set_fees", title: "Set fees", description: "Update packaging/shipping/gift-box fees and the free-shipping rule — by mithqal of saffron (mode \"mithqal\") or by order subtotal (mode \"amount\"); partial update.", schema: S.fees, run: (a) => actions.setFees(a), inputSchema: feesJson, annotations: { readOnlyHint: false, idempotentHint: true } },
   { name: "store_summary", title: "Store summary", description: "Counts of products and orders by status, plus paid revenue (Toman).", schema: S.empty, run: () => actions.summary(), inputSchema: { type: "object", properties: {} }, annotations: { readOnlyHint: true } },
   { name: "list_products", title: "List products", description: "List all products including out-of-stock ones.", schema: S.products, run: (a) => actions.listProducts(a), inputSchema: { type: "object", properties: { includeHidden: { type: "boolean" } } }, annotations: { readOnlyHint: true } },
   { name: "get_product", title: "Get product", description: "Get one product by id or slug.", schema: S.id, run: (a) => actions.getProduct(a), inputSchema: { type: "object", properties: idProp, required: ["id"] }, annotations: { readOnlyHint: true } },
