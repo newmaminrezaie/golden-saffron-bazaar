@@ -76,7 +76,7 @@ export function CartDrawer() {
   const navigate = useNavigate();
   const fees = useFees();
   const [giftBox, setGiftBox] = useState(false);
-  const { lines: feeLines, total } = computeFees(fees, subtotal, count, giftBox && fees.giftBox.enabled);
+  const { lines: feeLines, total, mithqal } = computeFees(fees, items, giftBox && fees.giftBox.enabled);
 
   const [form, setForm] = useState<CustomerForm>(EMPTY_FORM);
   const [method, setMethod] = useState<PaymentMethod>("zibal");
@@ -392,6 +392,14 @@ export function CartDrawer() {
               </div>
 
               <dl className="space-y-2 text-sm">
+                {fees.freeShipping.enabled && fees.freeShipping.mode === "mithqal" && fees.shipping.enabled && (
+                  <div className="flex justify-between text-foreground/60">
+                    <dt>وزن زعفران</dt>
+                    <dd>
+                      {toFa(Math.round(mithqal * 10) / 10).replace(".", "٫")} از {toFa(fees.freeShipping.mithqal)} مثقال
+                    </dd>
+                  </div>
+                )}
                 <div className="flex justify-between text-foreground/80">
                   <dt>جمع کالاها</dt>
                   <dd className="font-bold">{formatToman(subtotal)}</dd>
