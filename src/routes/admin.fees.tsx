@@ -98,7 +98,38 @@ function AdminFees() {
       </Card>
       <Card title="ارسال رایگان">
         <Row label="وضعیت">{sw(fees.freeShipping.enabled, (b) => set("freeShipping", { enabled: b }))}</Row>
-        <Row label="برای خرید بالای">{num(fees.freeShipping.threshold, (n) => set("freeShipping", { threshold: n }))}</Row>
+        <Row label="نحوه محاسبه">
+          <div className="flex flex-wrap gap-2">
+            {(
+              [
+                ["mithqal", "بر اساس مثقال زعفران"],
+                ["amount", "بر اساس مبلغ سفارش"],
+              ] as const
+            ).map(([mode, lbl]) => (
+              <button
+                key={mode}
+                type="button"
+                onClick={() => set("freeShipping", { mode })}
+                className={`rounded-full border px-3 py-1 text-sm font-bold transition ${
+                  fees.freeShipping.mode === mode
+                    ? "border-primary bg-primary text-primary-foreground"
+                    : "border-border text-foreground/70 hover:text-foreground"
+                }`}
+              >
+                {lbl}
+              </button>
+            ))}
+          </div>
+        </Row>
+        {fees.freeShipping.mode === "mithqal" ? (
+          <Row label="برای خرید بالای (مثقال زعفران)">
+            {num(fees.freeShipping.mithqal, (n) => set("freeShipping", { mithqal: n }))}
+          </Row>
+        ) : (
+          <Row label="برای خرید بالای (تومان)">
+            {num(fees.freeShipping.threshold, (n) => set("freeShipping", { threshold: n }))}
+          </Row>
+        )}
       </Card>
       <Card title="جعبه کادویی (اختیاری برای مشتری)">
         <Row label="وضعیت">{sw(fees.giftBox.enabled, (b) => set("giftBox", { enabled: b }))}</Row>
