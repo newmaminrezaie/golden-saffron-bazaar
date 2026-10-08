@@ -24,15 +24,21 @@ const label = z.string().trim().min(1).max(80);
 const feesSchema = z.object({
   packaging: z.object({ enabled: z.boolean(), label, perOrder: money, perItem: money }),
   shipping: z.object({ enabled: z.boolean(), label, amount: money }),
-  freeShipping: z.object({ enabled: z.boolean(), threshold: money }),
+  freeShipping: z.object({
+    enabled: z.boolean(),
+    // "mithqal" = free by total mithqal of saffron, "amount" = free by order subtotal
+    mode: z.enum(["amount", "mithqal"]),
+    threshold: money,
+    mithqal: z.number().min(0).max(10000),
+  }),
   giftBox: z.object({ enabled: z.boolean(), label, amount: money }),
 });
 
-// Defaults reproduce the previous behaviour: 30,000 combined fee, free above 2,000,000.
+// Current rule: shipping is free for orders with 5+ mithqal of saffron.
 const DEFAULT_FEES = {
   packaging: { enabled: false, label: "بسته‌بندی", perOrder: 0, perItem: 0 },
   shipping: { enabled: true, label: "هزینه پست و بسته‌بندی", amount: 30000 },
-  freeShipping: { enabled: true, threshold: 2000000 },
+  freeShipping: { enabled: true, mode: "mithqal", threshold: 2000000, mithqal: 5 },
   giftBox: { enabled: false, label: "جعبه کادویی", amount: 0 },
 };
 
