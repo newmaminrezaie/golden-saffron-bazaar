@@ -68,6 +68,10 @@ const actions = {
     const p = findProduct(id);
     if (!p) throw new Error("product_not_found");
     const patch = { price };
+    // Keep the single-unit tier in sync: the product page shows priceTiers, not price.
+    if (Array.isArray(p.priceTiers) && p.priceTiers.length) {
+      patch.priceTiers = p.priceTiers.map((t) => (t.quantity === 1 ? { ...t, price } : t));
+    }
     if (oldPrice !== undefined) patch.oldPrice = oldPrice === null ? undefined : oldPrice;
     return P.updateProduct(p.id, patch);
   },

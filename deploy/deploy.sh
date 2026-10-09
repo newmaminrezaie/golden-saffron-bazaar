@@ -33,6 +33,8 @@ echo "==> Uploading frontend to ${REMOTE_DIR}/dist/client ..."
 ${SSH} ${SERVER} "rm -rf ${REMOTE_DIR}/dist/client.new ${REMOTE_DIR}/dist/client.old"
 tar -czf - -C dist client | ${SSH} ${SERVER} \
   "mkdir -p ${REMOTE_DIR}/dist/client.new && tar -xzf - -C ${REMOTE_DIR}/dist/client.new --strip-components=1"
+# Preserve server-side images: copy any existing images the new build lacks (never overwrite newer build files).
+${SSH} ${SERVER} "if [ -d ${REMOTE_DIR}/dist/client/images ]; then mkdir -p ${REMOTE_DIR}/dist/client.new/images && cp -rn ${REMOTE_DIR}/dist/client/images/. ${REMOTE_DIR}/dist/client.new/images/; fi"
 ${SSH} ${SERVER} "mv ${REMOTE_DIR}/dist/client ${REMOTE_DIR}/dist/client.old && mv ${REMOTE_DIR}/dist/client.new ${REMOTE_DIR}/dist/client"
 
 # --- 2) backend code -------------------------------------------------------
