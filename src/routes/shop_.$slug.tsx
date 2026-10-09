@@ -180,7 +180,8 @@ function ProductPage() {
     );
   }
 
-  const tiers = product.priceTiers;
+  // The first tier is the listed weight — its price always equals the main product price.
+  const tiers = product.priceTiers?.map((t, i) => (i === 0 ? { ...t, price: product.price } : t));
   const hasTiers = !!tiers && tiers.length > 0;
   const selectedTier = hasTiers ? tiers![tierIdx] ?? tiers![0] : null;
   const basePerGram = hasTiers ? tiers![0].price / tiers![0].quantity : 0;
