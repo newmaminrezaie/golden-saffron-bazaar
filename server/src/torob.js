@@ -67,11 +67,9 @@ function mapRow(r, origin) {
   const lowestTier = tiers.length
     ? tiers.reduce((min, t) => (t.price < min.price ? t : min), tiers[0])
     : null;
-  const currentPrice = lowestTier ? lowestTier.price : basePrice;
-  const subtitle =
-    (lowestTier && (lowestTier.label || (lowestTier.quantity ? `${lowestTier.quantity} گرم` : null))) ||
-    r.weight ||
-    null;
+  // Export the main price for the listed weight (matches the title and shop page).
+  const currentPrice = basePrice || (lowestTier ? lowestTier.price : 0);
+  const subtitle = r.weight || null;
 
   const spec = {};
   if (subtitle) spec["وزن"] = subtitle;
